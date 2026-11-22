@@ -214,7 +214,7 @@
     document.querySelectorAll('.vcard.playing').forEach(c => { if (!c.contains(except)) c.classList.remove('playing'); });
   }
   function play(btn) {
-    const host = btn.closest('.vcard, figure, .pop');
+    const host = btn.closest('.vcard, figure, .pop, .vplaylist');
     let slot = host.querySelector('.vslot');
     if (!slot) { slot = document.createElement('div'); slot.className = 'vslot'; host.appendChild(slot); }
     const key = btn.dataset.yt || btn.dataset.list;
