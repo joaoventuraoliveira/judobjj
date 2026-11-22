@@ -1,0 +1,35 @@
+/* Versão de impressão / PDF (A4). Carrosséis viram grades, sem botões. */
+@page { size: A4; margin: 16mm 14mm 18mm; }
+html.print { --bg: #fff; --surface: #fff; --shadow: none; }
+html.print body { font-size: 10.5pt; background: #fff; }
+html.print .top, html.print .bottom, html.print .progress, html.print .side, html.print .scrim,
+html.print .lightbox, html.print .back, html.print .hero-cta, html.print .car-bar, html.print .dots, html.print .skip { display: none !important; }
+html.print .layout { display: block; max-width: none; padding: 0; }
+html.print main { max-width: none; padding: 0; }
+html.print .hero { padding: 40mm 0 0; min-height: 250mm; break-after: page; }
+html.print .hero h1 { font-size: 34pt; }
+html.print .chapter { border: 0; box-shadow: none; padding: 0; margin: 0 0 8mm; break-before: page; }
+html.print #sumario { break-before: page; }
+html.print .toc.big { columns: 1; font-size: 11pt; }
+html.print .toc.big ol { display: block; }
+html.print .chapter h2 { font-size: 20pt; break-after: avoid; }
+html.print h3, html.print h4 { break-after: avoid; }
+html.print .track { display: block; overflow: visible; }
+html.print .slide { break-inside: avoid; margin: 0 0 6mm; }
+html.print .fig, html.print figure { break-inside: avoid; }
+html.print .fig button, html.print .slide button { padding: 0; background: none; }
+html.print .table-wrap { overflow: visible; border: 0; }
+html.print table { font-size: 9pt; }
+html.print tr { break-inside: avoid; }
+html.print th { position: static; }
+html.print .idx-letters { columns: 3; }
+html.print a { color: #1f57b5; }
+html.print .quiz-print ol { padding-left: 18px; }
+html.print .fig img { max-height: 75mm; width: auto; margin: 0 auto; }
+html.print .slide img { max-height: 95mm; width: auto; margin: 0 auto; }
+html.print .carousel[data-kind="pro"] .slide img, html.print .carousel[data-kind="sec"] .slide img { max-height: 80mm; }
+html.print .hero-strip { max-width: 120mm; }
+html.print .track { display: grid; grid-template-columns: 1fr; gap: 4mm; }
+html.print .carousel[data-kind="pro"] .track, html.print .carousel[data-kind="sec"] .track { grid-template-columns: 1fr 1fr; }
+html.print .track { display: grid !important; grid-auto-flow: row !important; grid-auto-columns: auto !important; overflow: visible !important; scroll-snap-type: none; }
+html.print .slide { width: auto; }
