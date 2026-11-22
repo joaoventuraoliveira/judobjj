@@ -12,6 +12,8 @@ ROOT = Path(__file__).parent
 MD = (ROOT / 'doc.md').read_text(encoding='utf-8')
 sys.path.insert(0, '/home/claude/judo_figs/scripts')
 from make_extra import REN, REN_SOLO, KAE, PRO  # títulos das figuras novas
+from enrich import (build_tech, enrich_section, Bib, bib_chapter, glossary_chapter,
+                    transparency_chapter, GLOSS_DATA, MODEL, VENDOR)
 
 TITLE = 'Judô: técnicas e exames de faixa'
 SUB = 'Programa da CBJ, regras e classificação da IJF/Kodokan, ilustrado'
@@ -176,8 +178,18 @@ for s in sections:
 for s in sections:
     if s['id'].startswith('simulado'):
         s['html'] = quiz_from(s['html'])
-    # botão "voltar ao sumário" ao fim de cada capítulo
-    s['html'] += '<p class="back"><a href="#sumario">↑ Voltar ao sumário</a></p>'
+
+# ligações internas: glossário, técnicas, citações, referências e selos de IA
+TECH = build_tech([s['html'] for s in sections])
+BIB, USES = Bib(), {}
+titles = {c['id']: c['t'] for c in toc}
+for s in sections:
+    s['html'] = enrich_section(s['html'], s['id'], titles[s['id']], TECH, BIB, USES)
+    s['print'] = enrich_section(s['print'], s['id'], titles[s['id']], TECH, Bib(), {}, printable=True)
+N_FIGS = len(list((ROOT / 'dist' / 'assets' / 'img').glob('*.webp')))
+EXTRA = [('glossario', 'Glossário', glossary_chapter(USES)),
+         ('referencias', 'Referências', bib_chapter(BIB)),
+         ('transparencia', 'Transparência sobre o uso de IA', transparency_chapter('novembro de 2026', N_FIGS))]
 
 # índice remissivo: todas as figuras de carrossel + figuras únicas
 index_entries = {}
@@ -199,7 +211,7 @@ for name, href in idx:
 for L in sorted(by_letter):
     INDEX_HTML += f'<div class="idx-group"><h3 class="idx-l">{L}</h3><ul>' + ''.join(
         f'<li><a href="{h}" data-jump>{html.escape(n)}</a></li>' for n, h in by_letter[L]) + '</ul></div>'
-INDEX_HTML += '</div><p class="back"><a href="#sumario">↑ Voltar ao sumário</a></p></section>'
+INDEX_HTML += '</div></section>'
 
 
 def toc_html(cls):
@@ -209,15 +221,64 @@ def toc_html(cls):
         if c['sub']:
             o += '<ol>' + ''.join(f'<li><a href="#{s["id"]}">{html.escape(s["t"])}</a></li>' for s in c['sub']) + '</ol>'
         o += '</li>'
-    return o + '<li><a href="#indice-remissivo"><span class="tn">★</span>Índice de técnicas</a></li></ol>'
+    return o + ('<li><a href="#indice-remissivo"><span class="tn">★</span>Índice de técnicas</a></li>'
+                '<li><a href="#glossario"><span class="tn">文</span>Glossário</a></li>'
+                '<li><a href="#referencias"><span class="tn">📚</span>Referências</a></li>'
+                '<li><a href="#transparencia"><span class="tn">🤖</span>Transparência sobre o uso de IA</a></li></ol>')
 
 
 SEARCH_DATA = json.dumps([{'t': n, 'h': h} for n, h in idx] +
                          [{'t': c['t'], 'h': '#' + c['id']} for c in toc] +
-                         [{'t': s['t'], 'h': '#' + s['id']} for c in toc for s in c['sub']], ensure_ascii=False)
+                         [{'t': s['t'], 'h': '#' + s['id']} for c in toc for s in c['sub']] +
+                         [{'t': d['t'] + ' (glossário)', 'h': '#' + g} for g, d in GLOSS_DATA.items()] +
+                         [{'t': it['text'][:90] + '…', 'h': '#' + it['id'], 'k': 'ref'} for it in BIB.items.values()],
+                         ensure_ascii=False)
+REFS_JSON = json.dumps({it['id']: it['html'] for it in BIB.items.values()}, ensure_ascii=False)
+GLOSS_JSON = json.dumps(GLOSS_DATA, ensure_ascii=False)
 
-chapters = ''.join(f'<section class="chapter">{s["html"]}</section>' for s in sections)
-chapters_print = ''.join(f'<section class="chapter">{s["print"]}</section>' for s in sections)
+# páginas do livro, na ordem, para os botões anterior/próximo
+PAGES = [('inicio', 'Capa'), ('sumario', 'Sumário')] + [(c['id'], c['t']) for c in toc] + \
+        [('indice-remissivo', 'Índice de técnicas')] + [(a, t) for a, t, _ in EXTRA]
+
+
+def pager(i):
+    prv = PAGES[i - 1] if i > 0 else None
+    nxt = PAGES[i + 1] if i + 1 < len(PAGES) else None
+    a = f'<a class="pg-prev" href="#{prv[0]}" rel="prev"><small>‹ Anterior</small>{html.escape(prv[1])}</a>' if prv else '<span></span>'
+    b = f'<a class="pg-next" href="#{nxt[0]}" rel="next"><small>Próximo ›</small>{html.escape(nxt[1])}</a>' if nxt else '<span></span>'
+    return f'<nav class="pager" aria-label="Navegação entre capítulos">{a}{b}</nav>'
+
+
+def with_pager(sec_html, pid):
+    i = [p for p, _ in PAGES].index(pid)
+    head, _, tail = sec_html.rpartition('</section>')
+    return head + pager(i) + '</section>' + tail
+
+
+chapters = ''.join(with_pager(f'<section class="chapter" id="sec-{s["id"]}">{s["html"]}</section>', s['id']) for s in sections)
+chapters_print = ''.join(f'<section class="chapter" id="sec-{s["id"]}">{s["print"]}</section>' for s in sections)
+INDEX_HTML = with_pager(INDEX_HTML, 'indice-remissivo')
+EXTRA_HTML = ''.join(with_pager(h, a) for a, _, h in EXTRA)
+EXTRA_PRINT = ''.join(h for _, _, h in EXTRA)
+AI_JSONLD = json.dumps({
+    '@context': 'https://schema.org', '@type': 'Book', 'name': TITLE, 'inLanguage': 'pt-BR',
+    'dateModified': '2026-11-22', 'author': {'@type': 'Person', 'name': 'Ventura'},
+    'contributor': {'@type': 'SoftwareApplication', 'name': MODEL, 'applicationCategory': 'Large language model',
+                    'creator': {'@type': 'Organization', 'name': VENDOR}},
+    'creativeWorkStatus': 'AI-assisted',
+    'description': f'Texto, ilustrações (via código Python) e site gerados com IA ({MODEL}, {VENDOR}) a partir de fontes oficiais citadas.',
+    'citation': [re.sub('<[^>]+>', '', it['html']) for it in BIB.items.values()],
+}, ensure_ascii=False)
+(ROOT / 'dist').mkdir(exist_ok=True)
+(ROOT / 'dist' / 'ai-disclosure.json').write_text(json.dumps({
+    'work': TITLE, 'date': '2026-11-22', 'human': 'Ventura (concepção e decisões editoriais)',
+    'ai_model': MODEL, 'ai_provider': VENDOR,
+    'ai_generated': {'text': True, 'glossary': True, 'quiz': True, 'diagrams': True,
+                     'illustrations': 'imagens desenhadas por código Python escrito pelo modelo (IPTC digitalSourceType: algorithmicMedia)',
+                     'site_code': True},
+    'basis': 'Fontes oficiais listadas em Referências (CBJ, IJF/Kodokan, federações estaduais)',
+    'disclosure_basis': 'Regulamento (UE) 2024/1689, art. 50',
+}, ensure_ascii=False, indent=2), encoding='utf-8')
 css = (ROOT / 'src' / 'style.css').read_text(encoding='utf-8')
 js = (ROOT / 'src' / 'app.js').read_text(encoding='utf-8')
 
@@ -230,6 +291,11 @@ PAGE = f'''<!DOCTYPE html>
 <meta name="description" content="{SUB}. Técnicas do Gokyo em três fases, programa de cada faixa, combinações, contragolpes e técnicas proibidas.">
 <meta name="theme-color" content="#0f3d8c">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="author" content="Ventura">
+<meta name="generator" content="{MODEL} ({VENDOR}) — texto, ilustrações por código e site gerados com IA">
+<meta name="ai-disclosure" content="ai-assisted; model={MODEL}; provider={VENDOR}; details=ai-disclosure.json">
+<link rel="alternate" type="application/json" href="ai-disclosure.json" title="Declaração de uso de IA">
+<script type="application/ld+json">{AI_JSONLD}</script>
 <link rel="stylesheet" href="assets/style.css">
 <script>try{{var t=localStorage.getItem('jt-theme'),l=localStorage.getItem('jt-layout');if(t)document.documentElement.dataset.theme=t;if(l)document.documentElement.dataset.layout=l}}catch(e){{}}</script>
 </head>
@@ -239,7 +305,7 @@ PAGE = f'''<!DOCTYPE html>
 <header class="top">
   <button class="menu-btn" aria-label="Abrir sumário" aria-controls="drawer" aria-expanded="false">☰</button>
   <a class="brand" href="#inicio"><span class="belt"></span>Judô · exames de faixa</a>
-  <div class="search"><input type="search" id="q" placeholder="Buscar técnica ou capítulo" aria-label="Buscar"><ul class="results" role="listbox"></ul></div>
+  <div class="search"><input type="search" id="q" class="js-search" placeholder="Buscar no livro (técnica, termo, regra)" aria-label="Buscar no livro"><ul class="results" role="listbox"></ul></div>
   <div class="prefs">
     <div class="seg" role="group" aria-label="Layout">
       <button data-layout-set="auto" title="Ajustar à tela">Auto</button><button data-layout-set="desktop" title="Design para computador">PC</button><button data-layout-set="mobile" title="Design para celular">Celular</button>
@@ -252,6 +318,14 @@ PAGE = f'''<!DOCTYPE html>
 </header>
 <div class="layout">
   <nav id="drawer" class="side" aria-label="Sumário">
+    <div class="side-tools">
+      <div class="search side-search"><input type="search" class="js-search" placeholder="Buscar no livro" aria-label="Buscar no livro"><ul class="results" role="listbox"></ul></div>
+      <div class="quick"><a href="#indice-remissivo">★ Técnicas</a><a href="#glossario">文 Glossário</a><a href="#referencias">📚 Fontes</a><a href="#transparencia">🤖 IA</a></div>
+      <div class="side-prefs">
+        <div class="seg" role="group" aria-label="Layout"><button data-layout-set="auto">Auto</button><button data-layout-set="desktop">PC</button><button data-layout-set="mobile">Celular</button></div>
+        <div class="seg" role="group" aria-label="Tema"><button data-theme-set="auto" title="Seguir o sistema">◐</button><button data-theme-set="light" title="Modo claro">☀</button><button data-theme-set="dark" title="Modo escuro">☾</button></div>
+      </div>
+    </div>
     <p class="side-h">Sumário</p>
     {toc_html('toc')}
   </nav>
@@ -262,22 +336,27 @@ PAGE = f'''<!DOCTYPE html>
       <h1>{TITLE}</h1>
       <p class="lede">{SUB}: as 40 técnicas do Gokyo em kuzushi, tsukuri e kake, o programa de cada faixa até a preta, combinações, contragolpes e o que é proibido em competição.</p>
       <div class="hero-cta"><a class="btn" href="#sumario">Ver sumário</a><a class="btn ghost" href="#indice-remissivo">Índice de técnicas</a><a class="btn ghost" href="judo-tecnicas-e-exames-de-faixa.pdf" download>Baixar PDF</a></div>
+      <p class="credit">Organização: Ventura · <a href="#transparencia">🤖 Texto, ilustrações e site gerados com IA ({MODEL}, {VENDOR})</a> · <a href="#referencias">📚 Fontes oficiais citadas</a></p>
       <div class="hero-strip"><img src="assets/img/faixas.webp" alt="Cores das faixas da CBJ" loading="eager"></div>
+      {pager(0)}
     </section>
     <section class="chapter" id="sumario">
       <h2><span class="num">00</span>Sumário</h2>
       {toc_html('toc big')}
+      {pager(1)}
     </section>
     {chapters}
     {INDEX_HTML}
-    <footer class="foot"><p>Ilustrações originais geradas por código (Python). Conteúdo baseado nos regulamentos da CBJ, das federações estaduais e nas regras e classificação da IJF/Kodokan; confira sempre a versão vigente com a sua federação.</p></footer>
+    {EXTRA_HTML}
+    <footer class="foot"><p>Conteúdo baseado nos regulamentos da CBJ, das federações estaduais e nas regras e classificação da IJF/Kodokan (ver <a href="#referencias">Referências</a>); confira sempre a versão vigente com a sua federação. Texto, ilustrações (por código Python) e site gerados com IA: {MODEL}, {VENDOR}, nov. 2026 — <a href="#transparencia">detalhes</a>.</p></footer>
   </main>
 </div>
 <nav class="bottom" aria-label="Navegação rápida">
-  <button data-act="menu">☰<span>Sumário</span></button><button data-act="search">⌕<span>Buscar</span></button><button data-act="theme">◐<span>Tema</span></button><button data-act="top">↑<span>Topo</span></button>
+  <button data-act="menu">☰<span>Sumário</span></button><button data-act="search">⌕<span>Buscar</span></button><button data-act="prev">‹<span>Anterior</span></button><button data-act="next">›<span>Próximo</span></button><button data-act="theme">◐<span>Tema</span></button>
 </nav>
 <dialog class="lightbox" aria-label="Imagem ampliada"><button class="lb-close" aria-label="Fechar">✕</button><div class="lb-stage"><img alt=""></div></dialog>
-<script>window.SEARCH={SEARCH_DATA};</script>
+<div class="pop" role="tooltip" hidden></div>
+<script>window.SEARCH={SEARCH_DATA};window.GLOSS={GLOSS_JSON};window.REFS={REFS_JSON};</script>
 <script src="assets/app.js" defer></script>
 </body>
 </html>'''
@@ -288,11 +367,12 @@ PAGE = f'''<!DOCTYPE html>
 (ROOT / 'dist' / 'assets' / 'app.js').write_text(js, encoding='utf-8')
 
 # --------------------------------------------------------------- versão de impressão
-PRINT = PAGE.replace(chapters, chapters_print).replace('<link rel="stylesheet" href="assets/style.css">',
+PRINT = PAGE.replace(chapters, chapters_print).replace(EXTRA_HTML, EXTRA_PRINT).replace(INDEX_HTML, re.sub(r'<nav class="pager".*?</nav>', '', INDEX_HTML)).replace('<link rel="stylesheet" href="assets/style.css">',
                      '<link rel="stylesheet" href="assets/style.css"><link rel="stylesheet" href="assets/print.css">')
 PRINT = PRINT.replace('data-theme="auto" data-layout="auto"', 'data-theme="light" data-layout="desktop" class="print"')
 PRINT = re.sub(r'assets/(img|diag)/([a-z0-9_]+)\.webp', r'assets/print/\2.jpg', PRINT)
 PRINT = re.sub(r'<script>try\{.*?</script>', '', PRINT, flags=re.S)
+PRINT = re.sub(r'<script>window\.SEARCH=.*?</script>', '', PRINT, flags=re.S)
 PRINT = PRINT.replace('<script src="assets/app.js" defer></script>', '')
 (ROOT / 'dist' / 'print.html').write_text(PRINT, encoding='utf-8')
 (ROOT / 'dist' / 'assets' / 'print.css').write_text((ROOT / 'src' / 'print.css').read_text(encoding='utf-8'), encoding='utf-8')

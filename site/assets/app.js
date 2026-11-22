@@ -40,30 +40,59 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
 
   /* ---------- barra inferior ---------- */
-  const top = document.querySelector('.top'), q = document.getElementById('q');
+  const top = document.querySelector('.top');
   document.querySelectorAll('.bottom button').forEach(b => b.addEventListener('click', () => {
     const a = b.dataset.act;
     if (a === 'menu') openDrawer();
-    if (a === 'top') window.scrollTo({ top: 0 });
+    if (a === 'prev' || a === 'next') turn(a === 'next' ? 1 : -1);
     if (a === 'theme') setTheme(themes[(themes.indexOf(root.dataset.theme || 'auto') + 1) % 3]);
-    if (a === 'search') { top.classList.toggle('searching'); if (top.classList.contains('searching')) q.focus(); }
+    if (a === 'search') { openDrawer(); setTimeout(() => document.querySelector('.side-search input').focus(), 260); }
   }));
 
-  /* ---------- busca ---------- */
-  const results = document.querySelector('.results');
+  /* ---------- busca: títulos, técnicas, glossário, fontes e texto completo ---------- */
   const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const data = (window.SEARCH || []).map(d => ({ ...d, n: norm(d.t) }));
-  q.addEventListener('input', () => {
-    const v = norm(q.value.trim());
-    results.innerHTML = '';
-    if (v.length < 2) { results.classList.remove('open'); return; }
-    const hits = data.filter(d => d.n.includes(v)).slice(0, 12);
-    hits.forEach(h => { const li = document.createElement('li'); li.innerHTML = `<a href="${h.h}" data-jump>${h.t}</a>`; results.appendChild(li); });
-    if (!hits.length) results.innerHTML = '<li style="padding:8px 10px;color:var(--muted)">Nada encontrado</li>';
-    results.classList.add('open');
+  let full = null;
+  function fullText() {
+    if (full) return full;
+    full = [];
+    document.querySelectorAll('main > section').forEach(sec => {
+      const h2 = sec.querySelector('h2'); let anchor = h2 ? h2.id : sec.id, title = h2 ? h2.textContent.replace(/^\S+\s*/, '') : 'Capa';
+      sec.querySelectorAll('h3[id], p, li:not(.slide), td').forEach(el => {
+        if (el.matches('h3')) { anchor = el.id; return; }
+        if (el.closest('.pager, .meta-bar, .toc, .results, .idx-letters')) return;
+        const t = el.textContent.trim();
+        if (t.length > 25) full.push({ t, n: norm(t), h: '#' + (el.id || anchor), where: title });
+      });
+    });
+    return full;
+  }
+  function runSearch(input) {
+    const box = input.parentElement.querySelector('.results');
+    const v = norm(input.value.trim());
+    box.innerHTML = '';
+    if (v.length < 2) { box.classList.remove('open'); return; }
+    const hits = data.filter(d => d.n.includes(v)).slice(0, 8)
+      .map(h => `<li><a href="${h.h}" data-jump>${h.k === 'ref' ? '📚 ' : ''}${esc(h.t)}</a></li>`);
+    const seen = new Set();
+    const ft = fullText().filter(d => d.n.includes(v) && !seen.has(d.h + d.t.slice(0, 20)) && seen.add(d.h + d.t.slice(0, 20))).slice(0, 10)
+      .map(d => { const i = d.n.indexOf(v), a = Math.max(0, i - 40);
+        const snip = (a ? '…' : '') + esc(d.t.slice(a, i)) + '<mark>' + esc(d.t.slice(i, i + v.length)) + '</mark>' + esc(d.t.slice(i + v.length, i + v.length + 70)) + '…';
+        return `<li><a href="${d.h}" class="ft"><small>${esc(d.where)}</small>${snip}</a></li>`; });
+    box.innerHTML = (hits.join('') || '') + (ft.length ? '<li class="res-h">No texto</li>' + ft.join('') : '');
+    if (!hits.length && !ft.length) box.innerHTML = '<li class="res-h">Nada encontrado</li>';
+    box.classList.add('open');
+  }
+  document.querySelectorAll('.js-search').forEach(inp => {
+    inp.addEventListener('input', () => runSearch(inp));
+    inp.parentElement.querySelector('.results').addEventListener('click', e => {
+      if (!e.target.closest('a')) return;
+      inp.parentElement.querySelector('.results').classList.remove('open'); inp.value = '';
+      if (root.classList.contains('lay-mobile')) closeDrawer();
+    });
   });
-  results.addEventListener('click', () => { results.classList.remove('open'); top.classList.remove('searching'); q.value = ''; });
-  document.addEventListener('click', e => { if (!e.target.closest('.search')) results.classList.remove('open'); });
+  document.addEventListener('click', e => { if (!e.target.closest('.search')) document.querySelectorAll('.results').forEach(r => r.classList.remove('open')); });
 
   /* ---------- carrosséis ---------- */
   document.querySelectorAll('.carousel').forEach(c => {
@@ -85,24 +114,94 @@
     track.addEventListener('keydown', e => { if (e.key === 'ArrowRight') go(cur + 1); if (e.key === 'ArrowLeft') go(cur - 1); });
     update();
   });
-  /* links do índice levam ao slide certo dentro do carrossel */
-  function jump(hash) {
-    const el = document.getElementById(decodeURIComponent(hash.slice(1)));
-    if (!el) return false;
-    if (el.classList.contains('slide')) {
-      const track = el.parentElement;
-      track.closest('.carousel').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setTimeout(() => track.scrollTo({ left: el.offsetLeft - track.offsetLeft }), 350);
-      history.replaceState(null, '', hash);
-      return true;
-    }
-    return false;
+  /* ---------- livro: um capítulo por página ---------- */
+  const pages = [...document.querySelectorAll('main > section')];
+  let current = null;
+  root.classList.add('paged');
+  function pageOf(hash) {
+    const el = hash && hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
+    return { el, pg: (el && el.closest('main > section')) || pages[0] };
   }
+  function show(hash, smooth) {
+    const { el, pg } = pageOf(hash);
+    if (pg !== current) {
+      pages.forEach(p => { p.hidden = p !== pg; });
+      current = pg; full = full; markToc();
+      document.title = (pg.querySelector('h2') ? pg.querySelector('h2').textContent.replace(/^\S+\s*/, '') + ' · ' : '') + BOOK;
+    }
+    requestAnimationFrame(() => {
+      if (el && el.classList.contains('slide')) {
+        const track = el.parentElement;
+        track.closest('.carousel').scrollIntoView({ block: 'center' });
+        setTimeout(() => track.scrollTo({ left: el.offsetLeft - track.offsetLeft }), 120);
+        el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1600);
+      } else if (el && el !== pg && !(el.matches('h2') && el.parentElement === pg)) {
+        el.scrollIntoView({ block: 'start' });
+        if (el.matches('.term, dt, li, p')) { el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1600); }
+      } else window.scrollTo(0, 0);
+      onScroll();
+    });
+  }
+  const BOOK = document.title;
+  function turn(d) {
+    const i = pages.indexOf(current) + d;
+    if (i < 0 || i >= pages.length) return;
+    const h2 = pages[i].querySelector('h2[id]');
+    location.hash = h2 ? h2.id : pages[i].id;
+  }
+  window.addEventListener('hashchange', () => { if (root.classList.contains('lay-mobile')) closeDrawer(); show(location.hash); });
   document.addEventListener('click', e => {
     const a = e.target.closest('a[href^="#"]');
-    if (a && jump(a.getAttribute('href'))) e.preventDefault();
+    if (!a || e.defaultPrevented) return;
+    if (a.getAttribute('href') === location.hash) { e.preventDefault(); show(location.hash); }
   });
-  if (location.hash) setTimeout(() => jump(location.hash), 300);
+  document.addEventListener('keydown', e => {
+    if (e.target.closest('input, textarea, .track, dialog') || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (e.key === 'ArrowRight') turn(1);
+    if (e.key === 'ArrowLeft') turn(-1);
+  });
+  function markToc() {
+    const id = current && current.querySelector('h2[id]') ? current.querySelector('h2[id]').id : (current ? current.id : '');
+    document.querySelectorAll('.side .toc > li > a').forEach(a => {
+      const on = a.getAttribute('href') === '#' + id;
+      a.classList.toggle('active', on); a.parentElement.classList.toggle('open', on);
+    });
+  }
+
+  /* ---------- prévias: glossário, técnicas, referências, selos de IA ---------- */
+  const pop = document.querySelector('.pop');
+  let popFor = null, hideT = null;
+  function popContent(a) {
+    if (a.dataset.g) { const g = window.GLOSS[a.dataset.g];
+      return `<p class="pop-k">Glossário</p><p class="pop-t">${esc(g.t)} <span lang="ja">${g.jp}</span></p><p>${esc(g.d)}</p><a href="#${a.dataset.g}">Ver no glossário ›</a>`; }
+    if (a.dataset.img) return `<p class="pop-k">Técnica ilustrada</p><img src="${a.dataset.img}" alt="${esc(a.dataset.name)}"><p class="pop-t">${esc(a.dataset.name)}</p><a href="${a.getAttribute('href')}">Ir para a ilustração ›</a><p class="pop-ai">🤖 Ilustração gerada por código escrito por IA</p>`;
+    if (a.dataset.ref) return `<p class="pop-k">Referência (ABNT)</p><div class="pop-ref">${window.REFS[a.dataset.ref]}</div><a href="#${a.dataset.ref}">Ver em Referências ›</a>`;
+    if (a.dataset.ai) return `<p class="pop-k">Uso de IA</p><p>${esc(a.dataset.ai)}.</p><a href="#transparencia">Como este livro foi feito ›</a>`;
+  }
+  function openPop(a) {
+    clearTimeout(hideT); popFor = a;
+    pop.innerHTML = popContent(a); pop.hidden = false;
+    const r = a.getBoundingClientRect(), w = Math.min(340, innerWidth - 24);
+    pop.style.width = w + 'px';
+    pop.style.left = Math.max(12, Math.min(innerWidth - w - 12, r.left + r.width / 2 - w / 2)) + 'px';
+    const below = r.bottom + 10, h = pop.offsetHeight;
+    pop.style.top = (below + h < innerHeight - 70 ? below : Math.max(10, r.top - h - 10)) + 'px';
+  }
+  function closePop() { pop.hidden = true; popFor = null; }
+  const POP_SEL = 'a.term, a.tech, a.cite, .ai-chip, .ai-tag';
+  const hover = window.matchMedia('(hover: hover)').matches;
+  if (hover) {
+    document.addEventListener('mouseover', e => { const a = e.target.closest(POP_SEL); if (a && a !== popFor) openPop(a); else if (e.target.closest('.pop')) clearTimeout(hideT); });
+    document.addEventListener('mouseout', e => { if (e.target.closest(POP_SEL + ', .pop')) hideT = setTimeout(closePop, 250); });
+  }
+  document.addEventListener('click', e => {
+    const a = e.target.closest(POP_SEL);
+    if (a && !hover && a !== popFor) { e.preventDefault(); openPop(a); return; }   /* 1º toque: prévia; 2º toque: abre */
+    if (e.target.closest('.pop a')) { closePop(); return; }
+    if (!e.target.closest('.pop')) closePop();
+  }, true);
+  window.addEventListener('scroll', () => { if (!hover && popFor) closePop(); }, { passive: true });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePop(); });
 
   /* ---------- lightbox com zoom ---------- */
   const lb = document.querySelector('.lightbox'), lbImg = lb.querySelector('img'), stage = lb.querySelector('.lb-stage');
@@ -148,18 +247,13 @@
     score.addEventListener('click', e => { if (e.target.tagName === 'BUTTON') { right = 0; done = 0; qz.innerHTML = ''; qz.removeAttribute('data-built'); location.reload(); } });
   });
 
-  /* ---------- sumário ativo + progresso ---------- */
-  const links = [...document.querySelectorAll('.side .toc > li > a')];
+  /* ---------- progresso de leitura do capítulo ---------- */
   const bar = document.querySelector('.progress span');
-  const heads = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
   function onScroll() {
-    const h = document.documentElement;
-    bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
-    let act = 0;
-    heads.forEach((el, i) => { if (el.getBoundingClientRect().top < 120) act = i; });
-    links.forEach((a, i) => { a.classList.toggle('active', i === act); a.parentElement.classList.toggle('open', i === act); });
+    const h = document.documentElement, max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? h.scrollTop / max * 100 : 100) + '%';
   }
   window.addEventListener('scroll', () => requestAnimationFrame(onScroll), { passive: true });
 
-  applyLayout(); applyTheme(); onScroll();
+  applyLayout(); applyTheme(); show(location.hash);
 })();

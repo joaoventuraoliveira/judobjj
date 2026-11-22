@@ -33,3 +33,14 @@ html.print .track { display: grid; grid-template-columns: 1fr; gap: 4mm; }
 html.print .carousel[data-kind="pro"] .track, html.print .carousel[data-kind="sec"] .track { grid-template-columns: 1fr 1fr; }
 html.print .track { display: grid !important; grid-auto-flow: row !important; grid-auto-columns: auto !important; overflow: visible !important; scroll-snap-type: none; }
 html.print .slide { width: auto; }
+/* v2: ligações viram texto comum no PDF; selos de IA continuam visíveis */
+html.print a.term, html.print a.tech, html.print a.cite { color: inherit; text-decoration: none; border: 0; }
+html.print a.tech::after { content: none; }
+html.print .pager, html.print .pop, html.print .side-tools { display: none !important; }
+html.print .meta-bar { margin: 0 0 4mm; }
+html.print .meta-chip { font-size: 8pt; border: 0.3mm solid #ccc; }
+html.print .refs-chip { display: none; }
+html.print .ai-chip::after { content: " · " attr(data-ai); font-weight: 400; letter-spacing: 0; }
+html.print .ai-chip { font-size: 7pt; }
+html.print .biblio li { font-size: 9.5pt; break-inside: avoid; }
+html.print .gloss dt { break-after: avoid; }

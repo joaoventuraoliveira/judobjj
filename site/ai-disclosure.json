@@ -1,0 +1,17 @@
+{
+  "work": "Judô: técnicas e exames de faixa",
+  "date": "2026-11-22",
+  "human": "Ventura (concepção e decisões editoriais)",
+  "ai_model": "Claude Opus 5.5",
+  "ai_provider": "Anthropic",
+  "ai_generated": {
+    "text": true,
+    "glossary": true,
+    "quiz": true,
+    "diagrams": true,
+    "illustrations": "imagens desenhadas por código Python escrito pelo modelo (IPTC digitalSourceType: algorithmicMedia)",
+    "site_code": true
+  },
+  "basis": "Fontes oficiais listadas em Referências (CBJ, IJF/Kodokan, federações estaduais)",
+  "disclosure_basis": "Regulamento (UE) 2024/1689, art. 50"
+}
