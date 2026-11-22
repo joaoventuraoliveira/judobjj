@@ -126,6 +126,7 @@
     const { el, pg } = pageOf(hash);
     if (pg !== current) {
       pages.forEach(p => { p.hidden = p !== pg; });
+      document.querySelectorAll('main .vslot.on').forEach(sl => { sl.innerHTML = ''; sl.classList.remove('on'); });
       current = pg; full = full; markToc();
       document.title = (pg.querySelector('h2') ? pg.querySelector('h2').textContent.replace(/^\S+\s*/, '') + ' · ' : '') + BOOK;
     }
@@ -174,7 +175,11 @@
   function popContent(a) {
     if (a.dataset.g) { const g = window.GLOSS[a.dataset.g];
       return `<p class="pop-k">Glossário</p><p class="pop-t">${esc(g.t)} <span lang="ja">${g.jp}</span></p><p>${esc(g.d)}</p><a href="#${a.dataset.g}">Ver no glossário ›</a>`; }
-    if (a.dataset.img) return `<p class="pop-k">Técnica ilustrada</p><img src="${a.dataset.img}" alt="${esc(a.dataset.name)}"><p class="pop-t">${esc(a.dataset.name)}</p><a href="${a.getAttribute('href')}">Ir para a ilustração ›</a><p class="pop-ai">🤖 Ilustração gerada por código escrito por IA</p>`;
+    if (a.dataset.img) {
+      const ill = !a.getAttribute('href').startsWith('#v-');
+      const v = a.dataset.yt ? `<button type="button" class="vbtn" data-yt="${a.dataset.yt}" data-title="${esc(a.dataset.name)}">▶ Assistir aqui: vídeo oficial (Kodokan)</button><div class="vslot"></div>` : '';
+      return `<p class="pop-k">${ill ? 'Técnica ilustrada' : 'Vídeo oficial · Kodokan × IJF Academy'}</p><img src="${a.dataset.img}" alt="${esc(a.dataset.name)}"><p class="pop-t">${esc(a.dataset.name)}</p>${v}<a href="${a.getAttribute('href')}">${ill ? 'Ir para a ilustração ›' : 'Ver na videoteca ›'}</a>${ill ? '<p class="pop-ai">🤖 Ilustração gerada por código escrito por IA</p>' : ''}`;
+    }
     if (a.dataset.ref) return `<p class="pop-k">Referência (ABNT)</p><div class="pop-ref">${window.REFS[a.dataset.ref]}</div><a href="#${a.dataset.ref}">Ver em Referências ›</a>`;
     if (a.dataset.ai) return `<p class="pop-k">Uso de IA</p><p>${esc(a.dataset.ai)}.</p><a href="#transparencia">Como este livro foi feito ›</a>`;
   }
@@ -187,12 +192,12 @@
     const below = r.bottom + 10, h = pop.offsetHeight;
     pop.style.top = (below + h < innerHeight - 70 ? below : Math.max(10, r.top - h - 10)) + 'px';
   }
-  function closePop() { pop.hidden = true; popFor = null; }
+  function closePop() { pop.hidden = true; popFor = null; pop.innerHTML = ''; }
   const POP_SEL = 'a.term, a.tech, a.cite, .ai-chip, .ai-tag';
   const hover = window.matchMedia('(hover: hover)').matches;
   if (hover) {
     document.addEventListener('mouseover', e => { const a = e.target.closest(POP_SEL); if (a && a !== popFor) openPop(a); else if (e.target.closest('.pop')) clearTimeout(hideT); });
-    document.addEventListener('mouseout', e => { if (e.target.closest(POP_SEL + ', .pop')) hideT = setTimeout(closePop, 250); });
+    document.addEventListener('mouseout', e => { if (e.target.closest(POP_SEL + ', .pop') && !pop.querySelector('iframe')) hideT = setTimeout(closePop, 250); });
   }
   document.addEventListener('click', e => {
     const a = e.target.closest(POP_SEL);
@@ -200,8 +205,32 @@
     if (e.target.closest('.pop a')) { closePop(); return; }
     if (!e.target.closest('.pop')) closePop();
   }, true);
-  window.addEventListener('scroll', () => { if (!hover && popFor) closePop(); }, { passive: true });
+  window.addEventListener('scroll', () => { if (!hover && popFor && !pop.querySelector('iframe')) closePop(); }, { passive: true });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closePop(); });
+
+  /* ---------- vídeos oficiais tocando dentro da página ---------- */
+  function stopAll(except) {
+    document.querySelectorAll('.vslot.on').forEach(sl => { if (sl !== except) { sl.innerHTML = ''; sl.classList.remove('on'); } });
+    document.querySelectorAll('.vcard.playing').forEach(c => { if (!c.contains(except)) c.classList.remove('playing'); });
+  }
+  function play(btn) {
+    const host = btn.closest('.vcard, figure, .pop');
+    let slot = host.querySelector('.vslot');
+    if (!slot) { slot = document.createElement('div'); slot.className = 'vslot'; host.appendChild(slot); }
+    if (slot.classList.contains('on') && slot.dataset.yt === btn.dataset.yt) { stopAll(null); return; }
+    stopAll(slot);
+    const v = btn.dataset.yt, t = esc(btn.dataset.title || 'Vídeo');
+    slot.dataset.yt = v; slot.classList.add('on');
+    slot.innerHTML = `<div class="yt"><iframe src="https://www.youtube-nocookie.com/embed/${v}?autoplay=1&rel=0&playsinline=1&modestbranding=1" title="${t} — vídeo oficial do Kodokan" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>` +
+      `<p class="yt-foot">Vídeo: Kodokan × IJF Academy · <a href="https://www.youtube.com/watch?v=${v}" target="_blank" rel="noopener">abrir no YouTube ↗</a> · <button type="button" class="yt-close">fechar</button></p>`;
+    if (host.classList.contains('vcard')) host.classList.add('playing');
+    if (host.classList.contains('pop')) { const r = pop.getBoundingClientRect(); if (r.bottom > innerHeight - 10) pop.style.top = Math.max(10, innerHeight - r.height - 80) + 'px'; }
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.vbtn, .vthumb');
+    if (b) { e.preventDefault(); play(b); return; }
+    if (e.target.closest('.yt-close')) { stopAll(null); if (e.target.closest('.pop')) closePop(); }
+  });
 
   /* ---------- lightbox com zoom ---------- */
   const lb = document.querySelector('.lightbox'), lbImg = lb.querySelector('img'), stage = lb.querySelector('.lb-stage');

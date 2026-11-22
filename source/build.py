@@ -173,14 +173,42 @@ for el in list(soup.contents):
         sections.append(cur)
     elif cur is not None:
         cur['html'] += str(el)
+# videoteca oficial (Kodokan × IJF Academy) antes de "Observações e limites"
+from vidbuild import videoteca, add_video_buttons
+from videos import VID, KANJI
+_ill = {}
 for s in sections:
-    s['print'] = s['html']
+    for li in BeautifulSoup(s['html'], 'html.parser').select('li.slide'):
+        _ill.setdefault(li['data-name'].lower(), '#' + li['id'])
+_pos = len(sections) - 1 if sections[-1]['id'].startswith('observacoes') else len(sections)
+_vweb, _vprint = videoteca(_ill, _pos + 1)
+sections.insert(_pos, {'id': 'videoteca-oficial', 'html': _vweb, 'vprint': _vprint})
+toc.insert(_pos, {'id': 'videoteca-oficial', 't': 'Videoteca oficial: Kodokan × IJF Academy', 'n': _pos + 1,
+                  'sub': [{'id': m, 't': t} for m, t in re.findall(r'<h3 id="([^"]+)">([^<]+)</h3>', _vweb)]})
+for i, c in enumerate(toc):
+    c['n'] = i + 1
+for i, s in enumerate(sections):
+    s['html'] = re.sub(r'<span class="num">\d+</span>', f'<span class="num">{i + 1:02d}</span>', s['html'], count=1)
+    if 'vprint' in s:
+        s['vprint'] = re.sub(r'<span class="num">\d+</span>', f'<span class="num">{i + 1:02d}</span>', s['vprint'], count=1)
+N_VBTN = 0
+for s in sections:
+    s['print'] = s.pop('vprint', None) or add_video_buttons(s['html'], printable=True)[0]
+    s['html'], k = add_video_buttons(s['html']); N_VBTN += k
 for s in sections:
     if s['id'].startswith('simulado'):
         s['html'] = quiz_from(s['html'])
 
 # ligações internas: glossário, técnicas, citações, referências e selos de IA
 TECH = build_tech([s['html'] for s in sections])
+for _k, (_n, _v) in VID.items():   # técnicas ilustradas ganham o vídeo; as demais apontam para a videoteca
+    if _k in TECH:
+        TECH[_k] = TECH[_k] + (_v,)
+    else:
+        TECH[_k] = ('#v-' + slug(_n), f'https://i.ytimg.com/vi/{_v}/mqdefault.jpg', _n, _v)
+for _k in list(TECH):
+    if len(TECH[_k]) == 3:
+        TECH[_k] = TECH[_k] + ('',)
 BIB, USES = Bib(), {}
 titles = {c['id']: c['t'] for c in toc}
 for s in sections:
@@ -376,4 +404,4 @@ PRINT = re.sub(r'<script>window\.SEARCH=.*?</script>', '', PRINT, flags=re.S)
 PRINT = PRINT.replace('<script src="assets/app.js" defer></script>', '')
 (ROOT / 'dist' / 'print.html').write_text(PRINT, encoding='utf-8')
 (ROOT / 'dist' / 'assets' / 'print.css').write_text((ROOT / 'src' / 'print.css').read_text(encoding='utf-8'), encoding='utf-8')
-print('ok', len(sections), 'capítulos', len(idx), 'entradas no índice')
+print('ok', len(sections), 'capítulos', len(idx), 'entradas no índice', N_VBTN, 'ilustrações com vídeo')

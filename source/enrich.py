@@ -120,8 +120,9 @@ def enrich_section(sec_html, chap_id, chap_title, tech, bib, uses, printable=Fal
                     parts.append(html.escape(s[last:m.start()]))
                     word = html.escape(m.group(1))
                     if target.startswith('T:'):
-                        href, img, name = tech[k]
-                        parts.append(f'<a class="tech" href="{href}" data-img="{img}" data-name="{html.escape(name)}">{word}</a>')
+                        href, img, name, yt = tech[k]
+                        ya = f' data-yt="{yt}"' if yt else ''
+                        parts.append(f'<a class="tech" href="{href}" data-img="{img}" data-name="{html.escape(name)}"{ya}>{word}</a>')
                     else:
                         uid = f'u-{target[2:]}-{chap_id}'
                         uses.setdefault(target, []).append((uid, chap_title))
@@ -131,7 +132,7 @@ def enrich_section(sec_html, chap_id, chap_title, tech, bib, uses, printable=Fal
                     parts.append(html.escape(s[last:]))
                     child.replace_with(BeautifulSoup(''.join(parts), 'html.parser'))
             elif getattr(child, 'name', None) and child.name not in SKIP and 'ref' not in (child.get('class') or []) \
-                    and 'carousel' not in (child.get('class') or []) and 'quiz' not in (child.get('class') or []):
+                    and not set(child.get('class') or []) & {'carousel', 'quiz', 'vgrid', 'vlist', 'vrow'}:
                 walk(child)
     walk(soup)
 
@@ -204,6 +205,7 @@ def transparency_chapter(date_pt, n_figs):
         (f'{n_figs} ilustrações das técnicas', 'Código Python escrito por IA, desenhado por computador', f'{MODEL} ({VENDOR})', 'Poses conferidas com as descrições textuais da IJF/Kodokan; não são fotos nem cópias de imagens de terceiros'),
         ('Diagramas (fluxos e esquemas)', 'IA', f'{MODEL} ({VENDOR})', 'Resumem regras dos regulamentos citados'),
         ('Glossário e questões do simulado', 'IA', f'{MODEL} ({VENDOR})', 'Baseados nas fontes do livro'),
+        ('Vídeos da Videoteca oficial', 'Produzidos pelo Kodokan e pela IJF Academy (sem IA)', 'Kodokan / IJF Academy', 'A IA só localizou e organizou os links; os vídeos tocam pelo YouTube'),
         ('Site, PDF e ligações entre termos', 'Código escrito por IA', f'{MODEL} ({VENDOR})', 'HTML, CSS e JavaScript próprios, sem serviços externos'),
         ('Concepção, escopo e decisões editoriais', 'Pessoa', 'Ventura', 'Definiu o que o material devia cobrir e como seria publicado'),
     ]

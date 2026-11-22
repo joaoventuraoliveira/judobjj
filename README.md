@@ -3,6 +3,7 @@
 Material de estudo interativo sobre o programa de exames de faixa da CBJ e as regras e a classificação da IJF/Kodokan, com 119 ilustrações originais geradas por código.
 
 - **Site (livro interativo):** um capítulo por página, com botões anterior/próximo; termos do glossário, técnicas e citações ligados no texto, com prévia ao tocar ou passar o mouse (as técnicas mostram a miniatura da ilustração). A gaveta lateral tem busca no texto completo e atalhos para técnicas, glossário, fontes e uso de IA. Também tem carrosséis com deslize, zoom nas imagens, simulado interativo, modo claro/escuro e escolha entre design para computador ou para celular.
+- **Videoteca oficial:** os 100 vídeos da série “100 Techniques” do Kodokan com a IJF Academy (68 projeções e 32 katame-waza), além de fundamentos, saídas de imobilização e aulas da série “Waza”. Os vídeos tocam dentro do livro, nas ilustrações e nas prévias das técnicas, pelo modo de privacidade do YouTube. A lista de vídeos fica em `source/videos.py`.
 - **Referências:** a lista ABNT aparece no fim de cada capítulo e reunida no capítulo “Referências”, que indica onde cada fonte é citada.
 - **Uso de IA:** texto, ilustrações (por código Python), glossário, simulado e site foram gerados com IA (**Claude Opus 5.5, Anthropic**). Cada capítulo e cada figura têm um selo, há um capítulo “Transparência sobre o uso de IA”, e os metadados legíveis por máquina estão em JSON-LD na página e em `site/ai-disclosure.json`.
 - **PDF:** `site/judo-tecnicas-e-exames-de-faixa.pdf` (A4, sumário e índice com links, marcadores por capítulo).
@@ -13,6 +14,7 @@ Material de estudo interativo sobre o programa de exames de faixa da CBJ e as re
 | --- | --- |
 | `site/` | Site publicado (HTML, CSS, JS, imagens WebP e o PDF) |
 | `source/` | Gerador do site (`build.py`), do PDF (`make_pdf.py`) e o texto-base (`doc.md`) |
+| `source/videos.py`, `source/vidbuild.py` | Catálogo dos vídeos oficiais e montagem da videoteca |
 | `source/glossary.py`, `source/enrich.py` | Glossário e ligações internas (termos, técnicas, citações, referências e selos de IA) |
 | `source/src/` | Estilos (`style.css`, `print.css`) e interações (`app.js`) |
 | `source/figuras/` | Scripts Python de cada ilustração (`judoka.py` é o módulo base) |

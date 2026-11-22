@@ -17,7 +17,7 @@ html.print h3, html.print h4 { break-after: avoid; }
 html.print .track { display: block; overflow: visible; }
 html.print .slide { break-inside: avoid; margin: 0 0 6mm; }
 html.print .fig, html.print figure { break-inside: avoid; }
-html.print .fig button, html.print .slide button { padding: 0; background: none; }
+html.print .fig button.zoom, html.print .slide button.zoom { padding: 0; background: none; }
 html.print .table-wrap { overflow: visible; border: 0; }
 html.print table { font-size: 9pt; }
 html.print tr { break-inside: avoid; }
@@ -44,3 +44,7 @@ html.print .ai-chip::after { content: " · " attr(data-ai); font-weight: 400; le
 html.print .ai-chip { font-size: 7pt; }
 html.print .biblio li { font-size: 9.5pt; break-inside: avoid; }
 html.print .gloss dt { break-after: avoid; }
+html.print .vrow, html.print .vslot, html.print .vgrid { display: none !important; }
+html.print .vlink { font-size: 8pt; text-align: center; margin: 1mm 0 0; color: #444; }
+html.print .vlist { columns: 2; font-size: 8.5pt; padding-left: 4mm; }
+html.print .vlist li { break-inside: avoid; }
