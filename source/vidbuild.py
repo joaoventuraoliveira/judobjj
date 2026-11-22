@@ -1,7 +1,7 @@
 """Monta a Videoteca oficial e os botões de vídeo nas ilustrações."""
 import re, html
 from bs4 import BeautifulSoup
-from videos import GROUPS, EXTRAS, VID, KANJI, KODOKAN_CHANNEL, ijf_url
+from videos import GROUPS, EXTRAS, VID, KANJI, KODOKAN_CHANNEL, ijf_url, KODOMO, KODOMO_PLAYLIST, COMBO_UNIT
 from enrich import slug
 
 NAMES_RX = re.compile(r'(?<![\w-])(' + '|'.join(re.escape(k) for k in sorted(VID, key=len, reverse=True)) + r')(?![\w-])', re.I)
@@ -26,6 +26,10 @@ def add_video_buttons(sec_html, printable=False):
     for li in soup.select('li.slide'):
         name = li.get('data-name', '')
         hits = [VID[name.lower()]] if name.lower() in VID else techniques_in(name)
+        if '→' in name and hits:
+            unit = COMBO_UNIT.get(hits[0][0].lower())
+            if unit:
+                hits = hits + [(f'Combinação oficial — Kodomo-no-kata {unit}', KODOMO[unit][0])]
         if not hits:
             continue
         fig = li.figure
@@ -55,6 +59,7 @@ def card(name, kanji, v, ill_href=None, extra=False):
 
 REFS = '''<p><strong>Referências</strong></p>
 <p>KODOKAN; IJF ACADEMY. <strong>KODOKAN × IJF ACADEMY 100 Techniques</strong>. Tóquio: Kodokan, 2020. Série de 100 vídeos. Disponível em: <a href="https://www.youtube.com/@KODOKANJUDO" target="_blank" rel="noopener">youtube.com/@KODOKANJUDO</a>. Acesso em: 22 nov. 2026.</p>
+<p>KODOKAN; INTERNATIONAL JUDO FEDERATION; FÉDÉRATION FRANÇAISE DE JUDO. <strong>Kodomo-no-kata</strong>. Tóquio: Kodokan, 2020. 8 vídeos. Disponível em: <a href="https://www.youtube.com/playlist?list=PLtz539PTepc30cdknyAOAJhdVR2ZoWiC3" target="_blank" rel="noopener">youtube.com/playlist?list=PLtz539PTepc30cdknyAOAJhdVR2ZoWiC3</a>. Acesso em: 22 nov. 2026.</p>
 <p>KODOKAN. <strong>講道館柔道「技」/ Kodokan judo “Waza”</strong>. Tóquio: Kodokan, 2021-2025. Série de vídeos. Disponível em: <a href="https://www.youtube.com/@KODOKANJUDO" target="_blank" rel="noopener">youtube.com/@KODOKANJUDO</a>. Acesso em: 22 nov. 2026.</p>
 <p>INTERNATIONAL JUDO FEDERATION. <strong>Judo techniques</strong>. [S. l.]: IJF, [s. d.]. Disponível em: <a href="https://judo.ijf.org" target="_blank" rel="noopener">judo.ijf.org</a>. Acesso em: 22 nov. 2026.</p>'''
 
@@ -68,10 +73,16 @@ def videoteca(ill, num):
              'dos 32 katame-waza da classificação oficial. Toque na miniatura para assistir aqui mesmo, sem sair do livro. '
              'Os mesmos vídeos também abrem pelos botões “▶ Vídeo oficial” das ilustrações e nas prévias das técnicas.</p>'
              '<p><strong>Combinações e contragolpes:</strong> não há série oficial com um vídeo por combinação. Nas ilustrações de renraku-waza, os botões abrem o vídeo de cada técnica que forma a combinação. '
-             'Os contragolpes (kaeshi-waza) fazem parte dos 100 vídeos. A CBJ não publica uma série equivalente de técnicas; as referências brasileiras continuam sendo os regulamentos citados no livro.</p>'
+             'O Kodokan mostra combinações oficiais no Kodomo-no-kata (unidades 1 a 3), indicadas nas ilustrações de combinação. Os contragolpes (kaeshi-waza) fazem parte dos 100 vídeos. A CBJ não publica uma série equivalente de técnicas; as referências brasileiras continuam sendo os regulamentos citados no livro.</p>'
              '<p class="cited">Vídeos: produção do Kodokan e da IJF Academy, sem uso de IA. A IA apenas localizou e organizou os links (busca feita em 22/11/2026). '
              'Os vídeos tocam pelo modo de privacidade do YouTube (youtube-nocookie.com), que só carrega o player depois do toque.</p>')
     web, pr = [intro], [intro]
+    pl = (f'<div class="vplaylist"><div class="vpl-meta"><b>Lista de reprodução oficial: Kodomo-no-kata</b>'
+          f'<span>Kodokan · 7 unidades + ukemi · toca em sequência, aqui mesmo</span></div>'
+          f'<button type="button" class="vbtn" data-list="{KODOMO_PLAYLIST}" data-title="Kodomo-no-kata">▶ Tocar a lista inteira</button>'
+          f'<a href="https://www.youtube.com/playlist?list={KODOMO_PLAYLIST}" target="_blank" rel="noopener">abrir no YouTube ↗</a><div class="vslot"></div></div>')
+    web.append(pl)
+    pr.append(f'<p>Lista de reprodução oficial do Kodomo-no-kata: <a href="https://www.youtube.com/playlist?list={KODOMO_PLAYLIST}">youtube.com/playlist?list={KODOMO_PLAYLIST}</a></p>')
     for title, items in EXTRAS:
         web.append(f'<h3 id="{slug(title)[:60]}">{html.escape(title)}</h3><ul class="vgrid">')
         pr.append(f'<h3 id="{slug(title)[:60]}">{html.escape(title)}</h3><ul class="vlist">')

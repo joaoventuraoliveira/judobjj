@@ -283,3 +283,8 @@ html.lay-mobile .side .side-search { display: block; }
 .vlinks a { text-decoration: none; }
 html.lay-mobile .vgrid { grid-template-columns: 1fr 1fr; gap: 10px; }
 html.lay-mobile .vmeta { font-size: 13px; }
+.vplaylist { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; margin: 14px 0 6px; background: color-mix(in srgb, var(--red) 5%, var(--surface)); display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+.vpl-meta { display: grid; flex: 1 1 260px; }
+.vpl-meta span { font-size: 13px; color: var(--muted); }
+.vplaylist > a { font-size: 13px; text-decoration: none; }
+.vplaylist .vslot { flex-basis: 100%; }

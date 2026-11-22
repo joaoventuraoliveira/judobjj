@@ -217,12 +217,16 @@
     const host = btn.closest('.vcard, figure, .pop');
     let slot = host.querySelector('.vslot');
     if (!slot) { slot = document.createElement('div'); slot.className = 'vslot'; host.appendChild(slot); }
-    if (slot.classList.contains('on') && slot.dataset.yt === btn.dataset.yt) { stopAll(null); return; }
+    const key = btn.dataset.yt || btn.dataset.list;
+    if (slot.classList.contains('on') && slot.dataset.yt === key) { stopAll(null); return; }
     stopAll(slot);
-    const v = btn.dataset.yt, t = esc(btn.dataset.title || 'Vídeo');
-    slot.dataset.yt = v; slot.classList.add('on');
-    slot.innerHTML = `<div class="yt"><iframe src="https://www.youtube-nocookie.com/embed/${v}?autoplay=1&rel=0&playsinline=1&modestbranding=1" title="${t} — vídeo oficial do Kodokan" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>` +
-      `<p class="yt-foot">Vídeo: Kodokan × IJF Academy · <a href="https://www.youtube.com/watch?v=${v}" target="_blank" rel="noopener">abrir no YouTube ↗</a> · <button type="button" class="yt-close">fechar</button></p>`;
+    const v = btn.dataset.yt, list = btn.dataset.list, t = esc(btn.dataset.title || 'Vídeo');
+    slot.dataset.yt = key; slot.classList.add('on');
+    const src = list ? `https://www.youtube-nocookie.com/embed/videoseries?list=${list}&autoplay=1&rel=0&playsinline=1`
+                     : `https://www.youtube-nocookie.com/embed/${v}?autoplay=1&rel=0&playsinline=1&modestbranding=1`;
+    const ext = list ? `https://www.youtube.com/playlist?list=${list}` : `https://www.youtube.com/watch?v=${v}`;
+    slot.innerHTML = `<div class="yt"><iframe src="${src}" title="${t} — vídeo oficial do Kodokan" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>` +
+      `<p class="yt-foot">Vídeo: Kodokan × IJF Academy · <a href="${ext}" target="_blank" rel="noopener">abrir no YouTube ↗</a> · <button type="button" class="yt-close">fechar</button></p>`;
     if (host.classList.contains('vcard')) host.classList.add('playing');
     if (host.classList.contains('pop')) { const r = pop.getBoundingClientRect(); if (r.bottom > innerHeight - 10) pop.style.top = Math.max(10, innerHeight - r.height - 80) + 'px'; }
   }

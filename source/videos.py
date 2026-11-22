@@ -67,21 +67,38 @@ GROUPS = [
         ('Sankaku-gatame', '腕挫三角固', 'WefAmW4azhk'), ('Ashi-garami', '足緘', 'BWWb0GoAtZw')]),
 ]
 
-# fundamentos, saídas de imobilização e aulas de mestres (mesmo canal oficial)
+# fundamentos, combinações oficiais, saídas e aulas (mesmo canal oficial; conferidos via vidIQ em 22/11/2026)
+KODOMO_PLAYLIST = 'PLtz539PTepc30cdknyAOAJhdVR2ZoWiC3'
+KODOMO = {  # unidade → (id, conteúdo segundo a descrição oficial do vídeo)
+    1: ('-wZKFsubC04', 'Rei, mae-mawari-ukemi, uchi-mata, harai-goshi; combinação ko-uchi-gari → ippon-seoi-nage; ippon-seoi-nage → kesa-gatame → ushiro-kesa-gatame → yoko-shiho-gatame → kami-shiho-gatame'),
+    2: ('1Op61cPa-80', 'Rei, mae-ukemi, mae-mawari-ukemi, o-uchi-gari, ko-uchi-gari, o-soto-gari; combinação o-uchi-gari → ko-uchi-gari; o-soto-gari → yoko-shiho-gatame → tate-shiho-gatame → kata-gatame'),
+    3: ('FT3kgec9JEM', 'Rei, mae-ukemi, mae-mawari-ukemi, tai-sabaki, kuzushi em movimento, sasae-tsurikomi-ashi, ippon-seoi-nage, tsurikomi-goshi; sasae-tsurikomi-ashi → kesa-gatame'),
+    4: ('FQ6eJxB421o', 'Rei, ushiro, yoko e mae-mawari-ukemi, tai-sabaki, happo-no-kuzushi em movimento, hiza-guruma, tai-otoshi, o-goshi'),
+    5: ('2-5at8cWc0E', 'Rei, ushiro, yoko e mae-mawari-ukemi, happo-no-kuzushi, de-ashi-harai, uki-otoshi, uki-goshi'),
+    6: ('VpLdKj5KvuM', 'Rei, ushiro, yoko e outen-ukemi, tai-sabaki, ayumi-ashi, tsugi-ashi, hiza-guruma, tai-otoshi'),
+    7: ('LhVvmFDLMo0', 'Rei, ushiro, yoko e outen-ukemi, tai-sabaki, ayumi-ashi, tsugi-ashi, projetar com mae-sabaki e com ushiro-sabaki'),
+}
+# primeira técnica de uma combinação do livro → unidade do Kodomo-no-kata que mostra combinação parecida
+COMBO_UNIT = {'ko-uchi-gari': 1, 'o-uchi-gari': 2, 'o-soto-gari': 2, 'sasae-tsurikomi-ashi': 3, 'kesa-gatame': 1, 'yoko-shiho-gatame': 2}
+
 EXTRAS = [
-    ('Fundamentos', [
-        ('Kodomo-no-kata: etiqueta (rei), ukemi e movimentos básicos', '講道館 こどもの形', 'VoktcQAxEPg'),
+    ('Fundamentos: Kodomo-no-kata (Kodokan, IJF e Federação Francesa)', [
+        ('Ukemi: as 7 formas de queda', '受身', 'VoktcQAxEPg')] +
+        [(f'Kodomo-no-kata {n}: ' + KODOMO[n][1].split(';')[0], f'子どもの形 {n}', KODOMO[n][0]) for n in range(7, 0, -1)]),
+    ('Combinações oficiais em pé e do pé ao solo', [
+        ('Kodomo-no-kata 1: ko-uchi-gari → ippon-seoi-nage; seoi-nage → kesa-gatame → … → kami-shiho-gatame', '子どもの形 1', '-wZKFsubC04'),
+        ('Kodomo-no-kata 2: o-uchi-gari → ko-uchi-gari; o-soto-gari → yoko-shiho → tate-shiho → kata-gatame', '子どもの形 2', '1Op61cPa-80'),
+        ('Kodomo-no-kata 3: sasae-tsurikomi-ashi → kesa-gatame', '子どもの形 3', 'FT3kgec9JEM'),
+        ('Nakamura Kenzo: uchi-mata e como entrar no katame-waza', '中村兼三「内股」「固技への入り方」', 'QNkxH7WJwmQ')]),
+    ('Visões gerais dos grupos', [
         ('Apresentação da série 100 Techniques', 'KODOKAN JUDO 100 Techniques PV', '_GxcFx8LZRk'),
-        ('Visão geral do Te-waza', '手技', 'z5qYfCEcZOU'),
-        ('Visão geral do Ma-sutemi-waza', '真捨身技', 'LnjW67efl00'),
-        ('Visão geral do Shime-waza', '絞技', 'bq3cwrcS1-c')]),
+        ('Te-waza', '手技', 'z5qYfCEcZOU'), ('Ma-sutemi-waza', '真捨身技', 'LnjW67efl00'), ('Shime-waza', '絞技', 'bq3cwrcS1-c')]),
     ('Saídas de imobilização (defesa no solo)', [
         ('Saídas do Kuzure-kesa-gatame', '崩袈裟固の逃れ方', '-zFQ6h4yKT4'),
         ('Saídas do Kata-gatame', '肩固の逃れ方', '7hP1-W2yovk'),
         ('Saídas do Uki-gatame', '浮固の逃れ方', 'AMHWDFR4ryo'),
         ('Saídas do Ura-gatame', '裏固の逃れ方', '0aY2Tmchzs8')]),
-    ('Do pé ao solo e combinações: série “Waza” com campeões', [
-        ('Nakamura Kenzo: uchi-mata e como entrar no katame-waza', '中村兼三「内股」「固技への入り方」', 'QNkxH7WJwmQ'),
+    ('Série “Waza” com campeões', [
         ('Kato Hirotaka: nage-waza', '加藤博剛①「投技」', 'BlYHIKcZl3E'),
         ('Kato Hirotaka: katame-waza', '加藤博剛②「固技」', 'Kg4ugwHjc0A')]),
 ]
