@@ -44,3 +44,13 @@ A página inicial (`site/index.html`) apresenta as duas modalidades, com os kanj
 - **Jiu-Jitsu (柔術):** o app **Faixa a faixa** (`site/app/#bjj/b01`) com o programa técnico da JJIF por faixa, ficha de exame editável, lista de componentes (guardas, raspagens, transições, chaves, estrangulamentos, defesa pessoal), regras IBJJF/CBJJ, apostila da LBJJ e vídeos oficiais.
 - **App:** `site/app/` (HTML, `data.js` e miniaturas) é gerado pelo projeto local Judo_BJJ (ver `source/app-gerador/`), com tema escuro, botão de idioma PT-BR/EN (nomes em japonês sempre mantidos), busca, progresso salvo no aparelho e as fontes de cada página. Links antigos do livro (`.../#capitulo`) são redirecionados para `livro.html`.
 - Para remontar: `python source/portal/montar_portal.py <pasta www do app>`.
+
+### Explorar: da faixa até a técnica (`site/explorar/`)
+
+Depois de escolher Judô ou Jiu-Jitsu na página inicial, o explorador abre com **menu lateral** (programa de exames, tópicos, lista de componentes e sumário do livro), **faixas amarradas em ordem** (desenhadas em SVG, com as cores de cada nível) e os **tópicos principais**. O caminho vai afunilando:
+
+1. **Faixa** → o que é cobrado no exame, mais *Fundamentos*, *O que não se cobra em competições*, *Técnicas proibidas* (no Jiu-Jitsu, a tabela da IBJJF/CBJJ por idade e faixa) e *Referências*.
+2. **Tópico** (projeções, solo, combinações, textos do regulamento, seções do programa da JJIF…) → lista de técnicas.
+3. **Técnica** → nome em japonês (kanji), rōmaji, inglês (Kodokan) e português (sugestão do app), descrição, ilustrações produzidas por código, **vídeo oficial que toca na própria página** (modo de privacidade do YouTube, só carrega ao clicar) e links para os *kaeshi-waza*, as combinações (*renraku-waza*) e os *katame-waza* associados.
+
+Os dados vêm de `source/portal/build_dados.py`, que lê o livro (`site/livro.html`), `source/videos.py`, `source/glossary.py` e o `data.js` do app, e escreve `site/explorar/dados.js`. Limites honestos: só 40 técnicas têm ficha de estudo; o português dos nomes é sugestão; as fontes não definem proibições diferentes por faixa no Judô (valem as regras IJF); no Jiu-Jitsu os itens da JJIF têm só o nome, sem texto descritivo.

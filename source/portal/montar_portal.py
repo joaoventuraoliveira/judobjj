@@ -19,6 +19,10 @@ def app(www):
     for f in (www / "img" / "th").glob("*.jpg"): shutil.copy2(f, out / "img" / "th" / f.name)
     mb = sum(f.stat().st_size for f in out.rglob("*") if f.is_file()) / 1048576
     print("app:", len(list((out / "img" / "th").glob("*.jpg"))), "miniaturas;", round(mb, 1), "MB")
+def explorar():
+    out = SITE / "explorar"; out.mkdir(exist_ok=True)
+    for n in ("index.html", "explorar.css", "explorar.js"): shutil.copy2(ROOT / "source" / "portal" / "explorar" / n, out / n)
+    print("explorar copiado")
 def refs(www):
     t = (pathlib.Path(www) / "data.js").read_text(encoding="utf-8"); first = t.split(";\nwindow.I18N", 1)[0]
     d = json.loads(first[len("window.DATA = "):].rstrip().rstrip(";"))
@@ -30,4 +34,4 @@ def landing(www):
     t = t.replace("{{REFS}}", lis).replace("{{NJ}}", str(nj)).replace("{{NB}}", str(nb))
     (SITE / "index.html").write_text(t, encoding="utf-8"); print("landing ok;", len(R) - 1, "fontes")
 if __name__ == "__main__":
-    www = sys.argv[1]; app(www); landing(www)
+    www = sys.argv[1]; app(www); explorar(); landing(www)
