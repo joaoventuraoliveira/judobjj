@@ -7,3 +7,6 @@
 html.lay-mobile[data-layout="mobile"] body{max-width:440px;margin-left:auto;margin-right:auto}
 @media (min-width:701px){html.lay-mobile[data-layout="mobile"] body{box-shadow:0 0 0 1px var(--line,rgba(128,128,128,.4)),0 0 60px rgba(0,0,0,.35);min-height:100vh}}
 @media (max-width:520px){.prefs-bar .seg button{padding:6px 9px}}
+
+/* alvos de toque confortáveis no celular */
+.prefs-bar .seg button{min-width:36px;min-height:36px}

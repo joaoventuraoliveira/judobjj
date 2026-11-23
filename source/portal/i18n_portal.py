@@ -146,7 +146,19 @@ def build(nome, strings, extra_rules=EXTRA_RULES):
     print(nome, "(sem MT)" if SEM_MT else "", ": gravado", len(dic), "entradas;", round(out.stat().st_size / 1024), "KB; novas via MT:", n); sys.stdout.flush()
 
 what = sys.argv[3:] or ["landing", "explorar", "livro"]
-if "landing" in what: build("landing", html_strings(ROOT / "site" / "index.html"))
+def tree_strings(path):
+    m = re.search(r'<script type="application/json" id="tree">(.*?)</script>', path.read_text(encoding="utf-8"), re.S)
+    out = set()
+    def w(o):
+        if isinstance(o, dict):
+            for k, v in o.items():
+                if k in ("t", "s", "p", "n") and isinstance(v, str): out.add(norm(v))
+                elif isinstance(v, (list, dict)): w(v)
+        elif isinstance(o, list):
+            for x in o: w(x)
+    if m: w(json.loads(m.group(1).replace("<\\/", "</")))
+    return out
+if "landing" in what: build("landing", html_strings(ROOT / "site" / "index.html") | tree_strings(ROOT / "site" / "index.html"))
 if "explorar" in what:
     S = set(json.loads((ROOT / "source" / "portal" / "explorar_strings.json").read_text(encoding="utf-8")))
     S = {s[1:] if s.startswith("@") else s for s in S}

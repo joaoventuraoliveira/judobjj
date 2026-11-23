@@ -17,3 +17,4 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .search input{transition:border-color .2s,background .2s}.search input:focus{outline:none;border-color:var(--blue);background:var(--surface)}
 @media (prefers-reduced-motion:reduce){.btn,.fig,.slide figure,.toc a{transition:none}}
 
+@media (max-width:640px){nav.portal{display:flex;flex-wrap:nowrap;overflow-x:auto;max-width:100%;min-width:0;scrollbar-width:none}nav.portal a{flex:0 0 auto}nav.portal::-webkit-scrollbar{display:none}.top{flex-wrap:wrap}}

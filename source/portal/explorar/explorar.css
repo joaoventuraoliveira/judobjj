@@ -122,3 +122,10 @@ a.card:hover{transform:translateY(-4px);box-shadow:0 18px 40px -18px color-mix(i
 .crumbs a{transition:color var(--t)}
 ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:99px}
 @media (prefers-reduced-motion:reduce){main{animation:none}.card,.belt-card,.tcard,.tcard .th{transition:none}}
+@media (max-width:900px){
+  header.top{gap:6px 10px;padding:8px 12px}.logo{font-size:1rem}.logo span{display:none}
+  .mod{padding:3px}.mod a{padding:6px 12px;font-size:.86rem}
+  .prefs-bar{order:6;flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.prefs-bar::-webkit-scrollbar{display:none}.prefs-bar>*{flex:0 0 auto}
+  .search{order:5}
+  nav.side{top:0}
+}
