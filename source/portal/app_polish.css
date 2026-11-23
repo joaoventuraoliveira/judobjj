@@ -1,0 +1,14 @@
+﻿/* acabamento visual do app (2026-11): brilho ambiente, vidro, cartões com elevação */
+:root{--ease:cubic-bezier(.22,1,.36,1)}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 78% 6%,color-mix(in srgb,var(--a) 20%,transparent),transparent 55%)}
+.app{position:relative;z-index:1}
+.rail{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:color-mix(in srgb,var(--panel) 88%,transparent);scrollbar-width:thin}
+.hero{border-radius:26px;box-shadow:0 24px 60px -34px color-mix(in srgb,var(--a) 60%,transparent);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--a) 28%,transparent),transparent 70%);pointer-events:none}
+.ladder button{transition:background .2s,transform .25s var(--ease)}.ladder button:hover{transform:translateX(3px)}
+.sec{border-radius:18px;background:color-mix(in srgb,var(--panel) 90%,transparent)}
+.tabs button{transition:background .2s,transform .25s var(--ease),border-color .2s}.tabs button:hover{transform:translateY(-1px);border-color:var(--a)}
+.chip{transition:transform .25s var(--ease),border-color .2s}.chip:hover{transform:translateY(-2px);border-color:var(--a)}
+.thumbs button{transition:transform .3s var(--ease),box-shadow .3s var(--ease)}.thumbs button:hover{transform:translateY(-2px);box-shadow:0 12px 26px -14px color-mix(in srgb,var(--a) 60%,transparent)}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+@media (prefers-reduced-motion:reduce){.ladder button,.tabs button,.chip,.thumbs button{transition:none}}

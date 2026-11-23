@@ -15,7 +15,7 @@ def app(www):
     h = h.replace(a, '$("#dimg").src=thumbUrl(th.dataset.img);', 1)
     b = '<div class="brand">Faixa a faixa</div>'; assert b in h
     h = h.replace(b, '<a class="brand" href="../" aria-label="Voltar ao início do portal">Faixa a faixa</a>', 1)
-    h = h.replace("</head>", "<style>a.brand{color:var(--ink);text-decoration:none}</style></head>", 1)
+    h = h.replace("</head>", "<style>a.brand{color:var(--ink);text-decoration:none}</style><style>" + (ROOT / "source" / "portal" / "app_polish.css").read_text(encoding="utf-8") + "</style></head>", 1)
     # preferências compartilhadas (tema, layout, idioma) e escolha de layout PC/celular
     h = h.replace('<html lang="pt-BR" data-theme="dark">', '<html lang="pt-BR">', 1)
     h = h.replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<script src="../assets/prefs.js"></script>\n<link rel="stylesheet" href="../assets/prefs.css">', 1)

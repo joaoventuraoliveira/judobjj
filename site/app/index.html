@@ -267,7 +267,21 @@ main{padding:6px clamp(16px,4vw,48px) 72px;max-width:1320px;margin:0 auto}
 @media (max-width:700px){html:not(.lay-desktop) .rnav{width:40px;height:40px;margin-top:-20px;font-size:1.4rem}html:not(.lay-desktop) .rnav.prev{left:4px}html:not(.lay-desktop) .rnav.next{right:4px}}html.lay-mobile .rnav{width:40px;height:40px;margin-top:-20px;font-size:1.4rem}html.lay-mobile .rnav.prev{left:4px}html.lay-mobile .rnav.next{right:4px}
 @media (max-width:700px){html:not(.lay-desktop) .rail{gap:8px 12px;padding:10px 14px}html:not(.lay-desktop) .brand{font-size:1.1rem}html:not(.lay-desktop) .mode{min-width:0;flex:1}html:not(.lay-desktop) .search{flex:1 1 100%;margin:0;width:100%}html:not(.lay-desktop) .rails .ladder button{width:148px;height:204px}html:not(.lay-desktop) .rails .ladder .belt{height:96px;flex-basis:96px}html:not(.lay-desktop) .hero{border-radius:16px}html:not(.lay-desktop) .stick{top:0}}html.lay-mobile .rail{gap:8px 12px;padding:10px 14px}html.lay-mobile .brand{font-size:1.1rem}html.lay-mobile .mode{min-width:0;flex:1}html.lay-mobile .search{flex:1 1 100%;margin:0;width:100%}html.lay-mobile .rails .ladder button{width:148px;height:204px}html.lay-mobile .rails .ladder .belt{height:96px;flex-basis:96px}html.lay-mobile .hero{border-radius:16px}html.lay-mobile .stick{top:0}
 </style>
-<style>a.brand{color:var(--ink);text-decoration:none}</style></head>
+<style>a.brand{color:var(--ink);text-decoration:none}</style><style>﻿/* acabamento visual do app (2026-11): brilho ambiente, vidro, cartões com elevação */
+:root{--ease:cubic-bezier(.22,1,.36,1)}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 78% 6%,color-mix(in srgb,var(--a) 20%,transparent),transparent 55%)}
+.app{position:relative;z-index:1}
+.rail{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:color-mix(in srgb,var(--panel) 88%,transparent);scrollbar-width:thin}
+.hero{border-radius:26px;box-shadow:0 24px 60px -34px color-mix(in srgb,var(--a) 60%,transparent);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--a) 28%,transparent),transparent 70%);pointer-events:none}
+.ladder button{transition:background .2s,transform .25s var(--ease)}.ladder button:hover{transform:translateX(3px)}
+.sec{border-radius:18px;background:color-mix(in srgb,var(--panel) 90%,transparent)}
+.tabs button{transition:background .2s,transform .25s var(--ease),border-color .2s}.tabs button:hover{transform:translateY(-1px);border-color:var(--a)}
+.chip{transition:transform .25s var(--ease),border-color .2s}.chip:hover{transform:translateY(-2px);border-color:var(--a)}
+.thumbs button{transition:transform .3s var(--ease),box-shadow .3s var(--ease)}.thumbs button:hover{transform:translateY(-2px);box-shadow:0 12px 26px -14px color-mix(in srgb,var(--a) 60%,transparent)}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+@media (prefers-reduced-motion:reduce){.ladder button,.tabs button,.chip,.thumbs button{transition:none}}
+</style></head>
 <body>
 <a class="skip" href="#main">Pular para o conteúdo</a>
 <div class="app">
