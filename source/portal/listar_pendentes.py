@@ -12,7 +12,7 @@ if alvo == "explorar":
     w = set(); ns["walk_strings"](ns["PORTAL"], w); S |= w; S |= ns["html_strings"](R / "site/explorar/index.html")
 else: S = ns["html_strings"](R / "site/livro.html")
 import re as _re
-UI = ns["UI"]; RX = [_re.compile(r[0]) for r in UI.RULES_EN]
+UI = ns["UI"]; RX = [_re.compile(r[0]) for r in UI.RULES_EN + ns["EXTRA_RULES"]]
 NOMES = _re.compile(r"^[A-Za-zōūŌŪ\-' ]{2,40}$")
 def sinal_pt(s):
     return bool(_re.search(r"[ãõçáéíóúâêôà]|\b(de|do|da|dos|das|para|com|que|em|um|uma|os|as|é|se|ou|no|na|nos|nas|ao|por|mais|sua|seu)\b", s))
