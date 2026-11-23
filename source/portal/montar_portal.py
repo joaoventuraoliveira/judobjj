@@ -109,20 +109,21 @@ def drawer_slides():
     TREE = tree_data(P)
     dr = (f'<section class="dd" data-m="judo"><h3><span class="bd judo" lang="ja" aria-hidden="true">柔道</span><span>Judô</span></h3>{"".join(jm)}</section>'
           f'<section class="dd" data-m="bjj"><h3><span class="bd bjj" lang="ja" aria-hidden="true">柔術</span><span>Jiu-Jitsu</span></h3>{"".join(bm)}</section>')
-    G = {"judo": [("o_goshi", "Ilustração: O-goshi, o grande quadril"), ("seoi_nage", "Ilustração: Seoi-nage, projeção por cima do ombro"), ("uchi_mata", "Ilustração: Uchi-mata, a coxa interna"), ("harai_goshi", "Ilustração: Harai-goshi, quadril varrido"), ("tai_otoshi", "Ilustração: Tai-otoshi, queda do corpo"), ("o_soto_gari", "Ilustração: O-soto-gari, grande ceifada exterior"), ("tomoe_nage", "Ilustração: Tomoe-nage, sacrifício em círculo"), ("ura_nage", "Ilustração: Ura-nage, projeção por trás"), ("ippon", "Ilustração: ippon, o ponto máximo"), ("kumikata", "Ilustração: kumi-kata, a pegada")],
-         "bjj": [("kesa_gatame", "Ilustração: kesa-gatame, imobilização lateral"), ("ren_kesa_katagatame", "Ilustração: do kesa-gatame ao kata-gatame"), ("ren_yokoshiho_juji", "Ilustração: do yoko-shiho ao juji-gatame"), ("ren_osoto_kesa", "Ilustração: do o-soto-gari ao solo"), ("pro_ashi_garami", "Ilustração: ashi-garami, enredo de pernas"), ("pro_do_jime", "Ilustração: do-jime, estrangulamento de tronco"), ("pro_kansetsu_pe", "Ilustração: chave de articulação em pé"), ("pro_ushiro_sankaku", "Ilustração: ushiro-sankaku, triângulo por trás"), ("faixas", "Ilustração: as faixas, do branco ao preto"), ("banca", "Ilustração: a banca do exame")]}
+    FOT = json.loads((ROOT / "source" / "portal" / "fotos_creditos.json").read_text(encoding="utf-8"))
     sl = []
-    for m, lst in G.items():
-        for i, (img, alt) in enumerate(lst):
-            assert (SITE / "assets" / "img" / (img + ".webp")).exists(), img
-            sl.append(f'      <img class="sl{" on" if (m == "judo" and i == 0) else ""}" data-m="{m}" ' + (f'src="assets/img/{img}.webp" ' if (m == "judo" and i == 0) else "") + f'data-src="assets/img/{img}.webp" alt="{e(alt)}" width="800" height="500" decoding="async">')
-    return dr, "\n".join(sl), json.dumps(TREE, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    for m in ("judo", "bjj"):
+        for i, f in enumerate([x for x in FOT if x["mod"] == m]):
+            assert (SITE / "assets" / "fotos" / f["file"]).exists(), f["file"]
+            cap = f"Foto: {f['artist']} · {f['lic']}"
+            sl.append(f'      <img class="sl{" on" if (m == "judo" and i == 0) else ""}" data-m="{m}" ' + (f'src="assets/fotos/{f["file"]}" ' if (m == "judo" and i == 0) else "") + f'data-src="assets/fotos/{f["file"]}" data-cap="{e(cap)}" alt="{e(f["alt"])}" width="1600" decoding="async">')
+    cred = "".join(f'<li><b>{e(f["alt"])}</b> — foto de {e(f["artist"])}, {e(f["lic"])}. <a target="_blank" rel="noopener" href="https://commons.wikimedia.org/wiki/File:{e(f["title"].replace(" ", "_"))}">Ver na Wikimedia Commons <span class="sr">(abre em nova aba)</span></a></li>' for f in FOT)
+    return dr, "\n".join(sl), cred, json.dumps(TREE, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 def landing(www):
     R, nj, nb = refs(www); e = html.escape
     lis = "".join(f'<li><b>{e(r["titulo"])}</b> — {e(r["org"])}, {e(r["ano"])}.' + (f' <a target="_blank" rel="noopener" href="{e(r["url"])}">Abrir a fonte</a>' if r.get("url") else "") + "</li>" for r in R if r["id"] != "app")
     t = (ROOT / "source" / "portal" / "landing_template.html").read_text(encoding="utf-8")
-    dr, sl, tree = drawer_slides()
-    t = t.replace("{{DRAWER}}", dr).replace("{{SLIDES}}", sl).replace("{{TREE}}", tree).replace("{{REFS}}", lis).replace("{{NJ}}", str(nj)).replace("{{NB}}", str(nb))
+    dr, sl, cred, tree = drawer_slides()
+    t = t.replace("{{DRAWER}}", dr).replace("{{SLIDES}}", sl).replace("{{CREDITOS}}", cred).replace("{{TREE}}", tree).replace("{{REFS}}", lis).replace("{{NJ}}", str(nj)).replace("{{NB}}", str(nb))
     t = LC.transformar_html_styles(t)
     (SITE / "index.html").write_text(t, encoding="utf-8"); print("landing ok;", len(R) - 1, "fontes")
 if __name__ == "__main__":
