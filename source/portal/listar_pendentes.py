@@ -11,6 +11,13 @@ if alvo == "explorar":
     S = set(json.loads((R / "source/portal/explorar_strings.json").read_text(encoding="utf-8"))); S = {s[1:] if s.startswith("@") else s for s in S}
     w = set(); ns["walk_strings"](ns["PORTAL"], w); S |= w; S |= ns["html_strings"](R / "site/explorar/index.html")
 else: S = ns["html_strings"](R / "site/livro.html")
-pend = [s for s in sorted({ns["norm"](x) for x in S}, key=len) if ns["eh_pt"](s) and ns["traduzir"](s) == s]
+import re as _re
+UI = ns["UI"]; RX = [_re.compile(r[0]) for r in UI.RULES_EN]
+NOMES = _re.compile(r"^[A-Za-zōūŌŪ\-' ]{2,40}$")
+def ruido(s):
+    if any(r.search(s) for r in RX): return True
+    if NOMES.match(s) and (s == s.lower() and "-" in s or all(w[:1].isupper() or "-" in w for w in s.split())): return True   # nomes em romaji/inglês
+    return False
+pend = [s for s in sorted({ns["norm"](x) for x in S}, key=len) if ns["eh_pt"](s) and ns["traduzir"](s) == s and not ruido(s)]
 print("pendentes:", len(pend), "| mostrando", min(n, len(pend)))
 for s in pend[:n]: print(json.dumps(s, ensure_ascii=False))
