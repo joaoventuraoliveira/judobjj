@@ -1,5 +1,5 @@
 """
-build.py — gera o site (index.html) e a versão de impressão (print.html → PDF)
+build.py — gera o livro (livro.html) e a versão de impressão (print.html → PDF)
 a partir do documento exportado (doc.md) e das ilustrações em assets/.
 Uso: python3 build.py && python3 make_pdf.py
 """
@@ -333,6 +333,7 @@ PAGE = f'''<!DOCTYPE html>
 <header class="top">
   <button class="menu-btn" aria-label="Abrir sumário" aria-controls="drawer" aria-expanded="false">☰</button>
   <a class="brand" href="#inicio"><span class="belt"></span>Judô · exames de faixa</a>
+  <nav class="portal" aria-label="Portal"><a href="./">Início</a><a href="explorar/#/judo">Explorar Judô</a><a href="explorar/#/jiu-jitsu">Jiu-Jitsu</a></nav>
   <div class="search"><input type="search" id="q" class="js-search" placeholder="Buscar no livro (técnica, termo, regra)" aria-label="Buscar no livro"><ul class="results" role="listbox"></ul></div>
   <div class="prefs">
     <div class="seg" role="group" aria-label="Layout">
@@ -389,7 +390,7 @@ PAGE = f'''<!DOCTYPE html>
 </body>
 </html>'''
 (ROOT / 'dist').mkdir(exist_ok=True)
-(ROOT / 'dist' / 'index.html').write_text(PAGE, encoding='utf-8')
+(ROOT / 'dist' / 'livro.html').write_text(PAGE, encoding='utf-8')  # a página inicial (index.html) é o portal: source/portal
 (ROOT / 'dist' / 'assets').mkdir(exist_ok=True)
 (ROOT / 'dist' / 'assets' / 'style.css').write_text(css, encoding='utf-8')
 (ROOT / 'dist' / 'assets' / 'app.js').write_text(js, encoding='utf-8')

@@ -1,0 +1,115 @@
+<style>
+.fx{--fxc:#2468B3;margin:0 0 6px}
+.fx-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin:0 0 12px}
+.fx-bar label{display:grid;gap:2px;font-size:.78rem;color:var(--muted)}
+.fx-bar input{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;min-width:130px}
+.fx-bar button{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:9px 12px;font:600 .88rem var(--display);cursor:pointer;min-height:40px}
+.fx-bar button.pri{background:var(--fxc);color:#fff;border-color:var(--fxc)}
+.fx-sheet{background:#fff;color:#111;border:2px solid var(--fxc);border-radius:4px;overflow:hidden;max-width:980px;font-family:Arial,Helvetica,sans-serif}
+.fx-ban{background:var(--fxc);color:#fff;text-align:center;font:700 clamp(1.1rem,3.2vw,1.9rem)/1.2 Arial,Helvetica,sans-serif;padding:16px 10px;letter-spacing:.01em}
+.fx-box{display:grid;grid-template-columns:1fr 1fr;border:1px solid #111;margin:18px 18px 8px}
+.fx-box h4{margin:0 0 6px;font:700 .95rem Arial,sans-serif;text-decoration:underline}
+.fx-box div{padding:8px 10px}
+.fx-box ul{margin:0;padding-left:18px;font-size:.88rem;line-height:1.35}
+.fx-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:10px 18px 18px;align-items:start}
+.fx-col{display:grid;gap:14px}
+.fx-tab{border:1px solid #111;background:#fff}
+.fx-h,.fx-r{display:grid;grid-template-columns:minmax(0,1fr) 46px 46px}
+.fx-h{background:var(--fxc);color:#fff;font:700 .78rem Arial,sans-serif;text-transform:none}
+.fx-h span{padding:9px 6px;text-align:center;display:flex;align-items:center;justify-content:center;line-height:1.15}
+.fx-r{border-top:1px dotted #8a8a8a;min-height:36px}
+.fx-r.solid{border-top:1px solid #111}
+.fx-r>*{border-left:1px solid #111}
+.fx-r>*:first-child{border-left:0}
+.fx-n{border:0;padding:6px 8px;font:.86rem Arial,sans-serif;color:#111;background:transparent;width:100%;min-width:0}
+.fx-n:focus{outline:2px solid var(--fxc);outline-offset:-2px;background:#f6f9ff}
+.fx-b{border:0;background:#fff;font:700 1rem Arial,sans-serif;cursor:pointer;color:#111;min-height:36px}
+.fx-b[aria-pressed="true"].y{background:#d7f0dd;color:#14702e}
+.fx-b[aria-pressed="true"].n{background:#fadada;color:#a11b1b}
+.fx-b:hover{background:#eef2f6}
+.fx-add{display:block;width:100%;border:0;border-top:1px solid #111;background:#f4f6f8;color:#445;font:.76rem Arial,sans-serif;padding:5px;cursor:pointer}
+.fx-sum{margin:12px 0 0;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel);display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;font-size:.92rem}
+.fx-sum b{font-variant-numeric:tabular-nums}
+.fx-sum .nt{flex-basis:100%;font-size:.78rem;color:var(--muted)}
+.fx-tit{font:700 1.1rem var(--display);margin:22px 0 8px}
+.fx-hint{font-size:.84rem;color:var(--muted);margin:0 0 10px}
+@media (max-width:980px){.fx-r{min-height:44px}.fx-b{min-height:44px}}
+@media (max-width:760px){.fx-cols{grid-template-columns:1fr;padding:8px 10px 14px}.fx-box{grid-template-columns:1fr;margin:12px 10px 6px}.fx-h,.fx-r{grid-template-columns:minmax(0,1fr) 50px 50px}.fx-n{font-size:.95rem}.fx-b{min-height:44px}.fx-r{min-height:44px}}
+@media print{
+  body *{visibility:hidden}
+  .fx-sheet,.fx-sheet *,.fx-print-info,.fx-print-info *{visibility:visible}
+  .fx-sheet{position:absolute;left:0;top:0;width:100%;max-width:none;border-width:1px}
+  .fx-n{white-space:pre-wrap}
+}
+</style>
+<script>
+window.FichaForm=(function(){
+  const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const ctx={};
+  const K=id=>"ficha:"+id;
+  const load=id=>{try{return JSON.parse(localStorage.getItem(K(id))||"null")}catch(e){return null}};
+  const save=(id,s)=>{try{localStorage.setItem(K(id),JSON.stringify(s))}catch(e){}};
+  function state(t,F){
+    let s=load(t.id);
+    if(!s||!s.rows){ s={cand:"",exam:"",data:"",rows:F.tabelas.map(tb=>Array.from({length:tb.linhas},()=>({n:"",v:""})))}; }
+    F.tabelas.forEach((tb,i)=>{ if(!s.rows[i]) s.rows[i]=Array.from({length:tb.linhas},()=>({n:"",v:""})); });
+    return s;
+  }
+  function tabela(F,tb,i,s,tid){
+    const rows=s.rows[i];
+    return `<div class="fx-tab" data-ti="${i}"><div class="fx-h"><span>${esc(tb.nome)}</span><span>YES</span><span>NO</span></div>${rows.map((r,j)=>`<div class="fx-r ${j>=tb.pontilhadas?"solid":""}" data-ri="${j}"><input class="fx-n" list="fx-dl-${tid}-${i}" value="${esc(r.n)}" aria-label="${esc(tb.nome)}, linha ${j+1}: técnica"><button class="fx-b y" aria-pressed="${r.v==="y"}" aria-label="Sim, linha ${j+1}">${r.v==="y"?"✓":""}</button><button class="fx-b n" aria-pressed="${r.v==="n"}" aria-label="Não, linha ${j+1}">${r.v==="n"?"✗":""}</button></div>`).join("")}<button class="fx-add" data-add="${i}">+ adicionar linha</button><datalist id="fx-dl-${tid}-${i}">${(tb.opcoes||[]).map(o=>`<option value="${esc(o)}">`).join("")}</datalist></div>`;
+  }
+  function summary(s){
+    let y=0,n=0,f=0,tot=0;
+    s.rows.forEach(rs=>rs.forEach(r=>{ if(r.n.trim()||r.v){ f++; } if(r.v==="y")y++; if(r.v==="n")n++; tot++; }));
+    const a=y+n, pct=a?Math.round(y*100/a):0;
+    return `<span>Linhas preenchidas: <b>${f}</b> de ${tot}</span><span>SIM: <b>${y}</b></span><span>NÃO: <b>${n}</b></span><span>Aproveitamento nas linhas avaliadas: <b>${a?pct+"%":"—"}</b></span><span class="nt">Resumo para simulação de estudo. A JJIF não define nota de corte na ficha; a aprovação é decisão do examinador.</span>`;
+  }
+  function html(t,A,prog){
+    const F=A.form; if(!F) return "";
+    ctx[t.id]={t,A,F,prog};
+    const s=state(t,F); save(t.id,s);
+    const pm={}; (prog&&prog.secoes||[]).forEach(x=>{pm[x.cat]=x.itens.map(i=>i.t)});
+    F.tabelas.forEach(tb=>{ tb.opcoes=[].concat(...tb.fonte.map(c=>pm[c]||[])); });
+    const col=side=>F.tabelas.map((tb,i)=>[tb,i]).filter(([tb])=>tb.col===side).map(([tb,i])=>tabela(F,tb,i,s,t.id)).join("");
+    return `<div class="fx-tit">Simulador: preencha a ficha de exame</div><p class="fx-hint">Mesmo modelo da ficha da JJIF, editável. Escreva ou escolha a técnica em cada linha e marque SIM ou NÃO. Use “Sortear do programa” para simular o examinador pedindo técnicas da lista da faixa. Tudo fica salvo neste navegador.</p>
+    <section class="fx" data-fx="${t.id}" style="--fxc:${F.cor}">
+      <div class="fx-bar"><label>Candidato<input data-f="cand" value="${esc(s.cand)}"></label><label>Examinador<input data-f="exam" value="${esc(s.exam)}"></label><label>Data<input data-f="data" type="date" value="${esc(s.data)}"></label>
+        <button class="pri" data-fa="draw">Sortear do programa</button><button data-fa="clear">Limpar ficha</button><button data-fa="print">Imprimir / PDF</button><button data-fa="copy">Copiar resumo</button></div>
+      <div class="fx-sheet"><div class="fx-ban">${esc(F.titulo)}</div>
+        <div class="fx-print-info" style="padding:6px 18px 0;font-size:.8rem;color:#333" data-info>${esc(s.cand?"Candidato: "+s.cand:"")} ${esc(s.exam?" · Examinador: "+s.exam:"")} ${esc(s.data?" · Data: "+s.data:"")}</div>
+        <div class="fx-box"><div><h4>Evaluation Criteria</h4><ul>${F.criterios.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div><div><h4>Additional Options</h4><ul>${F.opcoes.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div></div>
+        <div class="fx-cols"><div class="fx-col">${col("L")}</div><div class="fx-col">${col("R")}</div></div></div>
+      <div class="fx-sum" data-sum>${summary(s)}</div>
+    </section>`;
+  }
+  function rerender(root){ const id=root.dataset.fx,c=ctx[id]; const tmp=document.createElement("div"); tmp.innerHTML=html(c.t,c.A,c.prog); const nw=tmp.querySelector("[data-fx]"); root.replaceWith(nw); }
+  function draw(id){
+    const c=ctx[id],s=state(c.t,c.F||c.A.form),F=c.A.form,pm={};
+    (c.prog&&c.prog.secoes||[]).forEach(x=>{pm[x.cat]=x.itens.map(i=>i.t)});
+    const used={};
+    F.tabelas.forEach((tb,i)=>{
+      const pool=[].concat(...tb.fonte.map(cat=>pm[cat]||[])).filter(x=>!used[x]);
+      for(let k=pool.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[pool[k],pool[j]]=[pool[j],pool[k]]}
+      s.rows[i].forEach((r,j)=>{ const pick=pool[j]; if(pick){ r.n=pick; used[pick]=1; } });
+    });
+    save(id,s);
+  }
+  document.addEventListener("click",e=>{
+    const root=e.target.closest("[data-fx]"); if(!root) return; const id=root.dataset.fx;
+    const b=e.target.closest(".fx-b"); if(b){ const s=state(ctx[id].t,ctx[id].A.form); const ti=+b.closest(".fx-tab").dataset.ti,ri=+b.closest(".fx-r").dataset.ri; const want=b.classList.contains("y")?"y":"n"; const r=s.rows[ti][ri]; r.v=r.v===want?"":want; save(id,s); b.closest(".fx-r").querySelectorAll(".fx-b").forEach(x=>{const yy=x.classList.contains("y"); const on=r.v===(yy?"y":"n"); x.setAttribute("aria-pressed",on); x.textContent=on?(yy?"✓":"✗"):""}); root.querySelector("[data-sum]").innerHTML=summary(s); return; }
+    const ad=e.target.closest("[data-add]"); if(ad){ const s=state(ctx[id].t,ctx[id].A.form); s.rows[+ad.dataset.add].push({n:"",v:""}); save(id,s); rerender(root); return; }
+    const ac=e.target.closest("[data-fa]"); if(!ac) return; const a=ac.dataset.fa;
+    if(a==="draw"){ draw(id); rerender(root); }
+    else if(a==="clear"){ if(confirm("Limpar toda a ficha desta faixa?")){ try{localStorage.removeItem(K(id))}catch(x){} rerender(root); } }
+    else if(a==="print"){ window.print(); }
+    else if(a==="copy"){ const s=state(ctx[id].t,ctx[id].A.form),F=ctx[id].A.form; let out=F.titulo+"\n"+(s.cand?"Candidato: "+s.cand+"\n":"")+(s.exam?"Examinador: "+s.exam+"\n":"")+(s.data?"Data: "+s.data+"\n":""); F.tabelas.forEach((tb,i)=>{ const rs=s.rows[i].filter(r=>r.n.trim()||r.v); if(rs.length) out+="\n"+tb.nome+"\n"+rs.map(r=>"- "+(r.n||"(sem nome)")+" ["+(r.v==="y"?"SIM":r.v==="n"?"NÃO":"—")+"]").join("\n")+"\n"; }); try{navigator.clipboard.writeText(out); ac.textContent="Copiado ✓"; setTimeout(()=>ac.textContent="Copiar resumo",1500)}catch(x){ prompt("Copie o resumo:",out) } }
+  });
+  document.addEventListener("input",e=>{
+    const root=e.target.closest("[data-fx]"); if(!root) return; const id=root.dataset.fx; const s=state(ctx[id].t,ctx[id].A.form);
+    if(e.target.dataset.f){ s[e.target.dataset.f]=e.target.value; const inf=root.querySelector("[data-info]"); inf.textContent=[s.cand&&"Candidato: "+s.cand,s.exam&&"Examinador: "+s.exam,s.data&&"Data: "+s.data].filter(Boolean).join(" · "); save(id,s); return; }
+    if(e.target.classList.contains("fx-n")){ const ti=+e.target.closest(".fx-tab").dataset.ti,ri=+e.target.closest(".fx-r").dataset.ri; s.rows[ti][ri].n=e.target.value; save(id,s); root.querySelector("[data-sum]").innerHTML=summary(s); }
+  });
+  return {html};
+})();
+</script>

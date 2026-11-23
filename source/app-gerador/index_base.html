@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' file:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: file:; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{ if(matchMedia('(max-width:700px)').matches && !/[?&]desktop/.test(location.search)) location.replace('mobile.html'+location.hash); }catch(e){}</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%2318232D%27/%3E%3Crect x=%274%27 y=%2713%27 width=%2724%27 height=%276%27 fill=%27%232F64C8%27/%3E%3Crect x=%2722%27 y=%2713%27 width=%276%27 height=%276%27 fill=%27%23F2C230%27/%3E%3C/svg%3E">
+<title>Faixa a faixa — Judô e Jiu-Jitsu</title>
+<meta name="description" content="Guias por transição de faixa: o que é cobrado em cada exame de Judô e Jiu-Jitsu, com o trecho do documento oficial.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E8ECEF; --panel:#FBFCFC; --ink:#18232D; --muted:#566673; --line:#CBD5DB; --soft:#F1F4F6;
+  --a:#2F64C8; --a-ink:#fff;
+  --display:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#10171D;--panel:#18222A;--ink:#E7EDF1;--muted:#98A8B4;--line:#2B3946;--soft:#1F2B34}
+}
+:root[data-theme="dark"]{--bg:#10171D;--panel:#18222A;--ink:#E7EDF1;--muted:#98A8B4;--line:#2B3946;--soft:#1F2B34}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--body);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--a);outline-offset:2px;border-radius:6px}
+.app{display:grid;grid-template-columns:320px minmax(0,1fr);min-height:100vh}
+/* ---- rail ---- */
+.rail{position:sticky;top:0;height:100vh;overflow:auto;background:var(--panel);border-right:1px solid var(--line);padding:20px 16px 32px}
+.brand{font:700 1.35rem/1.1 var(--display);letter-spacing:-.01em;margin:2px 4px 16px}
+.brand small{display:block;font:400 .8rem/1.3 var(--body);color:var(--muted);margin-top:6px;letter-spacing:0}
+.mode{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--soft);padding:4px;border-radius:12px;margin-bottom:14px}
+.mode button{border:0;background:transparent;padding:9px 8px;border-radius:9px;font:600 .95rem var(--display);cursor:pointer;color:var(--muted)}
+.mode button[aria-pressed="true"]{background:var(--ink);color:var(--panel)}
+.search{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);margin-bottom:12px}
+.ladder{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.ladder button{width:100%;display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;text-align:left;border:0;background:transparent;padding:8px 8px;border-radius:10px;cursor:pointer}
+.ladder button:hover{background:var(--soft)}
+.ladder button[aria-current="true"]{background:var(--soft);box-shadow:inset 3px 0 0 var(--a)}
+.ladder .t{font:600 .95rem/1.2 var(--display)}
+.ladder .s{display:block;font-size:.78rem;color:var(--muted)}
+.ladder .p{font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.group{font:700 .78rem var(--display);color:var(--muted);margin:14px 8px 4px}
+/* ---- belt ---- */
+.belt{position:relative;height:14px;border-radius:3px;background:var(--b1);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 38%,transparent);overflow:hidden}
+.belt::after{content:"";position:absolute;right:0;top:0;bottom:0;width:26%;background:var(--b2,var(--b1))}
+.belt.bar::before{content:"";position:absolute;left:0;right:0;top:50%;height:3px;margin-top:-1.5px;background:var(--b2);opacity:.0}
+.hero .belt{height:34px;border-radius:5px}
+/* ---- main ---- */
+main{padding:28px clamp(16px,4vw,44px) 64px;min-width:0}
+.hero{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(18px,3vw,30px)}
+.hero h1{font:700 clamp(1.8rem,4.2vw,3rem)/1.02 var(--display);letter-spacing:-.02em;margin:0 0 4px}
+.hero .sub{color:var(--muted);margin:0 0 20px}
+.belts{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin:6px 0 22px}
+.belts .lbl{font-size:.8rem;color:var(--muted);margin-top:6px}
+.arrow{font:700 1.4rem var(--display);color:var(--muted)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:0}
+.facts div{background:var(--panel);padding:12px 14px}
+.facts dt{font-size:.8rem;color:var(--muted)}
+.facts dd{margin:2px 0 0;font-weight:700}
+.note{margin:16px 0 0;padding:12px 14px;border-left:4px solid var(--a);background:var(--soft);border-radius:0 10px 10px 0;font-size:.95rem}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:22px 0 14px}
+.tabs button{border:1px solid var(--line);background:var(--panel);padding:9px 14px;border-radius:999px;font:600 .92rem var(--display);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--a);color:var(--a-ink);border-color:var(--a)}
+/* ---- sections ---- */
+.sec{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin:0 0 12px;overflow:hidden}
+.sec>header{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding:14px 18px;border-bottom:1px solid var(--line)}
+.sec h2{font:700 1.15rem/1.2 var(--display);margin:0}
+.sec .n{font-size:.8rem;color:var(--muted)}
+.item{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,260px);gap:6px 14px;padding:14px 18px;border-top:1px solid var(--line);align-items:start}
+.item:first-of-type{border-top:0}
+.item input{margin-top:5px;width:18px;height:18px;accent-color:var(--a)}
+.item p{margin:0;max-width:68ch}
+.item.done p{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+.thumbs{display:grid;gap:6px}
+.thumbs button{border:1px solid var(--line);background:#fff;padding:0;border-radius:8px;overflow:hidden;cursor:zoom-in;display:block;position:relative}
+.thumbs img{display:block;width:100%;height:auto}
+.thumbs .pg{position:absolute;right:6px;top:6px;background:rgba(24,35,45,.85);color:#fff;font-size:.72rem;padding:1px 7px;border-radius:99px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:14px 18px}
+.chip{display:flex;gap:8px;align-items:center;background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:6px 10px 6px 8px;font-size:.93rem}
+.chip.done{opacity:.55;text-decoration:line-through}
+.chip input{accent-color:var(--a)}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;padding:0 18px 18px}
+.gal button{border:1px solid var(--line);border-radius:10px;background:#fff;padding:0;overflow:hidden;cursor:zoom-in}
+.gal img{display:block;width:100%}
+.prose{padding:14px 18px 18px}
+.prose dl{display:grid;grid-template-columns:minmax(120px,220px) 1fr;gap:10px 18px;margin:0}
+.prose dt{font-weight:700}
+.prose dd{margin:0}
+.ficha{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:20px;padding:14px 18px 18px}
+.ficha img{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:zoom-in}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+.src{font-size:.85rem;color:var(--muted);margin-top:22px}
+.src a{color:inherit}
+dialog{border:0;border-radius:14px;padding:0;max-width:min(1100px,96vw);background:var(--panel);color:var(--ink)}
+dialog::backdrop{background:rgba(10,16,22,.7)}
+dialog img{display:block;max-width:100%;max-height:82vh;margin:auto;background:#fff}
+dialog form{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;font-size:.9rem}
+dialog button{border:1px solid var(--line);background:var(--soft);padding:6px 14px;border-radius:8px;cursor:pointer}
+.theme{position:fixed;right:14px;bottom:14px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:8px 14px;cursor:pointer;z-index:5}
+@media (max-width:980px){
+  .app{grid-template-columns:1fr}
+  .rail{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}
+  .ladder{grid-auto-flow:column;grid-auto-columns:minmax(210px,1fr);overflow-x:auto;padding-bottom:8px}
+  .item{grid-template-columns:auto minmax(0,1fr)}
+  .thumbs{grid-column:2}
+  .ficha{grid-template-columns:1fr}
+  .belts{grid-template-columns:1fr}.arrow{display:none}
+}
+@media (prefers-reduced-motion:no-preference){
+  .hero .belt{transition:background .35s}
+  .sec{animation:none}
+}
+
+.stick{position:sticky;top:0;z-index:4;background:var(--bg);padding:10px 0 6px;margin:14px 0 6px}
+.stick .tabs{margin:0 0 10px}
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.meter{flex:1 1 180px;max-width:320px;height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.meter span{display:block;height:100%;background:var(--a);border-radius:99px;transition:width .25s}
+.mtxt{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.sp{flex:1}
+.bar button,.pager button{border:1px solid var(--line);background:var(--panel);padding:6px 12px;border-radius:8px;font-size:.85rem;cursor:pointer}
+.bar button:hover,.pager button:hover{background:var(--soft)}
+.jump{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.jump a{flex:none;font-size:.82rem;padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:var(--panel);color:var(--ink);text-decoration:none;white-space:nowrap}
+.jump a:hover{border-color:var(--a)}
+.sec{scroll-margin-top:120px}
+.sec>header{cursor:pointer;user-select:none}
+.sec>header h2::before{content:"";display:inline-block;width:.55em;height:.55em;margin-right:.6em;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-2px);transition:transform .15s}
+.sec.closed>header h2::before{transform:rotate(-45deg)}
+.sec.closed>*:not(header){display:none}
+.sec.closed>header{border-bottom:0}
+.pager{display:flex;justify-content:space-between;gap:10px;margin-top:18px}
+.pager button{padding:10px 16px;font:600 .95rem var(--display)}
+.hero .belts>div:first-child .belt{opacity:.9}
+@media print{
+  .rail,.theme,.stick,.pager,dialog{display:none!important}
+  .app{display:block}body{background:#fff;color:#000}
+  .sec,.hero{break-inside:avoid;border-color:#999}.sec.closed>*:not(header){display:block!important}
+}
+
+.gl{margin:4px 18px 8px;font-size:.82rem;color:var(--muted)}
+.ilus{border-top:1px dashed var(--line);margin-top:4px;padding-top:12px}
+.ilus .gl{margin-top:0}
+.gal.fig{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.gal figure{margin:0;display:grid;gap:6px;align-content:start}
+.gal figure button{width:100%}
+.gal figcaption{font-size:.82rem;color:var(--muted);line-height:1.35}
+.gal figcaption b{color:var(--ink);display:block;font-weight:700}
+.aviso{margin:0 18px 14px;font-size:.85rem;color:var(--muted)}
+
+.sub{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.sub button{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:8px 12px;font:600 .86rem var(--display);cursor:pointer;min-height:40px}
+.sub button span{font-weight:400;color:var(--muted);margin-left:4px;font-size:.78rem}
+.sub button[aria-selected="true"]{border-color:var(--a);box-shadow:inset 0 0 0 1px var(--a);background:var(--soft)}
+.comp-list{display:grid;gap:1px;background:var(--line);margin:8px 0 12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.comp-it{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;background:var(--panel);padding:10px 16px;align-items:center}
+.comp-n{font-weight:700}
+.comp-c{grid-column:1;font-size:.78rem;color:var(--muted)}
+.comp-v{grid-column:2;grid-row:1/3;font-size:.82rem;border:1px solid var(--line);border-radius:8px;padding:7px 10px;color:var(--ink);text-decoration:none;white-space:nowrap}
+.comp-v:hover{border-color:var(--a)}
+details.rule{margin:6px 16px 12px;border:1px solid var(--line);border-radius:10px;background:var(--soft)}
+details.rule>summary{cursor:pointer;padding:10px 12px;font-weight:700;min-height:44px;display:flex;align-items:center}
+details.rule h4{margin:8px 12px 2px;font-size:.88rem}
+details.rule p{margin:0 12px 10px;font-size:.88rem;line-height:1.5}
+.vlinks{display:flex;gap:8px;flex-wrap:wrap;margin:0 16px 14px}
+.vlinks a{border:1px solid var(--a);color:var(--ink);border-radius:10px;padding:9px 12px;text-decoration:none;font-weight:700;font-size:.88rem}
+.cnote{margin:0 16px 14px;font-size:.8rem;color:var(--muted)}
+
+.sub2{margin-top:-4px}
+.sub2 button{font-size:.8rem;padding:6px 10px;min-height:36px;background:var(--soft)}
+.blk{padding:6px 16px 14px;border-top:1px solid var(--line)}
+.blk h3{font:700 .98rem/1.25 var(--display);margin:12px 0 6px}
+.blk p{margin:0 0 8px;white-space:pre-line;font-size:.92rem;line-height:1.5}
+.blk .fig,.blk .gal{padding:0}
+.vlist{display:grid;gap:8px;margin:4px 16px 14px}
+.vcard{display:grid;gap:2px;border:1px solid var(--a);border-radius:10px;padding:10px 12px;text-decoration:none;color:var(--ink)}
+.vcard:hover{background:var(--soft)}
+.vcard .vt{font-weight:700;font-size:.92rem}
+.vcard .vs{font-size:.76rem;color:var(--muted)}
+
+.nmb{display:grid;gap:1px;min-width:0}
+.nmb .nj{font-weight:700;font-size:.92rem}
+.nmb .ne{font-weight:700}
+.nmb .np{color:var(--ink);font-size:.88rem}
+.nmb .nope{color:var(--muted);font-size:.78rem;font-style:italic}
+.nmb .ns{color:var(--muted);font-size:.7rem}
+.nmh{margin:10px 16px 0;display:grid;gap:1px;font-size:.88rem}
+.nmh .nj{font-weight:700}
+.nmh .ns{color:var(--muted);font-size:.72rem}
+.cn{display:grid;gap:0;line-height:1.25}
+.cn small{color:var(--muted);font-size:.74rem}
+.termos{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px}
+.termos .tm{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:3px 8px;font-size:.78rem;line-height:1.3}
+.termos .tm .j{font-weight:700}
+.catnm{padding:0 16px 8px;display:grid;gap:1px;font-size:.82rem;color:var(--muted)}
+.catnm .j{color:var(--ink);font-weight:700}
+.refs{margin:22px 0 0;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.refs h3{font:700 1rem var(--display);margin:0 0 8px}
+.refs ol{margin:0;padding-left:20px;font-size:.86rem;line-height:1.45}
+.refs li{margin:0 0 6px}
+.refs .rm{color:var(--muted)}
+.refs a{color:var(--ink)}
+.fig figcaption.cap2,.gal figcaption.cap2{font-size:.78rem;color:var(--muted);margin-top:4px}
+
+.refs li,.refs .rm{overflow-wrap:anywhere;word-break:break-word}
+.skip{position:absolute;left:-999px;top:0;background:var(--ink);color:var(--panel);padding:10px 14px;z-index:99;border-radius:0 0 8px 0}
+.skip:focus{left:0}
+
+@media (max-width:980px){.fx-r{min-height:44px}.fx-b{min-height:44px}}
+.item input,.chip input,.tc input,.ck input{width:24px;height:24px}
+.jgal{margin:18px 0}.jgal h2{font-size:1.1rem}.jgal .jgc{font-size:.82rem;color:var(--muted)}.jgal h3{margin:14px 0 6px;font-size:.95rem}.jgg{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}.jgt{border:1px solid var(--line);border-radius:10px;background:var(--panel);overflow:hidden;display:flex;flex-direction:column}.jgt button{border:0;padding:0;background:#fff;cursor:zoom-in}.jgt img{display:block;width:100%;height:120px;object-fit:contain}.jgt .jgn{padding:6px 8px;font-size:.78rem;line-height:1.3}.jgt .jgn b{display:block}.jgt .jgn a{display:inline-block;min-height:32px;padding:6px 0 0;color:var(--ink);font-weight:600}.jgbja{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}</style>
+</head>
+<body>
+<a class="skip" href="#main">Pular para o conteúdo</a>
+<div class="app">
+  <aside class="rail" aria-label="Transições de faixa">
+    <div class="brand">Faixa a faixa<small>O que é cobrado em cada exame, com o trecho do documento oficial.</small></div>
+    <div class="mode" role="group" aria-label="Modalidade">
+      <button id="m-judo" aria-pressed="true">Judô</button>
+      <button id="m-bjj" aria-pressed="false">Jiu-Jitsu</button>
+    </div>
+    <input class="search" id="q" type="search" placeholder="Buscar técnica ou termo" aria-label="Buscar técnica ou termo">
+    <ul class="ladder" id="ladder"></ul>
+  </aside>
+  <main id="main" tabindex="-1"></main>
+</div>
+<button class="theme" id="theme" aria-label="Alternar tema claro e escuro">Tema</button>
+<dialog id="dlg"><img id="dimg" alt=""><form method="dialog"><span id="dcap"></span><button>Fechar</button></form></dialog>
+<script>
+function boot(){
+const D = window.DATA; const $ = s=>document.querySelector(s);
+let mode = "judo", cur = null, tab = 0, query = "", lastCats = [], sub = 0, sub2 = 0, lastView = null;
+const slug = s=>String(s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const store = {get(k){try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const done = store.get("done")||{};
+const esc = s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const thumbUrl=s=>String(s).replace(/^img\/(.+)\.(png|jpe?g)$/i,"img/th/$1.jpg");
+let LANG=store.get("lang")==="en"?"en":"pt"; document.documentElement.lang=LANG==="en"?"en":"pt-BR";
+const I18=window.I18N||{pt:{},en:{},ui_en:{},ui_pt:{},rules_en:[],belt_en:{}};
+const DICT=LANG==="en"?Object.assign({},I18.en,I18.ui_en):Object.assign({},I18.pt,I18.ui_pt);
+const RULES=(LANG==="en"?(I18.rules_en||[]):[]).map(r=>[new RegExp(r[0]),r[1]]);
+const BELT=LANG==="en"?(I18.belt_en||{}):null; const BELTRX=BELT?new RegExp("\\b("+Object.keys(BELT).join("|")+")\\b","g"):null;
+function trs0(k){ if(!k) return null; const r=DICT[k]; if(r!==undefined) return r; for(const [rx,t] of RULES){ if(rx.test(k)) return k.replace(rx,t) } return null }
+function trs(s){ if(s==null||s==="") return s; s=String(s); const m=s.match(/^(\s*)([\s\S]*?)(\s*)$/); const k=m[2].replace(/\s+/g," "); if(!k) return s;
+  let r=trs0(k);
+  if(r===null){ const parts=k.split(/( — | · |: )/); if(parts.length>1){ let ch=false; const o=parts.map((p,i)=>{ if(i%2) return p; const q=trs0(p.trim()); if(q!==null){ch=true;return q} return p}); if(ch) r=o.join("") } }
+  if(r===null&&BELTRX&&k.length<70){ BELTRX.lastIndex=0; if(BELTRX.test(k)){ BELTRX.lastIndex=0; const rest=k.replace(BELTRX,""); if(!/[a-zà-ú]{4,}\s+[a-zà-ú]{3,}/.test(rest)){ r=k.replace(BELTRX,x=>BELT[x]) } } BELTRX.lastIndex=0 }
+  return r===null?s:m[1]+r+m[3] }
+const TRATTR=["placeholder","aria-label","alt","title","data-cap"];
+function trNode(n){ if(n.nodeType===3){ const p=n.parentElement; if(!p||/SCRIPT|STYLE|TEXTAREA/.test(p.tagName)) return; const v=n.nodeValue; if(!v.trim()) return; const r=trs(v); if(r!==v) n.nodeValue=r }
+  else if(n.nodeType===1){ if(/SCRIPT|STYLE/.test(n.tagName)) return; TRATTR.forEach(a=>{const v=n.getAttribute(a); if(v){const r=trs(v); if(r!==v) n.setAttribute(a,r)}}); n.childNodes.forEach(trNode) } }
+{ let pend=false; const OPT={childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:TRATTR};
+  const mo=new MutationObserver(()=>{ if(pend) return; pend=true; requestAnimationFrame(()=>{ pend=false; mo.disconnect(); trNode(document.body); const t=trs(document.title); if(t!==document.title) document.title=t; mo.observe(document.body,OPT) }) });
+  mo.observe(document.body,OPT); trNode(document.body); }
+function langBtn(){ const b=$("#lang"); if(!b) return; b.querySelector(".lt").textContent=LANG==="en"?"EN":"PT-BR"; b.setAttribute("aria-label",LANG==="en"?"Change language to Brazilian Portuguese":"Mudar idioma para inglês (English)"); b.title=b.getAttribute("aria-label"); b.onclick=()=>{ store.set("lang",LANG==="en"?"pt":"en"); location.reload() } }
+langBtn();
+
+const ORDER = ["Elegibilidade","Reverência e quedas (Rei/Ukemi)","Fundamentos de aplicação","Projeção (Nage waza)","Imobilização (Osae komi waza)","Estrangulamento (Shime waza)","Chave de cotovelo (Kansetsu waza)","Solo: viradas, escapes e defesas","Sequências e contragolpes","Kata","Vocabulário","Histórico, princípios e cultura","Arbitragem","Provas teóricas","Provas práticas","Atividades de ensino","Outros critérios"];
+function beltCss(b){return `--b1:${b[0]};${b[1]?`--b2:${b[1]};`:""}`}
+function beltEl(b,extra=""){return `<div class="belt ${extra}" style="${beltCss(b)}" role="img" aria-label="faixa"></div>`}
+function inkFor(h){const n=parseInt(h.slice(1),16),c=[n>>16,n>>8&255,n&255].map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});const L=.2126*c[0]+.7152*c[1]+.0722*c[2];return (1.05/(L+.05))>=((L+.05)/.0584)?"#fff":"#10171D"}
+function accent(t){const c=(t.bpara||t.bde); let a=c[1]||c[0]; if(/^#F5/i.test(a)||/^#9A/i.test(a)||/^#F2C/i.test(a)||/^#EE8/i.test(a)) a=c[0]; if(/^#F5/i.test(a)||/^#9A/i.test(a)) a="#4A5C6B"; return a}
+function lum(h){const n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;return (.299*r+.587*g+.114*b)/255}
+function key(t,i){return t.id+":"+i}
+function progress(t){ if(!t.itens) return ""; const n=t.itens.length; if(!n) return ""; let d=0; t.itens.forEach((_,i)=>{if(done[key(t,i)])d++}); return d? d+"/"+n : ""; }
+
+function allKeys(t){
+  if(mode==="judo") return (t.itens||[]).map((_,i)=>key(t,i));
+  const A=t.abas[tab]; if(!A||A.tipo!=="jjif") return [];
+  return A.secoes.flatMap(s=>s.itens.map(x=>t.id+":"+A.nome+":"+s.cat+":"+x.t));
+}
+function stickHtml(t){
+  const ks=allKeys(t), d=ks.filter(k=>done[k]).length, pct=ks.length?Math.round(d*100/ks.length):0;
+  const tabs = mode==="bjj"? tabsHtml(t.abas.map(a=>a.nome)) : "";
+  const jump = lastCats.length>1 ? `<nav class="jump" aria-label="Ir para categoria">${lastCats.map(c=>`<a href="#c-${slug(c)}">${esc(c)}</a>`).join("")}</nav>` : "";
+  const bar = ks.length ? `<div class="bar"><div class="meter" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Itens estudados"><span style="width:${pct}%"></span></div><span class="mtxt">${d} de ${ks.length} estudados</span><span class="sp"></span><button data-act="collapse">Recolher tudo</button><button data-act="expand">Expandir tudo</button></div>` : "";
+  return `<div class="stick">${tabs}${bar}${jump}</div>`;
+}
+function pagerHtml(){
+  const L=D[mode].trans, i=L.findIndex(x=>x.id===cur.id), p=L[i-1], n=L[i+1];
+  return `<div class="pager"><button data-go="${p?p.id:""}" ${p?"":"disabled"}>← ${p?esc(p.titulo):""}</button><button data-go="${n?n.id:""}" ${n?"":"disabled"}>${n?esc(n.titulo):""} →</button></div>`;
+}
+function renderLadder(){
+  const L = D[mode].trans; const ul = $("#ladder"); ul.innerHTML = "";
+  let lastGroup = "";
+  L.forEach(t=>{
+    const g = t.sub && /Infantil/.test(t.sub) ? "Infantil" : (/Dan|Kôdansha|Graus|Vermelha/.test(t.sub||"")||/Graus|mestre/i.test(t.titulo)) ? "Graus superiores" : "Faixas";
+    if(g!==lastGroup){const li=document.createElement("li"); li.className="group"; li.textContent=g; ul.appendChild(li); lastGroup=g}
+    const li = document.createElement("li");
+    const q = query.trim().toLowerCase();
+    if(q){ const hit = JSON.stringify(t).toLowerCase().includes(q); if(!hit) return; }
+    li.innerHTML = `<button data-id="${t.id}" ${cur&&cur.id===t.id?'aria-current="true"':""}>${beltEl(t.bpara)}<span><span class="t">${esc(t.titulo)}</span><span class="s">${esc(t.sub||"")}</span></span><span class="p">${progress(t)}</span></button>`;
+    ul.appendChild(li);
+  });
+  ul.querySelectorAll("button").forEach(b=>b.onclick=()=>{select(b.dataset.id,true);});
+}
+function select(id,scroll){
+  cur = D[mode].trans.find(t=>t.id===id)||D[mode].trans[0]; tab=0; sub=0; sub2=0;
+  const a = accent(cur); document.documentElement.style.setProperty("--a",a); document.documentElement.style.setProperty("--a-ink", inkFor(a));
+  renderLadder(); renderMain(); store.set("last:"+mode, cur.id);
+  try{ history.replaceState(null,"","#"+mode+"/"+cur.id) }catch(e){}
+  if(scroll && window.innerWidth<=980) $("#main").scrollIntoView({block:"start"});
+}
+function thumbs(imgs,pages,cap){
+  if(!imgs||!imgs.length) return "";
+  return `<div class="thumbs">${imgs.map((s,i)=>`<button data-img="${s}" data-cap="${esc(cap)}" aria-label="Ampliar trecho do documento"><img loading="lazy" decoding="async" src="${thumbUrl(s)}" alt="Trecho do documento oficial">${pages&&pages[i]?`<span class="pg">p. ${pages[i]}</span>`:""}</button>`).join("")}</div>`;
+}
+function galHtml(){
+  const g=D.judo.galeria; if(!g||!g.tecs||!g.tecs.length) return "";
+  const cats=[...new Set(g.tecs.map(x=>x.cat))];
+  const tc=cats.map(c=>{const L=g.tecs.filter(x=>x.cat===c); return `<h3>${esc(c)} · ${esc(L[0].catpt)} <span class="jgc">(${L.length})</span></h3><div class="jgg">${L.map(x=>`<div class="jgt"><button data-img="${x.img}" data-cap="${esc(x.rom+" — Judo Québec / IJF")}" aria-label="Ampliar ${esc(x.rom)}"><img loading="lazy" decoding="async" src="${thumbUrl(x.img)}" alt="Técnica ${esc(x.rom)}"></button><div class="jgn"><b>${esc(x.rom)}</b>${x.ja?`<span lang="ja">${esc(x.ja)}</span><br>`:""}${x.en?`<span lang="en">${esc(x.en)}</span><br>`:""}<a target="_blank" rel="noopener" href="${x.url}">▶ Vídeo IJF</a></div></div>`).join("")}</div>`}).join("");
+  const bj=(g.bja||[]).map(x=>`<div class="jgt"><button data-img="${x.img}" data-cap="${esc("BJA Pictorial Guide, p. "+x.pag+" — "+x.tit)}" aria-label="Ampliar página ${x.pag} do guia BJA"><img loading="lazy" decoding="async" src="${thumbUrl(x.img)}" alt="Guia BJA página ${x.pag}" style="height:auto"></button><div class="jgn">p. ${x.pag} · ${esc(x.tit)}</div></div>`).join("");
+  return `<section class="jgal"><details class="rule"><summary>Galeria visual das técnicas do Kodokan, com vídeo oficial (${g.tecs.length})</summary><p class="jgc" style="margin:4px 12px">Fonte: aide-mémoire do Judo Québec (syllabus Judo Canada 2021; vídeos Kodokan/IJF). Material de referência internacional: não é o programa da CBJ acima. Nomes em japonês e inglês: dicionário IJF/Kodokan. Sem nome em português (sem fonte).</p><div style="padding:0 12px 12px">${tc}</div></details>${bj?`<details class="rule"><summary>Guia ilustrado por faixa (British Judo Association, ${g.bja.length} págs.)</summary><p class="jgc" style="margin:4px 12px">Sistema britânico de kyu; não equivale exatamente às faixas da CBJ. Use como apoio visual dos movimentos.</p><div class="jgbja" style="padding:0 12px 12px">${bj}</div></details>`:""}</section>`;
+}
+function judoBody(t){return judoBody0(t)+galHtml()}
+function judoBody0(t){
+  const q = query.trim().toLowerCase(); const groups = {};
+  t.itens.forEach((it,i)=>{ if(q && !it.t.toLowerCase().includes(q)) return; (groups[it.c]=groups[it.c]||[]).push([it,i]); });
+  const cats = Object.keys(groups).sort((a,b)=>ORDER.indexOf(a)-ORDER.indexOf(b));
+  if(!cats.length) return `<div class="sec"><div class="empty">Nada encontrado nesta faixa para “${esc(query)}”.</div></div>`;
+  lastCats = cats.slice(); return cats.map(c=>`<section class="sec" id="c-${slug(c)}"><header><h2>${esc(c)}</h2><span class="n">${groups[c].length} ${groups[c].length>1?"trechos":"trecho"}</span></header>${catNmHtml(t,c)}${groups[c].map(([it,i])=>`<div class="item ${done[key(t,i)]?"done":""}"><input type="checkbox" data-k="${key(t,i)}" ${done[key(t,i)]?"checked":""} aria-label="Marcar como estudado"><p>${esc(it.t)}</p>${termosHtml(it.tm)}${thumbs(it.i,it.p,t.titulo)}</div>`).join("")}</section>`).join("");
+}
+function tabsHtml(names){return `<div class="tabs" role="tablist">${names.map((n,i)=>`<button role="tab" id="tab-${i}" aria-controls="tp" aria-selected="${i===tab}" data-tab="${i}">${esc(n)}</button>`).join("")}</div>`}
+function figs(arr,aviso){
+  if(!arr||!arr.length) return "";
+  return `<div class="gal fig">${arr.map(f=>`<figure><button data-img="${f.img}" data-cap="${esc(f.cap+" — "+f.fonte)}" aria-label="Ampliar: ${esc(f.cap)}"><img loading="lazy" decoding="async" src="${thumbUrl(f.img)}" alt="${esc(f.cap)}"></button><figcaption><b>${esc(f.cap)}</b>${esc(f.fonte)}</figcaption></figure>`).join("")}</div>`;
+}
+function ilusHtml(s){
+  if(!s.ilus||!s.ilus.length) return "";
+  return `<div class="ilus"><p class="gl">Fotos da posição no livro de regras da IBJJF. Ilustram a posição ou a regra, não a lista exata de técnicas da JJIF.</p>${figs(s.ilus)}</div>`;
+}
+
+function nmHtml(nm,t){
+  if(!nm) return `<span class="comp-n">${esc(t)}</span>`;
+  const src=[nm.sj?"JA: "+nm.sj:"",nm.sp?"PT: "+(nm.sp==="app"?"sugestão do app, conferir":nm.sp):""].filter(Boolean).join(" · ");
+  const en=nm.en||t, pt=nm.pt||""; const nome=LANG==="en"?en:(pt||trs(en));
+  const aviso=(LANG==="pt"&&!pt)?`<span class="np nope">tradução do app, sem nome em português nas fontes (conferir)</span>`:"";
+  return `<span class="nmb">${nm.ja?`<span class="nj" lang="ja">${esc(nm.ja)}</span>`:""}<span class="ne">${esc(nome)}</span>${aviso}${src?`<span class="ns">${esc(src)}</span>`:""}</span>`;
+}
+function nmHead(nm){
+  if(!nm||(!nm.ja&&!nm.en&&!nm.pt)) return "";
+  const nome=LANG==="en"?(nm.en||""):(nm.pt||(nm.en?trs(nm.en):""));
+  return `<div class="nmh">${nm.ja?`<span class="nj" lang="ja">${esc(nm.ja)}</span>`:""}${nome?`<span>${esc(nome)}</span>`:""}${nm.sj?`<span class="ns">Fonte do nome: ${esc(nm.sj)}</span>`:""}</div>`;
+}
+function chipNm(x){const n=x.nm; if(!n) return esc(x.t); const nome=(LANG==="pt"&&n.pt)?n.pt:x.t; return `<span class="cn"><b>${esc(nome)}</b>${n.ja?`<small lang="ja">${esc(n.ja)}</small>`:""}</span>`}
+function termosHtml(tm){return tm&&tm.length?`<div class="termos">${tm.map(m=>`<span class="tm" title="Fonte do nome: ${esc(m.f)}"><span class="j" lang="ja">${esc(m.ja)}</span> ${esc(m.rom)} · ${esc(LANG==="en"?m.en:(m.pt||trs(m.en)))}</span>`).join("")}</div>`:""}
+function catNmHtml(t,c){const n=t.catnm&&t.catnm[c]; if(!n||(!n.ja&&!n.en)) return ""; const nome=LANG==="en"?n.en:(n.pt||trs(n.en)); return `<div class="catnm">${n.ja?`<span class="j" lang="ja">${esc(n.ja)}</span>`:""}<span>${esc(nome)}${n.sj?" · fonte do nome: "+esc(n.sj):""}</span></div>`}
+function refsHtml(obj,extra){
+  const ids=new Set(extra||[]); (function walk(o){ if(!o||typeof o!=="object") return; if(Array.isArray(o.refs)) o.refs.forEach(r=>ids.add(r)); for(const k in o) walk(o[k]); })(obj);
+  let js=""; try{js=JSON.stringify(obj)}catch(e){}
+  D.REFS.forEach(r=>{try{ if(new RegExp(r.pat).test(js)) ids.add(r.id) }catch(e){} });
+  const L=D.REFS.filter(r=>ids.has(r.id));
+  return `<section class="refs" aria-label="Referências"><h3>Referências usadas nesta página</h3><ol>${L.map(r=>`<li><b>${esc(r.titulo)}</b> — ${esc(r.org)}, ${esc(r.ano)}.${r.url?` <a target="_blank" rel="noopener" href="${r.url}">Abrir a fonte</a>`:""}<br><span class="rm">Arquivo no projeto: ${esc(r.arq)}</span></li>`).join("")}</ol></section>`;
+}
+function ytUrl(q){return "https://www.youtube.com/results?search_query="+encodeURIComponent(q+" jiu-jitsu")}
+function vidHtml(vs){return vs&&vs.length?`<p class="cnote" style="margin-bottom:6px">Vídeos oficiais (IBJJF Rules Tutorials)</p><div class="vlist">${vs.map(v=>`<a class="vcard" target="_blank" rel="noopener" href="${v.url}"><span class="vt">▶ ${esc(v.rot)}</span>${v.canal?`<span class="vs">${esc(v.canal)}</span>`:""}</a>`).join("")}</div>`:""}
+function blocosHtml(bs){return bs&&bs.length?bs.map(b=>`<div class="blk"><h3>${esc(b.titulo)}</h3>${nmHead(b.nm)}${b.texto?`<p>${esc(b.texto)}</p>`:""}${figs(b.fotos)}${b.fonte?`<p class="cnote" style="margin:0">Fonte: ${esc(b.fonte)}</p>`:""}</div>`).join(""):""}
+function compHtml(A){
+  const gs=A.grupos.filter(g=>g.itens.length||g.fotos.length||g.regra.length||(g.subs&&g.subs.length)); if(sub>=gs.length) sub=0; const g0=gs[sub]; lastView=g0;
+  const tot=x=>x.subs?x.subs.reduce((a,y)=>a+y.itens.length,0):x.itens.length;
+  const menu=`<div class="sub" role="tablist" aria-label="Partes cobradas no exame">${gs.map((x,i)=>`<button role="tab" aria-controls="sp" aria-selected="${i===sub}" data-sub="${i}">${esc(x.nome)}${tot(x)?`<span>${tot(x)}</span>`:""}</button>`).join("")}</div>`;
+  let g=g0,menu2="";
+  if(g0.subs&&g0.subs.length){ if(sub2>=g0.subs.length) sub2=0; g=g0.subs[sub2]; menu2=`<div class="sub sub2" role="tablist" aria-label="Subcategorias de ${esc(g0.nome)}">${g0.subs.map((x,i)=>`<button role="tab" aria-controls="sp" aria-selected="${i===sub2}" data-sub2="${i}">${esc(x.nome)}${x.itens.length?`<span>${x.itens.length}</span>`:""}</button>`).join("")}</div>`; }
+  const regra=g.regra&&g.regra.length?`<details class="rule" open><summary>Explicação na regra</summary>${g.regra.map(r=>`<h4>${esc(r.titulo)}</h4><p>${esc(r.texto)}</p>`).join("")}</details>`:"";
+  const itens=g.itens.length?`<div class="comp-list">${g.itens.map(i=>`<div class="comp-it">${nmHtml(i.nm,i.t)}<span class="comp-c">Lista JJIF: ${esc(i.c)}</span><a class="comp-v" target="_blank" rel="noopener" href="${ytUrl(i.t)}">Buscar vídeo</a></div>`).join("")}</div>`:"";
+  const nota=`<p class="cnote">Nomes: japonês (kanji · rōmaji) e inglês conforme o dicionário Kodokan e as fontes; português do Brasil quando a fonte o apresenta ou como sugestão do app (marcada). O botão “Buscar vídeo” abre uma pesquisa no YouTube, sem verificação do conteúdo. Para a maioria dos golpes não há foto nem vídeo oficial nas fontes.</p>`;
+  const titulo=g0.subs?g0.nome+" — "+g.nome:g.nome;
+  return menu+menu2+`<section class="sec" id="sp" role="tabpanel"><header><h2>${esc(titulo)}</h2><span class="n">${g.itens.length?g.itens.length+" itens":""}</span></header>${nmHead(g.nm||g0.nm)}<p class="aviso" style="margin-top:12px">${esc(g.desc)}</p>${vidHtml(g.videos)}${regra}${itens}${blocosHtml(g.blocos)}${figs(g.fotos)}${nota}</section>`;
+}
+function bjjBody(t){
+  const A = t.abas[tab]; lastView = A; const q=query.trim().toLowerCase();
+  if(A.tipo==="jjif"){
+    lastCats = A.secoes.filter(s=>s.itens.some(x=>!q||x.t.toLowerCase().includes(q))).map(s=>s.cat); const sec = A.secoes.map(s=>{
+      const its = s.itens.filter(x=>!q||x.t.toLowerCase().includes(q)); if(!its.length) return "";
+      return `<section class="sec" id="c-${slug(s.cat)}"><header><h2>${esc(s.cat)}</h2><span class="n">${its.length} técnicas</span></header><div class="chips">${its.map((x,i)=>{const k=t.id+":"+A.nome+":"+s.cat+":"+x.t; return `<label class="chip ${done[k]?"done":""}"><input type="checkbox" data-k="${esc(k)}" ${done[k]?"checked":""}>${chipNm(x)}</label>`}).join("")}</div>${ilusHtml(s)}<p class="gl">Coluna no programa da JJIF (documento oficial)</p><div class="gal">${s.imgs.map(im=>`<button data-img="${im}" data-cap="${esc(s.cat)}"><img loading="lazy" decoding="async" src="${thumbUrl(im)}" alt="Coluna ${esc(s.cat)} do programa JJIF"></button>`).join("")}</div></section>`}).join("");
+    return `<p class="note" style="margin-top:0">${esc(A.intro)}</p><div style="height:12px"></div>`+(sec||`<div class="sec"><div class="empty">Nada encontrado para “${esc(query)}”.</div></div>`);
+  }
+  if(A.tipo==="componentes") return compHtml(A);
+  if(A.tipo==="galeria"){
+    return `<section class="sec" id="c-fotos"><header><h2>Fotos das posições de pontuação e golpes proibidos</h2></header><p class="aviso" style="margin-top:12px">Fonte: livro de regras da IBJJF (2024) e folha oficial de golpes proibidos. As fotos ilustram as posições e as regras; o programa de técnicas por faixa é o da JJIF.</p>${figs(A.itens)}</section>`;
+  }
+  if(A.tipo==="ficha"){
+    return `<section class="sec"><header><h2>Ficha de exame da JJIF</h2></header><div class="ficha"><div class="prose"><dl><dt>Critérios de avaliação</dt><dd>${esc(A.criterios)}</dd><dt>Opções do examinador</dt><dd>${esc(A.opcoes)}</dd><dt>Seções da ficha</dt><dd>${esc(A.secoes_ficha)}</dd><dt>Carga mínima sugerida</dt><dd>${esc(A.carga)}</dd></dl></div><button style="border:0;background:none;padding:0" data-img="${A.img}" data-cap="Ficha de exame JJIF"><img src="${thumbUrl(A.img)}" alt="Ficha de exame da JJIF"></button></div><p class="cnote">Imagem: ficha de exame, JJIF Graduation System (v11), seção Belt Exam.</p></section>`+FichaForm.html(t,A,t.abas.find(a=>a.tipo==="jjif"));
+  }
+  return `<section class="sec"><header><h2>Regras da IBJJF/CBJJ</h2></header><div class="prose"><dl><dt>Observações</dt><dd>${esc(A.extra)}</dd></dl></div><div class="gal">${A.imgs.map(im=>`<button data-img="${im}" data-cap="IBJJF — Sistema Geral de Graduação (jun/2026)"><img loading="lazy" decoding="async" src="${thumbUrl(im)}" alt="Página do sistema de graduação IBJJF"></button>`).join("")}</div></section>`;
+}
+function renderMain(){
+  const t = cur; const m = D[mode];
+  let body;
+  lastCats = []; lastView = null;
+  body = mode==="judo" ? judoBody(t) : bjjBody(t);
+  $("#main").innerHTML = `<section class="hero"><h1>${esc(t.titulo)}</h1><p class="sub">${esc(t.sub||"")}</p>
+    <div class="belts"><div>${beltEl(t.bde)}<div class="lbl">Faixa atual</div></div><div class="arrow" aria-hidden="true">→</div><div>${beltEl(t.bpara)}<div class="lbl">Faixa do exame</div></div></div>
+    <dl class="facts">${t.fatos.map(f=>`<div><dt>${esc(f[0])}</dt><dd>${esc(f[1])}</dd></div>`).join("")}</dl>
+    ${t.nota?`<p class="note">${esc(t.nota)}</p>`:""}</section>${stickHtml(t)}${mode==="bjj"?`<div id="tp" role="tabpanel" aria-labelledby="tab-${tab}">${body}</div>`:body}${refsHtml(mode==="judo"?t:(lastView||t.abas[tab]))}${pagerHtml()}
+    <p class="src">Fonte: ${esc(m.fonte)}. Os recortes são imagens dos PDFs oficiais baixados; o texto foi extraído automaticamente e pode conter pequenos erros — confira sempre no recorte. Conteúdo de estudo, não substitui o programa da sua federação ou professor.</p>`;
+  document.title = t.titulo+" — Faixa a faixa";
+}
+document.addEventListener("click",e=>{
+  const th = e.target.closest("[data-img]"); if(th){ $("#dimg").src=th.dataset.img; $("#dcap").textContent=th.dataset.cap||""; $("#dlg").showModal(); return }
+  const s2 = e.target.closest("[data-sub2]"); if(s2){ sub2=+s2.dataset.sub2; renderMain(); return }
+  const sb = e.target.closest("[data-sub]"); if(sb){ sub=+sb.dataset.sub; sub2=0; renderMain(); return }
+  const tb = e.target.closest("[data-tab]"); if(tb){ tab=+tb.dataset.tab; sub=0; sub2=0; renderMain(); return }
+  const ac = e.target.closest("[data-act]"); if(ac){ document.querySelectorAll(".sec").forEach(x=>x.classList.toggle("closed",ac.dataset.act==="collapse")); return }
+  const go = e.target.closest("[data-go]"); if(go && go.dataset.go){ select(go.dataset.go); window.scrollTo({top:0}); return }
+  const hd = e.target.closest(".sec>header"); if(hd){ hd.parentElement.classList.toggle("closed"); return }
+  const jl = e.target.closest(".jump a"); if(jl){ const el=document.querySelector(jl.getAttribute("href")); if(el){ e.preventDefault(); el.classList.remove("closed"); el.scrollIntoView({behavior:"smooth",block:"start"}); } return }
+});
+document.addEventListener("change",e=>{
+  const c = e.target.closest("input[data-k]"); if(!c) return; if(c.checked) done[c.dataset.k]=1; else delete done[c.dataset.k]; store.set("done",done);
+  const el = c.closest(".item,.chip"); if(el) el.classList.toggle("done",c.checked); renderLadder();
+  const ks=allKeys(cur), d=ks.filter(k=>done[k]).length, pct=ks.length?Math.round(d*100/ks.length):0;
+  const mt=document.querySelector(".mtxt"); if(mt) mt.textContent=d+" de "+ks.length+" estudados"; const ms=document.querySelector(".meter span"); if(ms) ms.style.width=pct+"%";
+});
+$("#dlg").addEventListener("click",e=>{ if(e.target.id==="dlg") e.target.close() });
+function fromHash(){ const m=(location.hash||"").match(/^#(judo|bjj)\/(\w+)/); return m?{mode:m[1],id:m[2]}:null }
+document.addEventListener("keydown",e=>{
+  if(e.target.closest("input,textarea,select")||$("#dlg").open||e.altKey||e.ctrlKey||e.metaKey) return;
+  const L=D[mode].trans, i=L.findIndex(x=>x.id===cur.id);
+  if(e.key==="ArrowRight"&&L[i+1]){ select(L[i+1].id); window.scrollTo({top:0}) }
+  if(e.key==="ArrowLeft"&&L[i-1]){ select(L[i-1].id); window.scrollTo({top:0}) }
+});
+function setMode(m){ mode=m; $("#m-judo").setAttribute("aria-pressed",m==="judo"); $("#m-bjj").setAttribute("aria-pressed",m==="bjj"); query=""; $("#q").value=""; const hh=fromHash(); const last=(hh&&hh.mode===m)?hh.id:store.get("last:"+m); cur=null; select((D[m].trans.find(t=>t.id===last)||D[m].trans[0]).id); }
+$("#m-judo").onclick=()=>setMode("judo"); $("#m-bjj").onclick=()=>setMode("bjj");
+$("#q").addEventListener("input",e=>{ query=e.target.value; renderLadder(); renderMain(); });
+$("#theme").onclick=()=>{ const r=document.documentElement; const dark = r.dataset.theme? r.dataset.theme==="dark" : matchMedia("(prefers-color-scheme: dark)").matches; r.dataset.theme = dark?"light":"dark"; store.set("theme",r.dataset.theme) };
+const th = store.get("theme"); if(th) document.documentElement.dataset.theme = th;
+{ const hh=fromHash(); setMode(hh?hh.mode:"judo"); }
+}
+(function load(n){
+  if(window.DATA) return boot();
+  const s=document.createElement("script"); s.src="data.js"+(n?"?r="+n:"");
+  s.onload=boot;
+  s.onerror=()=>{ if(n<4) setTimeout(()=>load(n+1),500); else document.getElementById("main").innerHTML='<p class="empty">Não foi possível carregar data.js. Use o arquivo único JudoBJJApp_celular.html (não depende de outros arquivos) ou mantenha data.js e a pasta img ao lado de index.html.</p>'; };
+  document.head.appendChild(s);
+})(0);
+</script>
+</body>
+</html>
