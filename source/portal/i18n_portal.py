@@ -117,7 +117,8 @@ def html_strings(path, attrs=("alt", "title", "aria-label", "placeholder", "data
     if soup.title: out.add(norm(soup.title.get_text()))
     return {s for s in out if s}
 
-def build(nome, strings, extra_rules=()):
+EXTRA_RULES = [[r"^(\d+) tópicos?$", "$1 topics"], [r"^(\d+) combinações$", "$1 combinations"], [r"^(\d+) imobilizações$", "$1 pins"]]
+def build(nome, strings, extra_rules=EXTRA_RULES):
     pt = sorted({norm(s) for s in strings if eh_pt(s)}, key=len)
     print(nome, ":", len(pt), "textos a traduzir"); sys.stdout.flush()
     dic = {}; n = 0
