@@ -5,6 +5,8 @@ async page => {
   const BASE = 'http://127.0.0.1:8793';
   const PAGES = [
     { id: 'inicio', url: '/', fonts: true },
+    { id: 'sobre', url: '/#/sobre', fonts: true },
+    { id: 'bjj-item', url: '/explorar/#/jiu-jitsu/item/o-soto-gari', fonts: true },
     { id: 'explorar', url: '/explorar/#/judo', fonts: true },
     { id: 'livro', url: '/livro.html', fonts: true },
     { id: 'app', url: '/app/#judo/j01', fonts: false }

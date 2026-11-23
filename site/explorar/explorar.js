@@ -270,7 +270,14 @@ route(/^\/jiu-jitsu$/, () => ({ crumbs: [["Início", "../"], ["Jiu-Jitsu", "#/ji
 <h2 class="sec">Tópicos principais</h2><div class="cards">${B.comp.map(g => `<a class="card" href="#/jiu-jitsu/t/${g.id}"><div class="ic" aria-hidden="true" lang="ja">${ICON_B[g.id] || ""}</div><h3>${esc(g.nome)}</h3><p>${esc(g.desc)}</p><span class="n">${(g.subs && g.subs.length ? g.subs.reduce((a, s) => a + s.itens.length + s.blocos.length, 0) : g.itens.length) || ""} ${g.subs && g.subs.length ? "tópicos" : "itens"}</span></a>`).join("")}
 <a class="card" href="#/jiu-jitsu/proibidas"><div class="ic" aria-hidden="true">⛔</div><h3>Golpes proibidos por idade e faixa</h3><p>Tabela da IBJJF/CBJJ, p. 29.</p></a><a class="card" href="#/jiu-jitsu/t/referencias"><div class="ic" aria-hidden="true">📚</div><h3>Referências</h3><p>Fontes do app.</p></a><a class="card" href="../app/#bjj/b01"><div class="ic" aria-hidden="true">📝</div><h3>Ficha de exame e progresso</h3><p>Simulador editável (app).</p></a></div>`, init: wireRail }));
 
-function itemsList(its, bel) { return `<div class="tcards" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${its.map(i => `<a class="tcard" href="#/jiu-jitsu/item/${slug(i.t)}"><div class="tx"><span class="jp" lang="ja">${esc((i.nm && i.nm.ja || "").split(" · ")[0])}</span><b>${esc(i.nm && i.nm.pt || i.t)}</b><small>${esc(i.t)}</small></div></a>`).join("")}</div>`; }
+const CAT_GRP = { "Técnicas básicas": "fund", "Quedas": "quedas", "Passagem de guarda": "guardas", "Ataques da guarda": "guardas", "Raspagens": "raspagens", "Controle lateral": "posicoes", "Montada": "posicoes", "Controle das costas": "posicoes", "Defesa pessoal": "defesa", "Ataques a pernas e pés": "perna" };
+function bjjGrpOf(it, cat) {
+  const id = slug(it.t); let g = null;
+  B.comp.forEach(x => { if (!g && ((x.itens || []).concat((x.subs || []).flatMap(s => s.itens))).some(i => slug(i.t) === id)) g = x; });
+  return g || (CAT_GRP[cat] ? bgrp(CAT_GRP[cat]) : null);
+}
+function bjjThumb(g) { if (!g) return ""; const f = (g.fotos || [])[0]; if (f) return A(f.img); const v = (g.videos || []).filter(x => x.url && /v=/.test(x.url))[0]; return v ? yt(v.url.split("v=")[1].split("&")[0]) : ""; }
+function itemsList(its, cat) { return `<div class="tcards" style="grid-template-columns:repeat(auto-fill,minmax(190px,1fr))">${its.map(i => { const th = bjjThumb(bjjGrpOf(i, cat)); return `<a class="tcard" href="#/jiu-jitsu/item/${slug(i.t)}">${th ? `<div class="th" role="presentation" style="background-image:url('${esc(th)}')"></div>` : ""}<div class="tx"><span class="jp" lang="ja">${esc((i.nm && i.nm.ja || "").split(" · ")[0])}</span><b>${esc(i.nm && i.nm.pt || i.t)}</b><small>${esc(i.t)}</small></div></a>`; }).join("")}</div>`; }
 function matrizCols(f) {
   const alvo = (f.titulo.split("→")[1] || f.titulo).trim().toLowerCase(); const cols = [];
   if (kids(f.sub)) return { cols: [0, 1], nota: "Faixas infantis: valem as colunas de 4 a 12 anos e de 13 a 15 anos." };
@@ -301,10 +308,10 @@ ${f.nota ? `<div class="warn">${esc(f.nota)}</div>` : ""}
 route(/^\/jiu-jitsu\/faixa\/(\w+)\/([\w-]+)$/, m => {
   const f = bf(m[1]); if (!f) return null; const t = m[2]; const base = [["Início", "../"], ["Jiu-Jitsu", "#/jiu-jitsu"], [f.titulo, "#/jiu-jitsu/faixa/" + f.id]]; const a = f.cores.para[1] || f.cores.para[0];
   let body = "", name = "";
-  if (t.indexOf("s-") === 0) { const s = f.secoes.find(x => "s-" + slug(x.cat) === t); if (!s) return null; name = s.pt || s.cat; body = `<h1>${esc(name)}</h1><p class="lead">${esc(s.cat)} · programa técnico da JJIF para ${esc(f.titulo)}</p>${itemsList(s.itens)}${s.imgs.length ? `<h2 class="sec">Coluna do programa JJIF (documento oficial)</h2><div class="imgs">${s.imgs.map(i => `<figure><img loading="lazy" src="${A(i)}" alt="Coluna ${esc(s.cat)} do programa JJIF" data-zoom><figcaption>JJIF Graduation System v11 (miniatura)</figcaption></figure>`).join("")}</div>` : ""}`; }
+  if (t.indexOf("s-") === 0) { const s = f.secoes.find(x => "s-" + slug(x.cat) === t); if (!s) return null; name = s.pt || s.cat; body = `<h1>${esc(name)}</h1><p class="lead">${esc(s.cat)} · programa técnico da JJIF para ${esc(f.titulo)}</p>${itemsList(s.itens, s.cat)}${s.imgs.length ? `<h2 class="sec">Coluna do programa JJIF (documento oficial)</h2><div class="imgs">${s.imgs.map(i => `<figure><img loading="lazy" src="${A(i)}" alt="Coluna ${esc(s.cat)} do programa JJIF" data-zoom><figcaption>JJIF Graduation System v11 (miniatura)</figcaption></figure>`).join("")}</div>` : ""}`; }
   else if (t === "ficha") { name = "Ficha de exame (JJIF)"; const k = f.ficha; body = `<h1>${name}</h1><div class="box"><h3>Critérios de avaliação</h3><p>${esc(k.criterios)}</p></div><div class="box"><h3>Opções do examinador</h3><p>${esc(k.opcoes)}</p></div><div class="box"><h3>Seções da ficha</h3><p>${esc(k.secoes)}</p></div><div class="box"><h3>Carga mínima sugerida</h3><p>${esc(k.carga)}</p></div><div class="imgs"><figure><img src="${A(k.img)}" alt="Ficha de exame da JJIF" data-zoom><figcaption>JJIF Graduation System v11, seção Belt Exam</figcaption></figure></div><p><a class="pill" href="../app/#bjj/${f.id}">Abrir o simulador editável (app)</a></p>`; }
-  else if (t === "fund") { name = "Fundamentos"; const s = f.secoes.filter(x => /basic/i.test(x.cat)); const g = bgrp("fund"); body = `<h1>${name}</h1>${s.map(x => `<h2 class="sec">${esc(x.pt || x.cat)}</h2>${itemsList(x.itens)}`).join("")}<h2 class="sec">Tai-sabaki, rolamentos e ukemi</h2><p class="lead">${esc(g.desc)}</p><div class="cards">${g.subs.map(s => `<a class="card" href="#/jiu-jitsu/t/fund/${s.id}"><h3>${esc(s.nome)}</h3><p>${esc(s.desc)}</p></a>`).join("")}</div>`; }
-  else if (t === "nao") { name = "O que não se cobra em competições"; const s = f.secoes.filter(x => /defesa pessoal|self defense/i.test(x.cat)); body = `<h1>${name}</h1><p class="lead">Itens do exame que não existem em uma luta de competição (IBJJF/CBJJ): defesa pessoal e a avaliação do exame. Classificação do app.</p>${s.map(x => `<h2 class="sec">${esc(x.pt || x.cat)}</h2>${itemsList(x.itens)}`).join("") || "<p class='lead'>Esta faixa não tem defesa pessoal no programa da JJIF.</p>"}${f.ficha ? `<div class="box"><h3>Critérios de avaliação</h3><p>${esc(f.ficha.criterios)}</p></div>` : ""}`; }
+  else if (t === "fund") { name = "Fundamentos"; const s = f.secoes.filter(x => /basic/i.test(x.cat)); const g = bgrp("fund"); body = `<h1>${name}</h1>${s.map(x => `<h2 class="sec">${esc(x.pt || x.cat)}</h2>${itemsList(x.itens, x.cat)}`).join("")}<h2 class="sec">Tai-sabaki, rolamentos e ukemi</h2><p class="lead">${esc(g.desc)}</p><div class="cards">${g.subs.map(s => `<a class="card" href="#/jiu-jitsu/t/fund/${s.id}"><h3>${esc(s.nome)}</h3><p>${esc(s.desc)}</p></a>`).join("")}</div>`; }
+  else if (t === "nao") { name = "O que não se cobra em competições"; const s = f.secoes.filter(x => /defesa pessoal|self defense/i.test(x.cat)); body = `<h1>${name}</h1><p class="lead">Itens do exame que não existem em uma luta de competição (IBJJF/CBJJ): defesa pessoal e a avaliação do exame. Classificação do app.</p>${s.map(x => `<h2 class="sec">${esc(x.pt || x.cat)}</h2>${itemsList(x.itens, x.cat)}`).join("") || "<p class='lead'>Esta faixa não tem defesa pessoal no programa da JJIF.</p>"}${f.ficha ? `<div class="box"><h3>Critérios de avaliação</h3><p>${esc(f.ficha.criterios)}</p></div>` : ""}`; }
   else if (t === "proib") { name = "Técnicas proibidas para esta faixa"; body = `<h1>${name}</h1>${matrizHtml(f)}`; }
   else if (t === "refs") { name = "Referências bibliográficas"; body = `<h1>${name}</h1><div class="box">${refsList(["ibjjf_grad", "jjif_grad", "cbjj_rules", "golpes", "jjif_nw", "jjau", "yt", "kodokan", "lbjj", "lbjj_site", "judocanada", "fjerj"])}</div>`; }
   else return null;
@@ -339,22 +346,31 @@ function bjjStudy(id) {
 }
 document.addEventListener("change", e => { const c = e.target.closest("[data-bjj-ok]"); if (!c) return; const id = c.closest("[data-bjj]").dataset.bjj; ST.set("jt-chk:bjj:" + id, { ok: c.checked }); });
 route(/^\/jiu-jitsu\/item\/([\w-]+)$/, m => {
-  const id = m[1]; let it = null, where = [], grp = null;
-  B.faixas.forEach(f => f.secoes.forEach(s => s.itens.forEach(i => { if (slug(i.t) === id) { it = it || i; where.push([f, s]); } })));
-  B.comp.forEach(g => { (g.itens || []).concat((g.subs || []).flatMap(s => s.itens)).forEach(i => { if (slug(i.t) === id) { it = it || i; grp = grp || g; } }); });
-  if (!it) return null; const nm = it.nm || {}; const ja = (nm.ja || "").split(" · "), rom = (ja[1] || "").split(" ")[0]; const eq = rom && T[slug(rom)] ? slug(rom) : "";
-  const vids = grp ? (grp.videos || []).filter(v => v.url && /v=/.test(v.url)).slice(0, 2).map(v => ({ id: v.url.split("v=")[1].split("&")[0], rot: v.rot })) : [];
-  return { crumbs: [["Início", "../"], ["Jiu-Jitsu", "#/jiu-jitsu"], [grp ? grp.nome : "Técnica", grp ? "#/jiu-jitsu/t/" + grp.id : ""], [nm.pt || it.t, ""]], html: `
-<div class="hero" style="--a:#7a3fa3"><h1 style="font-size:clamp(1.6rem,3.6vw,2.4rem)">${esc(it.t)}</h1>${names({ ja: ja[0], nome: ja[1] || "", en: nm.en && nm.en !== it.t ? nm.en : "", pt: nm.pt })}${nm.sj || nm.sp ? `<p class="lead" style="font-size:.85rem">Fonte do nome japonês: ${esc(nm.sj || "")}${nm.eq ? " (equivalente aproximado no Kodokan)" : ""}. Português: ${esc(nm.sp === "app" ? "sugestão do app, conferir" : nm.sp || "—")}.</p>` : ""}</div>
-<div class="box"><h3>Descrição</h3><p>A fonte (programa da JJIF) lista esta técnica pelo nome, sem texto descritivo. Use as fotos e os vídeos do grupo relacionado e peça a demonstração ao seu professor.</p></div>
+  const id = m[1]; let it = null, where = [], cat = "";
+  B.faixas.forEach(f => f.secoes.forEach(s => s.itens.forEach(i => { if (slug(i.t) === id) { it = it || i; cat = cat || s.cat; where.push([f, s]); } })));
+  let grp = null; B.comp.forEach(g => { (g.itens || []).concat((g.subs || []).flatMap(s => s.itens)).forEach(i => { if (slug(i.t) === id) { it = it || i; grp = grp || g; } }); });
+  if (!it) return null; grp = grp || (CAT_GRP[cat] ? bgrp(CAT_GRP[cat]) : null);
+  const nm = it.nm || {}; const ja = (nm.ja || "").split(" · "), rom = (ja[1] || "").split(" ")[0]; const eq = rom && T[slug(rom)] ? slug(rom) : "";
+  const vids = grp ? (grp.videos || []).filter(v => v.url && /v=/.test(v.url)).slice(0, 3).map(v => ({ id: v.url.split("v=")[1].split("&")[0], rot: v.rot })) : [];
+  const fotos = grp ? (grp.fotos || []).slice(0, 4) : []; const regra = grp ? (grp.regra || []).slice(0, 2) : [];
+  const rel = []; where.forEach(w => w[1].itens.forEach(i => { if (slug(i.t) !== id && !rel.some(r => slug(r.t) === slug(i.t))) rel.push(i); }));
+  const nome = nm.pt || it.t, a = "#7a3fa3";
+  const main = `
+<div class="hero" style="--a:${a}"><p class="kicker">${esc(grp ? grp.nome : (cat || "Jiu-Jitsu"))}</p><h1 style="font-size:clamp(1.6rem,3.6vw,2.4rem)">${esc(it.t)}</h1>${names({ ja: ja[0], nome: ja[1] || "", en: nm.en && nm.en !== it.t ? nm.en : "", pt: nm.pt })}${nm.sj || nm.sp ? `<p class="lead" style="font-size:.85rem">Fonte do nome japonês: ${esc(nm.sj || "")}${nm.eq ? " (equivalente aproximado no Kodokan)" : ""}. Português: ${esc(nm.sp === "app" ? "sugestão do app, conferir" : nm.sp || "—")}.</p>` : ""}</div>
+<div class="box"><h3>Descrição</h3><p>A fonte (programa da JJIF) lista esta técnica pelo nome, sem texto descritivo. ${grp ? "O grupo " + esc(grp.nome) + " reúne a explicação da regra, as fotos e os vídeos oficiais abaixo." : ""} Peça a demonstração ao seu professor.</p>${grp && grp.desc ? `<p class="vnote">${esc(grp.desc)}</p>` : ""}</div>
+${regra.length ? `<h2 class="sec">Na regra (IBJJF/CBJJ e JJIF)</h2>${regra.map(r => `<div class="item"><p><b>${esc(r.titulo)}</b></p><p>${esc(String(r.texto || "").slice(0, 700))}${String(r.texto || "").length > 700 ? "…" : ""}</p></div>`).join("")}<p class="vnote"><a href="#/jiu-jitsu/t/${grp.id}">Ver o texto completo da regra neste grupo</a></p>` : ""}
+${vids.length ? `<h2 class="sec">Vídeos oficiais (IBJJF Rules Tutorials)</h2><div class="cards">${vids.map(v => `<div class="box"><h3>${esc(v.rot)}</h3>${player(v.id, v.rot)}</div>`).join("")}</div>` : ""}
+${fotos.length ? `<h2 class="sec">Imagens do livro de regras</h2><div class="imgs" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">${fotos.map(f => `<figure><img loading="lazy" src="${A(f.img)}" alt="${esc(f.cap)}" data-zoom><figcaption>${esc(f.cap)} · ${esc(f.fonte)}</figcaption></figure>`).join("")}</div>` : ""}
+${rel.length ? `<h2 class="sec">Técnicas relacionadas (mesmo exame e categoria)</h2><div class="rel">${itemsList(rel.slice(0, 8), cat)}</div>` : ""}
+<div class="box"><h3>Fontes oficiais</h3><p>${["jjif_grad", "ibjjf_grad", "cbjj_rules", "yt"].map(k => L[k] ? `<a class="pill" target="_blank" rel="noopener" href="${esc(L[k].url || "#")}">${esc(L[k].titulo.slice(0, 54))}</a>` : "").join(" ")}</p></div>`;
+  const side = `
 ${where.length ? `<div class="box"><h3>Aparece nos exames</h3>${where.map(w => `<a class="pill" href="#/jiu-jitsu/faixa/${w[0].id}/s-${slug(w[1].cat)}">${esc(w[0].titulo)} · ${esc(w[1].pt || w[1].cat)}</a>`).join("")}</div>` : ""}
 ${eq ? `<div class="box"><h3>Equivalente no Judô (Kodokan)</h3>${tlink(eq)}<p class="vnote">Equivalente aproximado: confira nas fontes.</p></div>` : ""}
 ${grp ? `<div class="box"><h3>Grupo relacionado</h3><a class="pill" href="#/jiu-jitsu/t/${grp.id}">${esc(grp.nome)}</a></div>` : ""}
-${vids.length ? `<h2 class="sec">Vídeos oficiais do grupo</h2><div class="cards">${vids.map(v => `<div class="box"><h3>${esc(v.rot)}</h3>${player(v.id, v.rot)}</div>`).join("")}</div>` : ""}
 <p><a class="pill" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=${encodeURIComponent(it.t + " jiu-jitsu")}">Buscar vídeo no YouTube</a></p>
-${bjjStudy(id)}` };
+${bjjStudy(id)}`;
+  return { crumbs: [["Início", "../"], ["Jiu-Jitsu", "#/jiu-jitsu"], [grp ? grp.nome : "Técnica", grp ? "#/jiu-jitsu/t/" + grp.id : ""], [nome, ""]], html: `<div class="aula"><div class="aula-main">${main}</div><aside class="aula-panel" aria-label="Estudo e links">${side}</aside></div>` };
 });
-
 /* ---------- roteador ---------- */
 function render() {
   const r = (location.hash || "#/judo").slice(1) || "/judo"; let out = null;

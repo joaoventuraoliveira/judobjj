@@ -29,7 +29,7 @@
 <script src="assets/belts.js"></script>
 <link rel="stylesheet" href="assets/tokens.css">
 <link rel="stylesheet" href="assets/prefs.css">
-<script>try{ if(location.hash.length>1 && !/^#(\/(judo|jiu-jitsu)(\/[\w-]+)*|judo|jiu-jitsu|fontes|como)$/.test(location.hash)) location.replace('livro.html'+location.hash); }catch(e){}</script>
+<script>try{ if(location.hash.length>1 && !/^#(\/(judo|jiu-jitsu)(\/[\w-]+)*|\/sobre(\/fontes)?|judo|jiu-jitsu|fontes|como)$/.test(location.hash)) location.replace('livro.html'+location.hash); }catch(e){}</script>
 <style>
 :root{--judo:#2f64c8;--bjj:#7a3fa3;--ease:cubic-bezier(.22,1,.36,1);--ease2:cubic-bezier(.25,1.15,.4,1);--acc:var(--judo);--glow:color-mix(in srgb,var(--judo) 26%,transparent)}
 body[data-active="bjj"]{--acc:var(--bjj);--glow:color-mix(in srgb,var(--bjj) 30%,transparent)}
@@ -46,7 +46,7 @@ nav.main{display:flex;gap:6px;flex-wrap:wrap}nav.main a{padding:7px 14px;border-
 .home-view{min-height:calc(100vh - 64px);display:flex;flex-direction:column;justify-content:center;padding:clamp(20px,4vw,40px) 0 clamp(28px,5vw,56px) clamp(0px,3vw,48px)}
 .home-view h1{font:650 clamp(1.9rem,3.8vw,3rem)/1.1 var(--display);letter-spacing:-.025em;margin:0 0 clamp(20px,3.4vw,38px)}
 .stage{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:clamp(20px,3.4vw,44px);align-items:center}
-.selectors{display:flex;flex-direction:column;gap:16px}
+.selectors{display:flex;flex-direction:column;gap:clamp(16px,3vw,18px)}
 .sel{appearance:none;text-align:left;cursor:pointer;display:flex;align-items:center;gap:18px;padding:16px 20px;border-radius:20px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 78%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:.64;transform:scale(.99);transition:transform .6s var(--ease),opacity .6s var(--ease),border-color .6s var(--ease),box-shadow .6s var(--ease),background .6s var(--ease)}
 .sel:hover{opacity:.9}.sel.is-active{opacity:1;transform:translateX(10px) scale(1.01);background:var(--surface)}
 .sel[data-m="judo"].is-active{border-color:color-mix(in srgb,var(--judo) 60%,transparent);box-shadow:0 18px 40px -14px color-mix(in srgb,var(--judo) 55%,transparent)}
@@ -57,8 +57,10 @@ nav.main{display:flex;gap:6px;flex-wrap:wrap}nav.main a{padding:7px 14px;border-
 .sel b{display:block;font:650 1.5rem/1.1 var(--display);letter-spacing:-.01em}.sel small{display:block;margin-top:4px;color:var(--muted);font-size:.84rem;line-height:1.3}
 .sel .go{margin-left:auto;font-size:1.2rem;opacity:.4;transition:opacity .5s,transform .5s var(--ease)}.sel.is-active .go{opacity:.9;transform:translateX(3px)}
 .gallery{position:relative;aspect-ratio:16/10;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:#0c0d11;box-shadow:0 26px 60px -22px rgba(0,0,0,.6)}
-.gallery .sl{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:4% 4% 9%;background:linear-gradient(160deg,#171a22,#0c0d11);opacity:0;transform:scale(1.05);transition:opacity 1.1s var(--ease),transform 4s ease-out}
-.gallery .sl.on{opacity:1;transform:scale(1)}
+.gallery .sl{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 25%;background:linear-gradient(160deg,#1b2030,#0c0d11);opacity:0;transform:scale(1.06);transition:opacity 1.2s var(--ease)}
+.gallery .sl.on{opacity:1;animation:kb 9s ease-out forwards}
+@keyframes kb{from{transform:scale(1) translate(0,0)}to{transform:scale(1.07) translate(-1%,-.5%)}}
+.gpause{appearance:none;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(10,10,12,.5);color:#fff;cursor:pointer;display:grid;place-items:center;font-size:.8rem;margin-left:4px}
 .gallery::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(7,7,9,.25),transparent 28%,rgba(7,7,9,.7))}
 .hud{position:absolute;left:18px;right:18px;bottom:14px;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px;color:rgba(255,255,255,.8);font-size:.78rem;letter-spacing:.08em;font-variant-numeric:tabular-nums}
 .hud .cap{max-width:60%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0}
@@ -69,7 +71,7 @@ nav.main{display:flex;gap:6px;flex-wrap:wrap}nav.main a{padding:7px 14px;border-
 .morph{position:fixed;z-index:60;pointer-events:none;margin:0;transition:top .65s var(--ease),left .65s var(--ease),width .65s var(--ease),height .65s var(--ease),font-size .65s var(--ease)}
 /* ---- tela 2: faixas (só desenhos) + árvore ---- */
 .study-view{display:none;padding:clamp(16px,3vw,30px) 0 0 clamp(0px,3vw,48px)}
-body.in-study .home-view,body.in-study .more{display:none}body.in-study .study-view{display:block;animation:rise .55s var(--ease)}
+body.in-study .home-view{display:none}body.in-study .study-view{display:block;animation:rise .55s var(--ease)}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .stbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:18px}
 .sid{display:flex;align-items:center;gap:14px}.sid .kc{width:52px;height:52px;min-width:52px;font-size:1.05rem;cursor:pointer}.sid .kc.morphing{opacity:0}
@@ -110,8 +112,8 @@ body.in-study .home-view,body.in-study .more{display:none}body.in-study .study-v
 .ja{font-family:var(--jp);color:var(--muted);font-size:.9rem}
 .sub{margin:6px 0 16px;color:var(--muted);font-size:.92rem;max-width:70ch}
 /* ---- abaixo da dobra: o que já existia ---- */
-.more{padding-top:12px}
-.more .lead{max-width:64ch;color:var(--muted);margin:0 0 22px}
+.about-view{display:none;padding:clamp(16px,3vw,30px) 0 0 clamp(0px,3vw,48px)}.about-view .lead{max-width:64ch;color:var(--muted);margin:0 0 22px}.abt{font:650 clamp(1.5rem,3vw,2.2rem)/1.1 var(--display);letter-spacing:-.02em;margin:0}
+body.in-about .home-view,body.in-about .study-view{display:none}body.in-about .about-view{display:block;animation:rise .55s var(--ease)}.about-view .opt{display:block!important;margin-bottom:20px}
 .panels{margin-top:10px}.opt{display:none;border-radius:var(--r-m);border:1px solid var(--line);padding:clamp(22px,3.5vw,38px);position:relative;overflow:hidden;animation:rise .6s var(--ease)}
 .opt.on{display:block}
 .opt.judo{background:linear-gradient(135deg,color-mix(in srgb,var(--judo) 24%,var(--surface)),var(--surface) 60%)}.opt.bjj{background:linear-gradient(135deg,color-mix(in srgb,var(--bjj) 26%,var(--surface)),var(--surface) 60%)}
@@ -154,7 +156,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--line);padding:22px
   .prefs-bar{margin-left:0;width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.prefs-bar::-webkit-scrollbar{display:none}.prefs-bar>*{flex:0 0 auto}
   .wrap{padding-bottom:96px}
   .home-view{min-height:0;justify-content:flex-start;padding-top:18px}.home-view h1{font-size:1.75rem;margin-bottom:18px}
-  .sel{padding:14px 16px;gap:14px}.kc{width:54px;height:54px;min-width:54px;font-size:1.05rem}.sel b{font-size:1.3rem}
+  .selectors{gap:24px}.sel{padding:16px 18px;gap:14px;min-height:88px}.kc{width:54px;height:54px;min-width:54px;font-size:1.05rem}.sel b{font-size:1.3rem}
   .gallery{aspect-ratio:4/3;border-radius:20px}.hud{left:14px;right:14px;gap:8px}.hud .cap{display:none}.dots{margin-right:auto}#gNum{white-space:nowrap}
   .stbar{gap:10px;padding-bottom:14px;margin-bottom:12px}.sid .kc{width:46px;height:46px;min-width:46px}
   .tact{width:100%;justify-content:space-between;gap:8px}.lsw button{padding:6px 12px}.pbtn{padding:7px 12px;font-size:.8rem}#stExp{display:none}
@@ -163,7 +165,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--line);padding:22px
 }
 html.lay-mobile[data-layout="mobile"] .fnav,html.lay-mobile[data-layout="mobile"] .drawer{left:max(16px,calc(50% - 204px))}
 html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px))}
-@media (prefers-reduced-motion:reduce){.sel,.gallery .sl,.opt,.nc,.cp,.study-view,.morph,.bb{transition:none!important;animation:none!important}.nc{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.sel,.opt,.nc,.cp,.study-view,.about-view,.morph,.bb{transition:none!important;animation:none!important}.nc{opacity:1;transform:none}.gallery .sl,.gallery .sl.on{animation:none!important;transform:none!important;transition:opacity 1s linear!important}}
 </style>
 </head>
 <body data-active="judo">
@@ -186,7 +188,7 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
 
 <header class="top">
   <a class="logo" href="./">Judô &amp; Jiu-Jitsu<span lang="ja">柔道 · 柔術</span></a>
-  <nav class="main" aria-label="Principal"><a href="#/judo">Judô</a><a href="#/jiu-jitsu">Jiu-Jitsu</a><a href="#fontes">Fontes</a><a href="livro.html#transparencia">Uso de IA</a></nav>
+  <nav class="main" aria-label="Principal"><a href="#/judo">Judô</a><a href="#/jiu-jitsu">Jiu-Jitsu</a><a href="#/sobre">Sobre</a><a href="#/sobre/fontes">Fontes</a><a href="livro.html#transparencia">Uso de IA</a></nav>
   <div class="prefs-bar" data-prefs></div>
 </header>
 
@@ -203,7 +205,7 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
 {{SLIDES}}
         <button type="button" class="gbtn prev" id="gPrev" aria-label="Imagem anterior">‹</button>
         <button type="button" class="gbtn next" id="gNext" aria-label="Próxima imagem">›</button>
-        <div class="hud"><span class="cap" id="gCap" aria-live="polite"></span><span class="dots" id="gDots" aria-hidden="true"></span><span id="gNum">01 / 10</span></div>
+        <div class="hud"><span class="cap" id="gCap" aria-live="polite"></span><span class="dots" id="gDots" aria-hidden="true"></span><span id="gNum">01 / 10</span><button type="button" class="gpause" id="gPause" aria-label="Pausar a apresentação de imagens" aria-pressed="false"><span aria-hidden="true">❚❚</span></button></div>
       </div>
     </section>
   </main>
@@ -222,8 +224,9 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
     <div class="rev" id="rev"><nav class="crumb" id="crumb" aria-label="Trilha de navegação"></nav><div class="bstage" id="bstage"></div></div>
   </section>
 
-  <!-- abaixo da dobra: o que já existia -->
-  <div class="more" id="more">
+  <!-- Sobre: explicações gerais do portal (antes ficavam abaixo da tela inicial) -->
+  <section class="about-view" id="aboutView" aria-labelledby="h-sobre">
+    <div class="stbar"><div class="sid"><h1 id="h-sobre" class="abt">Sobre o portal</h1></div><div class="tact"><button type="button" class="pbtn" id="abHome">← Início</button></div></div>
     <p class="lead">Escolha a modalidade. Em cada uma há o programa de cada exame, ilustrações, vídeos oficiais, nomes em japonês, inglês e português, e a fonte de cada informação.</p>
     <div class="panels">
       <article class="opt judo on" id="judo" aria-labelledby="h-judo">
@@ -281,12 +284,12 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
       <ol class="refs">{{REFS}}</ol>
       <p class="card" style="margin-top:16px"><b>Aviso.</b> Material de estudo independente, sem vínculo com as entidades citadas. Trechos de documentos oficiais aparecem em miniatura, sempre com a fonte, para estudo. Os regulamentos mudam: confira a versão vigente com a sua federação ou professor. Nomes em português marcados como “app” são sugestões, sem fonte oficial. As traduções PT/EN foram geradas com tradução automática e correções manuais.</p>
     </section>
-  </div>
+  </section>
 </div>
 <footer>Texto, ilustrações e site gerados com apoio de IA (Claude, Anthropic). <a href="livro.html#transparencia">Transparência sobre o uso de IA</a> · <a href="https://github.com/joaoventuraoliveira/judobjj">Código no GitHub</a></footer>
 
 <!-- textos usados pelo script (ficam aqui para o tradutor PT/EN os encontrar) -->
-<div hidden aria-hidden="true" id="ui"><span data-k="top1">tópico</span><span data-k="topn">tópicos</span><span data-k="item1">item</span><span data-k="itemn">itens</span><span data-k="back">Nível anterior</span><span data-k="open">Abrir esta seção no explorador</span><span data-k="openx">Abrir o exame no explorador</span><span data-k="faixa">Faixa</span><span data-k="grp-Faixas">Faixas</span><span data-k="grp-Infantil">Infantil</span><span data-k="grp-Graus superiores">Graus superiores</span><span data-k="pick">Escolha uma faixa para ver o que é cobrado.</span><span data-k="expJudo">Abrir no explorador →</span></div>
+<div hidden aria-hidden="true" id="ui"><span data-k="top1">tópico</span><span data-k="topn">tópicos</span><span data-k="item1">item</span><span data-k="itemn">itens</span><span data-k="back">Nível anterior</span><span data-k="open">Abrir esta seção no explorador</span><span data-k="openx">Abrir o exame no explorador</span><span data-k="faixa">Faixa</span><span data-k="grp-Faixas">Faixas</span><span data-k="grp-Infantil">Infantil</span><span data-k="grp-Graus superiores">Graus superiores</span><span data-k="pick">Escolha uma faixa para ver o que é cobrado.</span><span data-k="expJudo">Abrir no explorador →</span><span data-k="pauseL">Pausar a apresentação de imagens</span><span data-k="playL">Retomar a apresentação de imagens</span></div>
 <script type="application/json" id="tree">{{TREE}}</script>
 <script>
 (function(){
@@ -301,7 +304,9 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
   function paint(){var l=slides[cur];$$('.sl').forEach(function(s){s.classList.remove('on')});var s=l[idx];load(s);load(l[(idx+1)%l.length]);s.classList.add('on');$('#gNum').textContent=String(idx+1).padStart(2,'0')+' / '+String(l.length).padStart(2,'0');$('#gCap').textContent=s.getAttribute('alt')||'';$$('.dot').forEach(function(d,i){d.classList.toggle('on',i===idx)})}
   function dots(){var h='';for(var i=0;i<slides[cur].length;i++)h+='<span class="dot"></span>';$('#gDots').innerHTML=h}
   function step(n){var L=slides[cur].length;idx=(idx+n+L)%L;paint()}
-  function run(){clearInterval(timer);if(reduce)return;timer=setInterval(function(){if(!document.hidden&&!body.classList.contains('in-study'))step(1)},3600)}
+  var paused=false;function run(){clearInterval(timer);timer=setInterval(function(){if(!paused&&!document.hidden&&!body.classList.contains('in-study')&&!body.classList.contains('in-about'))step(1)},reduce?5200:4200)}
+  $('#gPause').addEventListener('click',function(){paused=!paused;this.setAttribute('aria-pressed',String(paused));this.setAttribute('aria-label',UI(paused?'playL':'pauseL'));this.firstChild.textContent=paused?'▶':'❚❚'});
+  var tx=0;$('#gal').addEventListener('touchstart',function(e){tx=e.touches[0].clientX},{passive:true});$('#gal').addEventListener('touchend',function(e){var d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>40){step(d<0?1:-1);run()}},{passive:true});$('#gal').addEventListener('focusin',function(){clearInterval(timer)});$('#gal').addEventListener('focusout',run);
   function setM(m){if(m===cur)return;cur=m;idx=0;body.setAttribute('data-active',m);sels.forEach(function(b){var on=b.dataset.m===m;b.classList.toggle('is-active',on);b.setAttribute('aria-pressed',String(on))});panels.judo.classList.toggle('on',m==='judo');panels.bjj.classList.toggle('on',m==='bjj');dots();paint();run()}
   sels.forEach(function(b){
     b.addEventListener('mouseenter',function(){if(matchMedia('(hover:hover)').matches)setM(b.dataset.m)});
@@ -383,8 +388,12 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
     fromHome=!!morph;var hs='#/'+hashRoute[m]+(b?'/'+b+(h?'/'+h:''):'');
     if(location.hash===hs)apply();else location.hash=hs;
   }
+  function parseAbout(){var m=location.hash.match(/^#\/sobre(?:\/(fontes))?$/);return m?{f:m[1]||''}:null}
   function parse(){var m=location.hash.match(/^#\/(judo|jiu-jitsu)(?:\/([\w-]+))?(?:\/([\w-]+))?$/);return m?{mod:m[1]==='judo'?'judo':'bjj',b:m[2]||null,h:m[3]||null}:null}
   function apply(){
+    var ab=parseAbout();
+    if(ab){body.classList.remove('in-study');body.classList.add('in-about');document.title='Sobre · Judô e Jiu-Jitsu';if(ab.f){var fe=document.getElementById('fontes');if(fe)setTimeout(function(){fe.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'})},60)}else window.scrollTo(0,0);return}
+    if(body.classList.contains('in-about')){body.classList.remove('in-about');document.title='Judô e Jiu-Jitsu: exames de faixa'}
     var r=parse();
     if(!r){if(body.classList.contains('in-study'))leave(false);return}
     var entering=!body.classList.contains('in-study');
@@ -413,6 +422,7 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
     window.scrollTo(0,0);run();
   }
   $('#stHome').addEventListener('click',function(){leave(true)});
+  $('#abHome').addEventListener('click',function(){history.pushState('',document.title,location.pathname+location.search);apply()});
   $('#stKc').addEventListener('click',function(){leave(true)});
   $('#stKc').addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();leave(true)}});
   $('#vLine').addEventListener('click',function(){setLayout('line')});$('#vList').addEventListener('click',function(){setLayout('list')});
