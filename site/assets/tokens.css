@@ -18,6 +18,6 @@
 }
 :root[data-theme="light"]{
   --bg:#f6f5f1;--surface:#ffffff;--surface-2:#eeede8;--line:rgba(10,10,11,.12);--line-strong:rgba(10,10,11,.24);
-  --ink:#0e0e10;--muted:#555560;--accent:#8a6d1e;--accent-ink:#ffffff;--danger:#a31f27;
+  --ink:#0e0e10;--muted:#555560;--accent:#6f5614;--accent-ink:#ffffff;--danger:#a31f27;
 }
 @media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}

@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <script src="../assets/prefs.js"></script>
 <script src="../assets/belts.js"></script>
+<script src="../assets/a11y.js"></script>
 <link rel="stylesheet" href="../assets/prefs.css">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' file:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: file:; connect-src 'self'; base-uri 'none'; form-action 'none'">
 <meta property="og:type" content="website"><meta property="og:title" content="App faixa a faixa: Judô e Jiu-Jitsu"><meta property="og:description" content="Progresso, ficha de exame editável e idioma PT/EN."><meta property="og:url" content="https://joaoventuraoliveira.github.io/judobjj/app/"><meta property="og:image" content="https://joaoventuraoliveira.github.io/judobjj/assets/og/portal.jpg?v=1"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
@@ -247,7 +248,9 @@ main{padding:6px clamp(16px,4vw,48px) 72px;max-width:1320px;margin:0 auto}
 .hero .belts .lbl,.hero .belts small{color:rgba(255,255,255,.78)}
 .hero .arrow{color:#fff}
 .hero .facts{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.18)}
-.hero .facts dd{font-size:.95rem;font-weight:600}\n.rails .ladder{padding-left:calc(clamp(16px,4vw,48px) + 18px)}\n.hero .facts div{background:rgba(8,10,14,.55);color:#fff}
+.hero .facts dd{font-size:.95rem;font-weight:600}
+.rails .ladder{padding-left:calc(clamp(16px,4vw,48px) + 18px)}
+.hero .facts div{background:rgba(8,10,14,.55);color:#fff}
 .hero .facts dt{color:rgba(255,255,255,.72)}
 .sec,.blk,.comp-list,.refs{border-radius:16px}
 .sec{border-color:var(--line);background:var(--panel)}
@@ -283,6 +286,9 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
 @media (prefers-reduced-motion:reduce){.ladder button,.tabs button,.chip,.thumbs button{transition:none}}
 @media (max-width:900px){html:not(.lay-desktop) .prefs-bar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}html:not(.lay-desktop) .prefs-bar::-webkit-scrollbar{display:none}html:not(.lay-desktop) .prefs-bar>*{flex:0 0 auto}}html.lay-mobile .prefs-bar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}html.lay-mobile .prefs-bar::-webkit-scrollbar{display:none}html.lay-mobile .prefs-bar>*{flex:0 0 auto}
+
+/* tema claro: o hero termina em branco e o texto é branco; gradiente escuro garante contraste >= 4.5:1 */
+:root[data-theme="light"] .hero{background:linear-gradient(120deg,color-mix(in srgb,var(--a) 72%,#000) 0%,color-mix(in srgb,var(--a) 48%,#1a1a1a) 100%)}
 </style></head>
 <body>
 <a class="skip" href="#main">Pular para o conteúdo</a>
@@ -301,7 +307,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
   <main id="main" tabindex="-1"></main>
 </div>
 <button class="theme" id="theme" aria-label="Alternar tema claro e escuro">Tema</button>
-<dialog id="dlg"><img id="dimg" alt=""><form method="dialog"><span id="dcap"></span><button>Fechar</button></form></dialog>
+<dialog id="dlg" aria-label="Trecho do documento oficial ampliado"><img id="dimg" alt="Trecho do documento oficial, ampliado"><form method="dialog"><span id="dcap"></span><button>Fechar</button></form></dialog>
 <style>
 .fx{--fxc:#2468B3;margin:0 0 6px}
 .fx-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin:0 0 12px}
@@ -588,7 +594,7 @@ function renderMain(){
   document.title = t.titulo+" — Faixa a faixa";
 }
 document.addEventListener("click",e=>{
-  const th = e.target.closest("[data-img]"); if(th){ $("#dimg").src=thumbUrl(th.dataset.img); $("#dcap").textContent=th.dataset.cap||""; $("#dlg").showModal(); return }
+  const th = e.target.closest("[data-img]"); if(th){ $("#dimg").src=thumbUrl(th.dataset.img);$("#dimg").alt=th.getAttribute("aria-label")||th.title||"Trecho do documento oficial, ampliado"; $("#dcap").textContent=th.dataset.cap||""; $("#dlg").showModal(); return }
   const s2 = e.target.closest("[data-sub2]"); if(s2){ sub2=+s2.dataset.sub2; renderMain(); return }
   const sb = e.target.closest("[data-sub]"); if(sb){ sub=+sb.dataset.sub; sub2=0; renderMain(); return }
   const tb = e.target.closest("[data-tab]"); if(tb){ tab=+tb.dataset.tab; sub=0; sub2=0; renderMain(); return }
