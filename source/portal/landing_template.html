@@ -27,6 +27,7 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <script src="assets/prefs.js"></script>
 <script src="assets/belts.js"></script>
+<script src="assets/a11y.js"></script>
 <link rel="stylesheet" href="assets/tokens.css">
 <link rel="stylesheet" href="assets/prefs.css">
 <script>try{ if(location.hash.length>1 && !/^#(\/(judo|jiu-jitsu)(\/[\w-]+)*|\/sobre(\/(fontes|creditos))?|judo|jiu-jitsu|fontes|como)$/.test(location.hash)) location.replace('livro.html'+location.hash); }catch(e){}</script>
@@ -74,7 +75,7 @@ body.in-study .home-view{display:none}body.in-study .study-view{display:block;an
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .stbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:18px}
 .sid{display:flex;align-items:center;gap:14px}.sid .kc{width:52px;height:52px;min-width:52px;font-size:1.05rem;cursor:pointer}.sid .kc.morphing{opacity:0}
-.sid h2{font:650 clamp(1.4rem,2.6vw,2rem)/1.1 var(--display);letter-spacing:-.02em;margin:0}
+.sid h1,.sid h2{font:650 clamp(1.4rem,2.6vw,2rem)/1.1 var(--display);letter-spacing:-.02em;margin:0}
 .tact{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .lsw{display:inline-flex;gap:2px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px}
 .lsw button{appearance:none;border:0;background:transparent;color:var(--muted);padding:6px 14px;border-radius:999px;font-size:.8rem;font-weight:600;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
@@ -98,7 +99,7 @@ body.in-study .home-view{display:none}body.in-study .study-view{display:block;an
 .csep{color:var(--muted);opacity:.6;user-select:none}@keyframes cin{from{opacity:0;transform:translateX(14px) scale(.95)}to{opacity:1;transform:none}}
 .bstage{transition:opacity .3s var(--ease),transform .3s var(--ease)}.bstage.out{opacity:0;transform:translateX(22px)}
 .bh{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:16px}
-.bt{display:flex;align-items:center;gap:12px}.bt h3{margin:0;font:650 1.3rem/1.2 var(--display)}.bt small{display:block;color:var(--muted);font:400 .85rem var(--body)}
+.bt{display:flex;align-items:center;gap:12px}.bt h2{margin:0;font:650 1.3rem/1.2 var(--display)}.bt small{display:block;color:var(--muted);font:400 .85rem var(--body)}
 .bcount{font-size:.76rem;color:var(--muted);background:var(--surface-2);padding:4px 12px;border-radius:999px;white-space:nowrap}
 .ngrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
 .nc{appearance:none;text-align:left;text-decoration:none;color:var(--ink);background:color-mix(in srgb,var(--surface) 86%,transparent);border:1px solid var(--line);border-radius:18px;padding:18px 20px;display:flex;flex-direction:column;gap:8px;cursor:pointer;min-height:120px;opacity:0;transform:translateY(14px);animation:nin .48s var(--ease) forwards;transition:transform .4s var(--ease),border-color .3s,box-shadow .4s var(--ease)}
@@ -107,7 +108,7 @@ body.in-study .home-view{display:none}body.in-study .study-view{display:block;an
 .nc .top2{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .nc .ic{display:inline-grid;place-items:center;min-width:40px;height:40px;padding:0 6px;border-radius:50%;background:color-mix(in srgb,var(--acc) 14%,var(--surface-2));border:1px solid color-mix(in srgb,var(--acc) 35%,var(--line));font:600 .95rem var(--jp)}
 .nc .arr{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);color:var(--muted);transition:transform .35s var(--ease),background .3s,color .3s}.nc:hover .arr{transform:translateX(3px);background:var(--ink);color:var(--bg)}
-.nc h4{margin:0;font:650 1.02rem/1.3 var(--display)}.nc p{margin:0;color:var(--muted);font-size:.85rem;line-height:1.45}.nc .nn{margin-top:auto;font-size:.78rem;font-weight:700;color:var(--accent)}
+.nc h3{margin:0;font:650 1.02rem/1.3 var(--display)}.nc p{margin:0;color:var(--muted);font-size:.85rem;line-height:1.45}.nc .nn{margin-top:auto;font-size:.78rem;font-weight:700;color:var(--accent)}
 .ja{font-family:var(--jp);color:var(--muted);font-size:.9rem}
 .sub{margin:6px 0 16px;color:var(--muted);font-size:.92rem;max-width:70ch}
 /* ---- abaixo da dobra: o que já existia ---- */
@@ -215,14 +216,14 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
   <!-- tela 2: faixas (só desenhos) e árvore até o conteúdo -->
   <section class="study-view" id="studyView" aria-label="Faixas e conteúdos">
     <div class="stbar">
-      <div class="sid"><div class="kc t-judo" id="stKc" role="button" tabindex="0" aria-label="Voltar à seleção inicial" title="Voltar à seleção inicial" lang="ja">柔道</div><h2 id="stTitle">Judô</h2></div>
+      <div class="sid"><div class="kc t-judo" id="stKc" role="button" tabindex="0" aria-label="Voltar à seleção inicial" title="Voltar à seleção inicial" lang="ja">柔道</div><h1 id="stTitle">Judô</h1></div>
       <div class="tact">
         <div class="lsw" role="group" aria-label="Visualização das faixas"><button type="button" id="vLine" aria-pressed="true">Em linha</button><button type="button" id="vList" aria-pressed="false">Em lista</button></div>
         <a class="pbtn go" id="stExp" href="explorar/">Abrir no explorador →</a>
         <button type="button" class="pbtn" id="stHome">← Início</button>
       </div>
     </div>
-    <div class="strip" id="strip" role="listbox" aria-label="Seleção de graduação"></div>
+    <div class="strip" id="strip" role="group" aria-label="Seleção de graduação"></div>
     <div class="rev" id="rev"><nav class="crumb" id="crumb" aria-label="Trilha de navegação"></nav><div class="bstage" id="bstage"></div></div>
   </section>
 
@@ -342,13 +343,13 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
     strip.innerHTML='';var last='';
     belts().forEach(function(f){
       if(f.g!==last){var s=document.createElement('span');s.className='gsep';s.setAttribute('role','presentation');s.innerHTML='<span>'+esc(UI('grp-'+f.g))+'</span>';strip.appendChild(s);last=f.g}
-      var b=document.createElement('button');b.type='button';b.className='bb';b.dataset.id=f.id;b.setAttribute('role','option');b.setAttribute('aria-selected','false');
+      var b=document.createElement('button');b.type='button';b.className='bb';b.dataset.id=f.id;b.setAttribute('aria-pressed','false');
       var bl=(window.JTBelts?JTBelts.label(f.c):UI('faixa')),lb=bl;b.title=bl;b.innerHTML=beltSvg(f.c)+'<span class="sr">'+esc(bl)+': <span>'+esc(f.t)+'</span>'+(f.s?', <span>'+esc(f.s)+'</span>':'')+'</span>'+(f.g==='Graus superiores'?'<span class="bcap" aria-hidden="true">'+esc(f.t.replace(/\s*\(.*\)/,''))+'</span>':'');if(f.g==='Graus superiores')b.classList.add('has-cap');
       b.addEventListener('click',function(){if(dragged)return;go(mod,f.id,null)});strip.appendChild(b);
     });
     markStrip();
   }
-  function markStrip(){strip.classList.toggle('sel-on',!!beltId);$$('.bb',strip).forEach(function(b){var on=b.dataset.id===beltId;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on))})}
+  function markStrip(){strip.classList.toggle('sel-on',!!beltId);$$('.bb',strip).forEach(function(b){var on=b.dataset.id===beltId;b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on))})}
   function node(){return path[path.length-1]}
   function renderCrumb(){
     crumb.innerHTML='';
@@ -364,15 +365,15 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
   function renderStage(){
     var f=path[0],n=node(),h='';
     if(path.length===1){
-      h='<div class="bh"><div class="bt">'+beltSvg(f.c,'md')+'<div><h3><span class="sr">'+esc((window.JTBelts?JTBelts.label(f.c):UI('faixa'))+': ')+'</span>'+esc(f.t)+'</h3>'+(f.s?'<small>'+esc(f.s)+'</small>':'')+'</div></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="bcount">'+f.cards.length+' '+UI(f.cards.length===1?'top1':'topn')+'</span><a class="pbtn go" href="'+esc(f.href)+'">'+esc(UI('openx'))+' →</a></div></div><div class="ngrid">';
+      h='<div class="bh"><div class="bt">'+beltSvg(f.c,'md')+'<div><h2><span class="sr">'+esc((window.JTBelts?JTBelts.label(f.c):UI('faixa'))+': ')+'</span>'+esc(f.t)+'</h2>'+(f.s?'<small>'+esc(f.s)+'</small>':'')+'</div></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="bcount">'+f.cards.length+' '+UI(f.cards.length===1?'top1':'topn')+'</span><a class="pbtn go" href="'+esc(f.href)+'">'+esc(UI('openx'))+' →</a></div></div><div class="ngrid">';
       f.cards.forEach(function(c,i){
         var tag=c.items&&c.items.length?'button':'a',at=tag==='a'?' href="'+esc(f.base+c.h)+'"':' type="button" data-h="'+esc(c.h)+'"';
-        h+='<'+tag+' class="nc"'+at+' style="animation-delay:'+(i*45)+'ms"><div class="top2"><span class="ic" aria-hidden="true" lang="ja">'+(c.ic?esc(c.ic):'·')+'</span><span class="arr">'+ARR+'</span></div><h4>'+esc(c.t)+'</h4><p>'+esc(c.p)+'</p>'+(c.n?'<span class="nn">'+esc(c.n)+'</span>':'')+'</'+tag+'>';
+        h+='<'+tag+' class="nc"'+at+' style="animation-delay:'+(i*45)+'ms"><div class="top2"><span class="ic" aria-hidden="true" lang="ja">'+(c.ic?esc(c.ic):'·')+'</span><span class="arr">'+ARR+'</span></div><h3>'+esc(c.t)+'</h3><p>'+esc(c.p)+'</p>'+(c.n?'<span class="nn">'+esc(c.n)+'</span>':'')+'</'+tag+'>';
       });
       h+='</div>';
     }else{
-      h='<div class="bh"><div class="bt">'+beltSvg(f.c,'md')+'<div><h3>'+esc(n.t)+'</h3><small>'+esc(f.t)+'</small></div></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="bcount">'+n.items.length+' '+UI(n.items.length===1?'item1':'itemn')+'</span><a class="pbtn go" href="'+esc(f.base+n.h)+'">'+esc(UI('open'))+' →</a><button type="button" class="pbtn" data-back="1">← '+esc(UI('back'))+'</button></div></div><div class="ngrid">';
-      n.items.forEach(function(it,i){h+='<a class="nc" href="'+esc(it.href)+'" style="animation-delay:'+Math.min(i,24)*30+'ms"><div class="top2"><span class="ja" lang="ja">'+esc(it.ja)+'</span><span class="arr">'+ARR+'</span></div><h4>'+esc(it.n)+'</h4>'+(it.s&&it.s!==it.n?'<p>'+esc(it.s)+'</p>':'')+'</a>'});
+      h='<div class="bh"><div class="bt">'+beltSvg(f.c,'md')+'<div><h2>'+esc(n.t)+'</h2><small>'+esc(f.t)+'</small></div></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="bcount">'+n.items.length+' '+UI(n.items.length===1?'item1':'itemn')+'</span><a class="pbtn go" href="'+esc(f.base+n.h)+'">'+esc(UI('open'))+' →</a><button type="button" class="pbtn" data-back="1">← '+esc(UI('back'))+'</button></div></div><div class="ngrid">';
+      n.items.forEach(function(it,i){h+='<a class="nc" href="'+esc(it.href)+'" style="animation-delay:'+Math.min(i,24)*30+'ms"><div class="top2"><span class="ja" lang="ja">'+esc(it.ja)+'</span><span class="arr">'+ARR+'</span></div><h3>'+esc(it.n)+'</h3>'+(it.s&&it.s!==it.n?'<p>'+esc(it.s)+'</p>':'')+'</a>'});
       h+='</div>';
     }
     stage.innerHTML=h;

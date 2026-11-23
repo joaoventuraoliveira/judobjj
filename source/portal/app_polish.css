@@ -13,3 +13,6 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
 @media (prefers-reduced-motion:reduce){.ladder button,.tabs button,.chip,.thumbs button{transition:none}}
 @media (max-width:900px){.prefs-bar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.prefs-bar::-webkit-scrollbar{display:none}.prefs-bar>*{flex:0 0 auto}}
+
+/* tema claro: o hero termina em branco e o texto é branco; gradiente escuro garante contraste >= 4.5:1 */
+:root[data-theme="light"] .hero{background:linear-gradient(120deg,color-mix(in srgb,var(--a) 72%,#000) 0%,color-mix(in srgb,var(--a) 48%,#1a1a1a) 100%)}

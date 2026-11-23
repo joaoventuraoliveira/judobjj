@@ -18,3 +18,8 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 @media (prefers-reduced-motion:reduce){.btn,.fig,.slide figure,.toc a{transition:none}}
 
 @media (max-width:640px){nav.portal{display:flex;flex-wrap:nowrap;overflow-x:auto;max-width:100%;min-width:0;scrollbar-width:none}nav.portal a{flex:0 0 auto}nav.portal::-webkit-scrollbar{display:none}.top{flex-wrap:wrap}}
+
+/* acessibilidade (WCAG 2.2) */
+html[data-theme="dark"] .eyebrow{color:#ff7a8d}
+@media (prefers-color-scheme:dark){html[data-theme="auto"] .eyebrow{color:#ff7a8d}}
+.search input:focus,.search input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}

@@ -27,7 +27,7 @@ function belt(c, label) {
 
 /* ---------- utilidades de interface ---------- */
 const crumbs = list => `<nav class="crumbs" aria-label="Você está em">${list.map((x, i) => i === list.length - 1 ? `<span aria-current="page">${esc(x[0])}</span>` : `<span><a href="${x[1]}">${esc(x[0])}</a></span>`).join("")}</nav>`;
-const names = o => `<div class="names">${o.ja ? `<div class="jp" lang="ja">${esc(o.ja)}</div>` : ""}<div class="ro">${esc(o.nome || o.ro || "")}</div>${o.en ? `<div class="tr">${esc(o.en)} <em>(inglês, Kodokan)</em></div>` : ""}${o.pt ? `<div class="tr">${esc(o.pt)} <em>(português, sugestão do app)</em></div>` : ""}</div>`;
+const names = (o, h1) => `<div class="names">${o.ja ? `<div class="jp" lang="ja">${esc(o.ja)}</div>` : ""}<${h1 ? "h1" : "div"} class="ro">${esc(o.nome || o.ro || "")}</${h1 ? "h1" : "div"}>${o.en ? `<div class="tr">${esc(o.en)} <em>(inglês, Kodokan)</em></div>` : ""}${o.pt ? `<div class="tr">${esc(o.pt)} <em>(português, sugestão do app)</em></div>` : ""}</div>`;
 function player(id, title) {
   return `<div class="player" data-yt="${esc(id)}"><img src="${yt(id)}" alt="Prévia do vídeo: ${esc(title)}" loading="lazy"><button type="button" data-play="${esc(id)}" aria-label="Assistir aqui: ${esc(title)}"><span aria-hidden="true">▶</span></button></div>`;
 }
@@ -194,7 +194,7 @@ route(/^\/judo\/tecnica\/([\w-]+)$/, m => {
   return { crumbs: [["Início", "../"], ["Judô", "#/judo"], [t.tipo === "nage" ? "Projeções" : "Solo", "#/judo/t/" + (t.tipo === "nage" ? "nage" : "katame")], [t.nome, ""]], html: `
 <div class="aula" data-tec="${t.id}">
  <section class="aula-main">
-  <p class="kicker">${esc(t.grupo)}</p>${names(t)}
+  <p class="kicker">${esc(t.grupo)}</p>${names(t, true)}
   <div class="player-wrap" id="pw">${player(t.yt, t.nome)}</div>
   <p class="vnote">Kodokan × IJF Academy, “100 Techniques”. Toca aqui, sem sair da página (modo de privacidade do YouTube).</p>
   <ul class="facts"><li><b>Tipo</b>${t.tipo === "nage" ? "Nage-waza (projeção)" : "Katame-waza (solo)"}</li>${f ? `<li><b>Classe</b>${esc(f.classe)}</li><li><b>Grupo / faixa (Gokyo)</b>${esc(f.faixa)}</li>` : ""}${where.length ? `<li><b>Entra no exame</b>${where.map(w => esc(w.titulo)).join("; ")}</li>` : ""}</ul>
@@ -357,7 +357,7 @@ route(/^\/jiu-jitsu\/item\/([\w-]+)$/, m => {
   const nome = nm.pt || it.t, a = "#7a3fa3";
   const main = `
 <div class="hero" style="--a:${a}"><p class="kicker">${esc(grp ? grp.nome : (cat || "Jiu-Jitsu"))}</p><h1 style="font-size:clamp(1.6rem,3.6vw,2.4rem)">${esc(it.t)}</h1>${names({ ja: ja[0], nome: ja[1] || "", en: nm.en && nm.en !== it.t ? nm.en : "", pt: nm.pt })}${nm.sj || nm.sp ? `<p class="lead" style="font-size:.85rem">Fonte do nome japonês: ${esc(nm.sj || "")}${nm.eq ? " (equivalente aproximado no Kodokan)" : ""}. Português: ${esc(nm.sp === "app" ? "sugestão do app, conferir" : nm.sp || "—")}.</p>` : ""}</div>
-<div class="box"><h3>Descrição</h3><p>A fonte (programa da JJIF) lista esta técnica pelo nome, sem texto descritivo. ${grp ? "O grupo " + esc(grp.nome) + " reúne a explicação da regra, as fotos e os vídeos oficiais abaixo." : ""} Peça a demonstração ao seu professor.</p>${grp && grp.desc ? `<p class="vnote">${esc(grp.desc)}</p>` : ""}</div>
+<div class="box"><h2>Descrição</h2><p>A fonte (programa da JJIF) lista esta técnica pelo nome, sem texto descritivo. ${grp ? "O grupo " + esc(grp.nome) + " reúne a explicação da regra, as fotos e os vídeos oficiais abaixo." : ""} Peça a demonstração ao seu professor.</p>${grp && grp.desc ? `<p class="vnote">${esc(grp.desc)}</p>` : ""}</div>
 ${regra.length ? `<h2 class="sec">Na regra (IBJJF/CBJJ e JJIF)</h2>${regra.map(r => `<div class="item"><p><b>${esc(r.titulo)}</b></p><p>${esc(String(r.texto || "").slice(0, 700))}${String(r.texto || "").length > 700 ? "…" : ""}</p></div>`).join("")}<p class="vnote"><a href="#/jiu-jitsu/t/${grp.id}">Ver o texto completo da regra neste grupo</a></p>` : ""}
 ${vids.length ? `<h2 class="sec">Vídeos oficiais (IBJJF Rules Tutorials)</h2><div class="cards">${vids.map(v => `<div class="box"><h3>${esc(v.rot)}</h3>${player(v.id, v.rot)}</div>`).join("")}</div>` : ""}
 ${fotos.length ? `<h2 class="sec">Imagens do livro de regras</h2><div class="imgs" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">${fotos.map(f => `<figure><img loading="lazy" src="${A(f.img)}" alt="${esc(f.cap)}" data-zoom><figcaption>${esc(f.cap)} · ${esc(f.fonte)}</figcaption></figure>`).join("")}</div>` : ""}
@@ -384,8 +384,8 @@ function render() {
 window.addEventListener("hashchange", render);
 document.addEventListener("click", e => {
   if (e.target.closest("[data-back]")) { e.preventDefault(); history.back(); return; }
-  const p = e.target.closest("[data-play]"); if (p) { const w = p.parentElement; w.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(p.dataset.play)}?autoplay=1&rel=0&modestbranding=1" title="Vídeo" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`; return; }
-  const z = e.target.closest("[data-zoom]"); if (z) { $("#dimg").src = z.src; $("#dcap").textContent = z.alt || ""; $("#dlg").showModal(); }
+  const p = e.target.closest("[data-play]"); if (p) { const w = p.parentElement; const rot = (p.getAttribute("aria-label") || "").replace(/^Assistir aqui:\s*/, ""); w.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(p.dataset.play)}?autoplay=1&rel=0&modestbranding=1" title="${esc("Vídeo: " + (rot || "técnica"))} (player do YouTube)" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`; const fr = w.querySelector("iframe"); if (fr) fr.focus(); return; }
+  const z = e.target.closest("[data-zoom]"); if (z) { $("#dimg").src = z.src; $("#dimg").alt = z.alt || "Imagem ampliada"; $("#dcap").textContent = z.alt || ""; $("#dlg").showModal(); }
 });
 $("#menu").onclick = () => { const o = document.body.classList.toggle("drawer"); $("#menu").setAttribute("aria-expanded", o); };
 /* busca */
