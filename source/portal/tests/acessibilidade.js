@@ -60,6 +60,21 @@ async page => {
       document.querySelectorAll('div, span, li, p, td, section, article').forEach(e => { if (hidden(e) || e.closest('a,button,label,summary,[role=button],[tabindex]')) return; if (e.getAttribute('role') || e.hasAttribute('tabindex')) return; const cs = getComputedStyle(e); if (cs.cursor === 'pointer' && !e.querySelector('a,button,input,select,textarea')) out.push('elemento clicável sem papel de botão/link: ' + desc(e) + ' "' + txt(e).slice(0, 18) + '"'); });
       document.querySelectorAll('a[target=_blank]').forEach(e => { if (hidden(e)) return; if (!/nova aba|new tab|nova janela|new window/i.test(name(e))) out.push('link em nova aba sem aviso para leitor de tela: ' + desc(e) + ' "' + txt(e).slice(0, 24) + '"'); });
       document.querySelectorAll('[role=button]:not(button):not(a)').forEach(e => { if (hidden(e)) return; if (!e.hasAttribute('tabindex')) out.push('role=button sem tabindex (inacessível por teclado): ' + desc(e)); });
+
+      // LEITURA POR MOUSE (rastreamento do NVDA): o elemento informativo precisa receber o ponteiro, sem sobreposição que o esconda,
+      // e o objeto sob o ponteiro precisa ter nome/texto. Testa o centro de cada imagem, ícone, botão, link, título e vídeo.
+      const inf = [...document.querySelectorAll('img[alt]:not([alt=""]), svg[role=img], [role=img], button, a[href], h1, h2, h3, iframe, video, input, summary, [role=button]')].filter(e => { if (hidden(e)) return false; const s = getComputedStyle(e); if (parseFloat(s.opacity) === 0 || s.pointerEvents === 'none') return !!(e.matches('img,svg,[role=img]') && parseFloat(s.opacity) > 0); if (e.closest('.sl') && !e.classList.contains('on')) return false; return true; }).slice(0, 140);
+      inf.forEach(e => {
+        e.scrollIntoView({ block: 'center', inline: 'center' });
+        const b = e.getBoundingClientRect(); if (b.width < 2 || b.height < 2) return;
+        const cx = Math.min(innerWidth - 2, Math.max(2, b.left + b.width / 2)), cy = Math.min(innerHeight - 2, Math.max(2, b.top + b.height / 2));
+        const top = document.elementFromPoint(cx, cy); if (!top) return;
+        const ok = e === top || e.contains(top) || top.contains(e);
+        const tn = name(top) || name(top.closest('a,button,[role],h1,h2,h3,h4,li,summary,label,p') || top);
+        if (!ok && !tn && !e.matches('a.skip,.skip')) out.push('mouse: ' + desc(e) + ' coberto por ' + desc(top) + ' sem texto (o leitor não anuncia ao passar o ponteiro)');
+        else if (!name(e) && !(e.matches('img,svg,[role=img]') && name(e))) out.push('mouse: objeto sob o ponteiro sem nome: ' + desc(e));
+      });
+      window.scrollTo(0, 0);
       return out;
     });
     r.forEach(m => { const k = m; if (!seen.has(k)) { seen.add(k); bad.push(u + ' → ' + m); } });
