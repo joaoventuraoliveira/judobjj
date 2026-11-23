@@ -28,30 +28,31 @@
 <script src="assets/prefs.js"></script>
 <link rel="stylesheet" href="assets/tokens.css">
 <link rel="stylesheet" href="assets/prefs.css">
-<script>try{ if(location.hash.length>1 && !/^#(judo|jiu-jitsu|fontes|como)$/.test(location.hash)) location.replace('livro.html'+location.hash); }catch(e){}</script>
+<script>try{ if(location.hash.length>1 && !/^#(\/(judo|jiu-jitsu)(\/[\w-]+)*|judo|jiu-jitsu|fontes|como)$/.test(location.hash)) location.replace('livro.html'+location.hash); }catch(e){}</script>
 <style>
-:root{--judo:#2f64c8;--bjj:#7a3fa3;--ease:cubic-bezier(.22,1,.36,1);--glow:color-mix(in srgb,var(--judo) 26%,transparent)}
-body[data-active="bjj"]{--glow:color-mix(in srgb,var(--bjj) 30%,transparent)}
+:root{--judo:#2f64c8;--bjj:#7a3fa3;--ease:cubic-bezier(.22,1,.36,1);--ease2:cubic-bezier(.25,1.15,.4,1);--acc:var(--judo);--glow:color-mix(in srgb,var(--judo) 26%,transparent)}
+body[data-active="bjj"]{--acc:var(--bjj);--glow:color-mix(in srgb,var(--bjj) 30%,transparent)}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 24% 38%,var(--glow),transparent 58%);transition:background .9s var(--ease)}
-a{color:inherit}:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 24% 44%,var(--glow),transparent 58%);transition:background .9s var(--ease)}
+a{color:inherit}button{font:inherit;color:inherit}:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
 .skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;background:#fff;color:#000;padding:8px 12px;z-index:99}
-header{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;padding:14px clamp(16px,4vw,48px);position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-.prefs-bar{margin-left:auto}.logo{font:650 1.25rem var(--display);letter-spacing:-.02em;text-decoration:none}.logo span{font-family:var(--jp);font-weight:700;margin-left:8px;color:var(--muted)}
-nav.main{display:flex;gap:6px;flex-wrap:wrap}nav.main a{padding:8px 14px;border-radius:999px;background:var(--soft);text-decoration:none;font-weight:700;font-size:.9rem;transition:background var(--t),color var(--t)}nav.main a:hover{background:var(--ink);color:var(--bg)}
-main{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:12px clamp(16px,4vw,48px) 72px clamp(16px,4vw,48px)}
-.hero{padding:clamp(14px,3vw,34px) 0 20px}.hero h1{font:650 clamp(2rem,4.4vw,3.3rem)/1.06 var(--display);letter-spacing:-.03em;margin:0 0 10px;max-width:24ch}.hero p{max-width:64ch;color:var(--muted);font-size:1.02rem;margin:0}
+header.top{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;padding:12px clamp(16px,4vw,48px);position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.prefs-bar{margin-left:auto}.logo{font:650 1.2rem var(--display);letter-spacing:-.02em;text-decoration:none}.logo span{font-family:var(--jp);font-weight:700;margin-left:8px;color:var(--muted)}
+nav.main{display:flex;gap:6px;flex-wrap:wrap}nav.main a{padding:7px 14px;border-radius:999px;background:var(--soft);text-decoration:none;font-weight:700;font-size:.88rem;transition:background var(--t),color var(--t)}nav.main a:hover{background:var(--ink);color:var(--bg)}
+.wrap{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,48px) 72px clamp(16px,4vw,48px)}
+/* ---- tela 1: entrada ---- */
+.home-view{min-height:calc(100vh - 64px);display:flex;flex-direction:column;justify-content:center;padding:clamp(20px,4vw,40px) 0 clamp(28px,5vw,56px) clamp(0px,3vw,48px)}
+.home-view h1{font:650 clamp(1.9rem,3.8vw,3rem)/1.1 var(--display);letter-spacing:-.025em;margin:0 0 clamp(20px,3.4vw,38px)}
 .stage{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:clamp(20px,3.4vw,44px);align-items:center}
 .selectors{display:flex;flex-direction:column;gap:16px}
-.sel{appearance:none;font:inherit;text-align:left;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:18px;padding:16px 20px;border-radius:20px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 78%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:.66;transform:scale(.99);transition:transform .6s var(--ease),opacity .6s var(--ease),border-color .6s var(--ease),box-shadow .6s var(--ease),background .6s var(--ease)}
-.sel:hover{opacity:.9}
-.sel.is-active{opacity:1;transform:translateX(10px) scale(1.01);background:var(--surface)}
+.sel{appearance:none;text-align:left;cursor:pointer;display:flex;align-items:center;gap:18px;padding:16px 20px;border-radius:20px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 78%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:.64;transform:scale(.99);transition:transform .6s var(--ease),opacity .6s var(--ease),border-color .6s var(--ease),box-shadow .6s var(--ease),background .6s var(--ease)}
+.sel:hover{opacity:.9}.sel.is-active{opacity:1;transform:translateX(10px) scale(1.01);background:var(--surface)}
 .sel[data-m="judo"].is-active{border-color:color-mix(in srgb,var(--judo) 60%,transparent);box-shadow:0 18px 40px -14px color-mix(in srgb,var(--judo) 55%,transparent)}
 .sel[data-m="bjj"].is-active{border-color:color-mix(in srgb,var(--bjj) 60%,transparent);box-shadow:0 18px 40px -14px color-mix(in srgb,var(--bjj) 55%,transparent)}
 .kc{width:62px;height:62px;min-width:62px;border-radius:50%;display:grid;place-items:center;font:700 1.2rem var(--jp);background:var(--surface-2);border:1px solid var(--line-strong);color:var(--muted);transition:all .6s var(--ease)}
-.sel[data-m="judo"].is-active .kc{color:#fff;border-color:var(--judo);background:color-mix(in srgb,var(--judo) 70%,#000);box-shadow:0 0 22px color-mix(in srgb,var(--judo) 45%,transparent);transform:scale(1.05)}
-.sel[data-m="bjj"].is-active .kc{color:#fff;border-color:var(--bjj);background:color-mix(in srgb,var(--bjj) 70%,#000);box-shadow:0 0 22px color-mix(in srgb,var(--bjj) 45%,transparent);transform:scale(1.05)}
+.sel[data-m="judo"].is-active .kc,.kc.t-judo{color:#fff;border-color:var(--judo);background:color-mix(in srgb,var(--judo) 70%,#000);box-shadow:0 0 22px color-mix(in srgb,var(--judo) 45%,transparent)}
+.sel[data-m="bjj"].is-active .kc,.kc.t-bjj{color:#fff;border-color:var(--bjj);background:color-mix(in srgb,var(--bjj) 70%,#000);box-shadow:0 0 22px color-mix(in srgb,var(--bjj) 45%,transparent)}
 .sel b{display:block;font:650 1.5rem/1.1 var(--display);letter-spacing:-.01em}.sel small{display:block;margin-top:4px;color:var(--muted);font-size:.84rem;line-height:1.3}
 .sel .go{margin-left:auto;font-size:1.2rem;opacity:.4;transition:opacity .5s,transform .5s var(--ease)}.sel.is-active .go{opacity:.9;transform:translateX(3px)}
 .gallery{position:relative;aspect-ratio:16/10;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:#0c0d11;box-shadow:0 26px 60px -22px rgba(0,0,0,.6)}
@@ -64,12 +65,58 @@ main{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:12px cla
 .gbtn{position:absolute;top:50%;z-index:3;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:rgba(10,10,12,.5);color:#fff;font-size:1.1rem;cursor:pointer;display:grid;place-items:center;opacity:0;transition:opacity .3s}
 .gallery:hover .gbtn,.gbtn:focus-visible{opacity:1}.gbtn.prev{left:12px}.gbtn.next{right:12px}
 @media (hover:none){.gbtn{opacity:.85}}
-.panels{margin-top:34px}.opt{display:none;border-radius:var(--r-m);border:1px solid var(--line);padding:clamp(22px,3.5vw,38px);position:relative;overflow:hidden;animation:rise .6s var(--ease)}
-.opt.on{display:block}@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.morph{position:fixed;z-index:60;pointer-events:none;margin:0;transition:top .65s var(--ease),left .65s var(--ease),width .65s var(--ease),height .65s var(--ease),font-size .65s var(--ease)}
+/* ---- tela 2: faixas (só desenhos) + árvore ---- */
+.study-view{display:none;padding:clamp(16px,3vw,30px) 0 0 clamp(0px,3vw,48px)}
+body.in-study .home-view,body.in-study .more{display:none}body.in-study .study-view{display:block;animation:rise .55s var(--ease)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.stbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:18px}
+.sid{display:flex;align-items:center;gap:14px}.sid .kc{width:52px;height:52px;min-width:52px;font-size:1.05rem;cursor:pointer}.sid .kc.morphing{opacity:0}
+.sid h2{font:650 clamp(1.4rem,2.6vw,2rem)/1.1 var(--display);letter-spacing:-.02em;margin:0}
+.tact{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lsw{display:inline-flex;gap:2px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px}
+.lsw button{appearance:none;border:0;background:transparent;color:var(--muted);padding:6px 14px;border-radius:999px;font-size:.8rem;font-weight:600;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.lsw button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.pbtn{appearance:none;background:var(--surface-2);border:1px solid var(--line);padding:8px 16px;border-radius:999px;font-size:.84rem;display:inline-flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none;transition:border-color .2s,transform .3s var(--ease)}
+.pbtn:hover{border-color:var(--accent);transform:translateX(-2px)}.pbtn.go:hover{transform:translateX(2px)}
+.strip{display:flex;align-items:flex-end;gap:12px;overflow-x:auto;padding:12px 6px 16px;scroll-snap-type:x proximity;scrollbar-width:none;cursor:grab;user-select:none}
+.strip::-webkit-scrollbar{display:none}.strip.drag{cursor:grabbing;scroll-snap-type:none}
+.strip.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));overflow:visible;cursor:default}
+.gsep{align-self:center;flex:0 0 auto;width:1px;height:46px;background:var(--line-strong);margin:0 6px}.strip.list .gsep{grid-column:1/-1;width:auto;height:auto;background:none;margin:8px 0 0;font:700 .68rem var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.strip:not(.list) .gsep span{display:none}
+.bb{appearance:none;flex:0 0 auto;width:100px;height:72px;display:grid;place-items:center;background:color-mix(in srgb,var(--surface) 82%,transparent);border:1px solid var(--line);border-radius:18px;cursor:pointer;scroll-snap-align:center;transition:transform .38s var(--ease),border-color .38s,background .38s,box-shadow .38s,opacity .38s}
+.strip.list .bb{width:100%;height:78px}
+.strip.sel-on .bb:not(.on){opacity:.55}.bb:hover{opacity:1!important;transform:translateY(-3px) scale(1.04);border-color:var(--line-strong)}
+.bb.on{opacity:1;transform:translateY(-4px) scale(1.08);background:var(--surface);border-color:var(--acc);box-shadow:0 14px 30px -10px color-mix(in srgb,var(--acc) 55%,transparent)}
+.bcap{display:block;text-align:center;font:600 .62rem/1 var(--body);color:var(--muted);letter-spacing:.04em;margin-top:-2px;white-space:nowrap}.bb.has-cap{align-content:center;gap:0}.bsvg{width:74px;height:48px;pointer-events:none;filter:drop-shadow(0 4px 8px rgba(0,0,0,.45))}.bsvg.sm{width:34px;height:22px;filter:none}.bsvg.md{width:48px;height:31px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))}
+.rev{opacity:0;transform:translateY(14px);pointer-events:none;transition:opacity .45s var(--ease),transform .45s var(--ease)}.rev.on{opacity:1;transform:none;pointer-events:auto}
+.crumb{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:10px 14px;background:color-mix(in srgb,var(--surface) 82%,transparent);border:1px solid var(--line);border-radius:16px;margin:6px 0 20px;min-height:52px}
+.cp{appearance:none;background:var(--surface-2);border:1px solid transparent;color:var(--muted);padding:5px 12px;border-radius:999px;font-size:.82rem;font-weight:500;display:inline-flex;align-items:center;gap:8px;cursor:pointer;animation:cin .42s var(--ease2) both;transition:background .25s,color .25s}
+.cp:hover{background:color-mix(in srgb,var(--ink) 10%,transparent);color:var(--ink)}.cp.cur{background:var(--surface);border-color:var(--line-strong);color:var(--ink);cursor:default}
+.csep{color:var(--muted);opacity:.6;user-select:none}@keyframes cin{from{opacity:0;transform:translateX(14px) scale(.95)}to{opacity:1;transform:none}}
+.bstage{transition:opacity .3s var(--ease),transform .3s var(--ease)}.bstage.out{opacity:0;transform:translateX(22px)}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.bt{display:flex;align-items:center;gap:12px}.bt h3{margin:0;font:650 1.3rem/1.2 var(--display)}.bt small{display:block;color:var(--muted);font:400 .85rem var(--body)}
+.bcount{font-size:.76rem;color:var(--muted);background:var(--surface-2);padding:4px 12px;border-radius:999px;white-space:nowrap}
+.ngrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.nc{appearance:none;text-align:left;text-decoration:none;color:var(--ink);background:color-mix(in srgb,var(--surface) 86%,transparent);border:1px solid var(--line);border-radius:18px;padding:18px 20px;display:flex;flex-direction:column;gap:8px;cursor:pointer;min-height:120px;opacity:0;transform:translateY(14px);animation:nin .48s var(--ease) forwards;transition:transform .4s var(--ease),border-color .3s,box-shadow .4s var(--ease)}
+@keyframes nin{to{opacity:1;transform:none}}
+.nc:hover{transform:translateY(-4px);border-color:var(--acc);box-shadow:0 18px 36px -20px color-mix(in srgb,var(--acc) 60%,transparent)}
+.nc .top2{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.nc .ic{display:inline-grid;place-items:center;min-width:40px;height:40px;padding:0 6px;border-radius:50%;background:color-mix(in srgb,var(--acc) 14%,var(--surface-2));border:1px solid color-mix(in srgb,var(--acc) 35%,var(--line));font:600 .95rem var(--jp)}
+.nc .arr{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);color:var(--muted);transition:transform .35s var(--ease),background .3s,color .3s}.nc:hover .arr{transform:translateX(3px);background:var(--ink);color:var(--bg)}
+.nc h4{margin:0;font:650 1.02rem/1.3 var(--display)}.nc p{margin:0;color:var(--muted);font-size:.85rem;line-height:1.45}.nc .nn{margin-top:auto;font-size:.78rem;font-weight:700;color:var(--accent)}
+.ja{font-family:var(--jp);color:var(--muted);font-size:.9rem}
+.sub{margin:6px 0 16px;color:var(--muted);font-size:.92rem;max-width:70ch}
+/* ---- abaixo da dobra: o que já existia ---- */
+.more{padding-top:12px}
+.more .lead{max-width:64ch;color:var(--muted);margin:0 0 22px}
+.panels{margin-top:10px}.opt{display:none;border-radius:var(--r-m);border:1px solid var(--line);padding:clamp(22px,3.5vw,38px);position:relative;overflow:hidden;animation:rise .6s var(--ease)}
+.opt.on{display:block}
 .opt.judo{background:linear-gradient(135deg,color-mix(in srgb,var(--judo) 24%,var(--surface)),var(--surface) 60%)}.opt.bjj{background:linear-gradient(135deg,color-mix(in srgb,var(--bjj) 26%,var(--surface)),var(--surface) 60%)}
 .kj{font:700 clamp(4.5rem,13vw,8rem)/1 var(--jp);opacity:.1;position:absolute;right:16px;top:-6px;pointer-events:none;user-select:none}
 .opt h2{font:650 clamp(2rem,4.4vw,3.1rem)/1 var(--display);letter-spacing:-.02em;margin:0}.opt h2 small{display:block;font:600 1rem var(--body);opacity:.85;margin-top:8px;letter-spacing:0}
-.opt p.lead{margin:14px 0 18px;max-width:62ch;color:var(--muted)}
+.opt p.lead{margin:14px 0 18px}
 .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(18px,3vw,34px);align-items:start}
 .terms{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}.terms li{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:6px 10px;font-size:.84rem;line-height:1.25}.terms b{font:700 1.05rem var(--jp);display:block}.terms span{opacity:.82}
 .btns{display:grid;gap:8px}.btns a{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:13px 16px;border-radius:var(--r-s);background:var(--surface-2);border:1px solid var(--line);text-decoration:none;font-weight:700;min-height:48px;transition:border-color var(--t),transform var(--t)}.btns a:hover{border-color:var(--accent);transform:translateX(2px)}.btns a small{font-weight:400;opacity:.8;display:block}.btns a.main{background:var(--accent);color:var(--accent-ink)}.btns a.main:hover{filter:brightness(1.08)}
@@ -77,6 +124,7 @@ section.box{margin-top:52px}section.box h2{font:800 1.5rem var(--display);margin
 .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}.card h3{margin:0 0 6px;font:700 1.05rem var(--display)}.card p{margin:0;color:var(--muted);font-size:.95rem}
 ol.refs{padding-left:1.2rem;color:var(--muted);font-size:.92rem}ol.refs li{margin:6px 0}ol.refs b{color:var(--ink)}ol.refs a{color:var(--accent)}
 footer{position:relative;z-index:2;border-top:1px solid var(--line);padding:22px clamp(16px,4vw,48px);color:var(--muted);font-size:.9rem;text-align:center}footer a{color:var(--accent)}
+/* ---- barra flutuante e gaveta ---- */
 .fnav{position:fixed;left:16px;top:50%;transform:translateY(-50%);z-index:30;display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 7px;border-radius:999px;background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 16px 38px rgba(0,0,0,.35)}
 .fnav button{appearance:none;border:0;background:transparent;color:var(--muted);width:38px;height:38px;border-radius:50%;display:grid;place-items:center;cursor:pointer;transition:color var(--t),background var(--t)}
 .fnav button:hover,.fnav button.on{color:var(--ink);background:var(--surface-2)}.fnav i{width:18px;height:1px;background:var(--line-strong)}
@@ -91,20 +139,29 @@ footer{position:relative;z-index:2;border-top:1px solid var(--line);padding:22px
 .dm{margin:0 0 8px}.dm>h4{margin:0;padding:6px 8px;font:600 .8rem var(--body);color:var(--muted)}
 .dm ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
 .dm a{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;text-decoration:none;font-size:.86rem;transition:background var(--t),transform var(--t)}.dm a:hover{background:var(--surface-2);transform:translateX(3px)}.dm a small{font-size:.7rem;color:var(--muted);white-space:nowrap}
-.dm a .jp{font-family:var(--jp);color:var(--muted);font-size:.8rem}
 .dempty{display:none;text-align:center;padding:26px 12px;color:var(--muted);font-size:.88rem}
 .scrim{position:fixed;inset:0;z-index:35;background:rgba(0,0,0,.35);opacity:0;visibility:hidden;transition:opacity .4s}.scrim.open{opacity:1;visibility:visible}
 [hidden]{display:none!important}
 @media (max-width:920px){
-  .stage{grid-template-columns:minmax(0,1fr);gap:20px}
+  .stage{grid-template-columns:minmax(0,1fr);gap:20px}.home-view{padding-left:0}.study-view{padding-left:0}
   .sel.is-active{transform:translateX(5px) scale(1.01)}
   .cols{grid-template-columns:minmax(0,1fr)}
   .fnav{top:auto;bottom:16px;left:16px;transform:none;flex-direction:row;padding:6px 10px}.fnav i{width:1px;height:18px}
-  nav.main a:nth-child(n+4){display:none}.prefs-bar{margin-left:0;width:100%}
+  header.top{position:static;padding:10px 16px;gap:8px 12px}.logo{font-size:1.05rem}
+  nav.main{width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;order:3}nav.main::-webkit-scrollbar{display:none}nav.main a{flex:0 0 auto;padding:6px 12px}.prefs-bar{order:2}
+  .prefs-bar{margin-left:0;width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.prefs-bar::-webkit-scrollbar{display:none}.prefs-bar>*{flex:0 0 auto}
+  .wrap{padding-bottom:96px}
+  .home-view{min-height:0;justify-content:flex-start;padding-top:18px}.home-view h1{font-size:1.75rem;margin-bottom:18px}
+  .sel{padding:14px 16px;gap:14px}.kc{width:54px;height:54px;min-width:54px;font-size:1.05rem}.sel b{font-size:1.3rem}
+  .gallery{aspect-ratio:4/3;border-radius:20px}.hud{left:14px;right:14px;gap:8px}.hud .cap{display:none}.dots{margin-right:auto}#gNum{white-space:nowrap}
+  .stbar{gap:10px;padding-bottom:14px;margin-bottom:12px}.sid .kc{width:46px;height:46px;min-width:46px}
+  .tact{width:100%;justify-content:space-between;gap:8px}.lsw button{padding:6px 12px}.pbtn{padding:7px 12px;font-size:.8rem}#stExp{display:none}
+  .bb{width:86px;height:64px}.bsvg{width:62px;height:40px}.crumb{margin:2px 0 16px;padding:8px 10px;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}.cp{flex:0 0 auto}
+  .ngrid{grid-template-columns:minmax(0,1fr)}.nc{min-height:0;padding:16px 18px}.bh{align-items:flex-start}
 }
 html.lay-mobile[data-layout="mobile"] .fnav,html.lay-mobile[data-layout="mobile"] .drawer{left:max(16px,calc(50% - 204px))}
 html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px))}
-@media (prefers-reduced-motion:reduce){.sel,.gallery .sl,.opt{transition:none;animation:none}}
+@media (prefers-reduced-motion:reduce){.sel,.gallery .sl,.opt,.nc,.cp,.study-view,.morph,.bb{transition:none!important;animation:none!important}.nc{opacity:1;transform:none}}
 </style>
 </head>
 <body data-active="judo">
@@ -125,143 +182,265 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
   </div>
 </nav>
 
-<header>
+<header class="top">
   <a class="logo" href="./">Judô &amp; Jiu-Jitsu<span lang="ja">柔道 · 柔術</span></a>
-  <nav class="main" aria-label="Principal"><a href="#judo">Judô</a><a href="#jiu-jitsu">Jiu-Jitsu</a><a href="#fontes">Fontes</a><a href="livro.html#transparencia">Uso de IA</a></nav>
+  <nav class="main" aria-label="Principal"><a href="#/judo">Judô</a><a href="#/jiu-jitsu">Jiu-Jitsu</a><a href="#fontes">Fontes</a><a href="livro.html#transparencia">Uso de IA</a></nav>
   <div class="prefs-bar" data-prefs></div>
 </header>
-<main id="conteudo">
-  <div class="hero">
+
+<div class="wrap" id="conteudo">
+  <!-- tela 1: entrada -->
+  <main class="home-view" id="homeView">
     <h1>O que é cobrado em cada exame de faixa</h1>
-    <p>Escolha a modalidade. Em cada uma há o programa de cada exame, ilustrações, vídeos oficiais, nomes em japonês, inglês e português, e a fonte de cada informação.</p>
-  </div>
-
-  <section class="stage" aria-label="Escolha da modalidade">
-    <div class="selectors" role="group" aria-label="Modalidades">
-      <button type="button" class="sel is-active" data-m="judo" aria-pressed="true"><span class="kc" lang="ja" aria-hidden="true">柔道</span><span><b>Judô</b><small>Programa da CBJ e regras da IJF</small></span><span class="go" aria-hidden="true">→</span></button>
-      <button type="button" class="sel" data-m="bjj" aria-pressed="false"><span class="kc" lang="ja" aria-hidden="true">柔術</span><span><b>Jiu-Jitsu</b><small>Programa técnico da JJIF e regras IBJJF/CBJJ</small></span><span class="go" aria-hidden="true">→</span></button>
-    </div>
-    <div class="gallery" id="gal" role="group" aria-roledescription="carrossel" aria-label="Ilustrações da modalidade">
+    <section class="stage" aria-label="Escolha da modalidade">
+      <div class="selectors" role="group" aria-label="Modalidades">
+        <button type="button" class="sel is-active" data-m="judo" aria-pressed="true"><span class="kc" id="kcJudo" lang="ja" aria-hidden="true">柔道</span><span><b>Judô</b><small>Programa da CBJ e regras da IJF</small></span><span class="go" aria-hidden="true">→</span></button>
+        <button type="button" class="sel" data-m="bjj" aria-pressed="false"><span class="kc" id="kcBjj" lang="ja" aria-hidden="true">柔術</span><span><b>Jiu-Jitsu</b><small>Programa técnico da JJIF e regras IBJJF/CBJJ</small></span><span class="go" aria-hidden="true">→</span></button>
+      </div>
+      <div class="gallery" id="gal" role="group" aria-roledescription="carrossel" aria-label="Ilustrações da modalidade">
 {{SLIDES}}
-      <button type="button" class="gbtn prev" id="gPrev" aria-label="Imagem anterior">‹</button>
-      <button type="button" class="gbtn next" id="gNext" aria-label="Próxima imagem">›</button>
-      <div class="hud"><span class="cap" id="gCap" aria-live="polite"></span><span class="dots" id="gDots" aria-hidden="true"></span><span id="gNum">01 / 10</span></div>
+        <button type="button" class="gbtn prev" id="gPrev" aria-label="Imagem anterior">‹</button>
+        <button type="button" class="gbtn next" id="gNext" aria-label="Próxima imagem">›</button>
+        <div class="hud"><span class="cap" id="gCap" aria-live="polite"></span><span class="dots" id="gDots" aria-hidden="true"></span><span id="gNum">01 / 10</span></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- tela 2: faixas (só desenhos) e árvore até o conteúdo -->
+  <section class="study-view" id="studyView" aria-label="Faixas e conteúdos">
+    <div class="stbar">
+      <div class="sid"><div class="kc t-judo" id="stKc" role="button" tabindex="0" title="Voltar à seleção inicial" lang="ja">柔道</div><h2 id="stTitle">Judô</h2></div>
+      <div class="tact">
+        <div class="lsw" role="group" aria-label="Visualização das faixas"><button type="button" id="vLine" aria-pressed="true">Em linha</button><button type="button" id="vList" aria-pressed="false">Em lista</button></div>
+        <a class="pbtn go" id="stExp" href="explorar/">Abrir no explorador →</a>
+        <button type="button" class="pbtn" id="stHome">← Início</button>
+      </div>
     </div>
+    <div class="strip" id="strip" role="listbox" aria-label="Seleção de graduação"></div>
+    <div class="rev" id="rev"><nav class="crumb" id="crumb" aria-label="Trilha de navegação"></nav><div class="bstage" id="bstage"></div></div>
   </section>
 
-  <div class="panels">
-    <article class="opt judo on" id="judo" aria-labelledby="h-judo">
-      <div class="kj" lang="ja" aria-hidden="true">柔道</div>
-      <h2 id="h-judo">Judô<small lang="ja">柔道 · Jūdō, “o caminho da suavidade”</small></h2>
-      <p class="lead">Programa da CBJ, regras e classificação da IJF/Kodokan, técnicas do Gokyo em três fases, combinações, contragolpes e o exame de cada kyū e dan.</p>
-      <div class="cols">
-        <ul class="terms" lang="ja">
-          <li><b>道場</b><span>dōjō · local de treino</span></li><li><b>先生</b><span>sensei · professor</span></li><li><b>帯</b><span>obi · faixa</span></li>
-          <li><b>級 · 段</b><span>kyū · dan · graus</span></li><li><b>礼</b><span>rei · saudação</span></li><li><b>受身</b><span>ukemi · quedas</span></li>
-          <li><b>投技</b><span>nage-waza · projeções</span></li><li><b>固技</b><span>katame-waza · solo</span></li><li><b>乱取</b><span>randori · treino livre</span></li>
-          <li><b>形</b><span>kata · formas</span></li><li><b>一本</b><span>ippon · ponto máximo</span></li>
-        </ul>
-        <div class="btns">
-          <a class="main" href="explorar/#/judo"><span>Explorar o Judô<small>{{NJ}} exames, da faixa à técnica: nomes, ilustrações, vídeos e contragolpes</small></span><span aria-hidden="true">→</span></a>
-          <a href="app/#judo/j01"><span>App faixa a faixa<small>progresso, ficha e idioma PT/EN</small></span><span aria-hidden="true">→</span></a>
-          <a href="livro.html"><span>Livro interativo<small>119 ilustrações, glossário, simulado e busca</small></span><span aria-hidden="true">→</span></a>
-          <a href="livro.html#videoteca-oficial"><span>Videoteca oficial<small>100 técnicas Kodokan × IJF Academy</small></span><span aria-hidden="true">→</span></a>
-          <a href="judo-tecnicas-e-exames-de-faixa.pdf" download><span>PDF do livro<small>A4, com sumário e índice</small></span><span aria-hidden="true">↓</span></a>
+  <!-- abaixo da dobra: o que já existia -->
+  <div class="more" id="more">
+    <p class="lead">Escolha a modalidade. Em cada uma há o programa de cada exame, ilustrações, vídeos oficiais, nomes em japonês, inglês e português, e a fonte de cada informação.</p>
+    <div class="panels">
+      <article class="opt judo on" id="judo" aria-labelledby="h-judo">
+        <div class="kj" lang="ja" aria-hidden="true">柔道</div>
+        <h2 id="h-judo">Judô<small lang="ja">柔道 · Jūdō, “o caminho da suavidade”</small></h2>
+        <p class="lead">Programa da CBJ, regras e classificação da IJF/Kodokan, técnicas do Gokyo em três fases, combinações, contragolpes e o exame de cada kyū e dan.</p>
+        <div class="cols">
+          <ul class="terms" lang="ja">
+            <li><b>道場</b><span>dōjō · local de treino</span></li><li><b>先生</b><span>sensei · professor</span></li><li><b>帯</b><span>obi · faixa</span></li>
+            <li><b>級 · 段</b><span>kyū · dan · graus</span></li><li><b>礼</b><span>rei · saudação</span></li><li><b>受身</b><span>ukemi · quedas</span></li>
+            <li><b>投技</b><span>nage-waza · projeções</span></li><li><b>固技</b><span>katame-waza · solo</span></li><li><b>乱取</b><span>randori · treino livre</span></li>
+            <li><b>形</b><span>kata · formas</span></li><li><b>一本</b><span>ippon · ponto máximo</span></li>
+          </ul>
+          <div class="btns">
+            <a class="main" href="#/judo"><span>Explorar o Judô<small>{{NJ}} exames, da faixa à técnica: nomes, ilustrações, vídeos e contragolpes</small></span><span aria-hidden="true">→</span></a>
+            <a href="explorar/#/judo"><span>Explorador completo<small>tópicos, técnicas, glossário e videoteca</small></span><span aria-hidden="true">→</span></a>
+            <a href="app/#judo/j01"><span>App faixa a faixa<small>progresso, ficha e idioma PT/EN</small></span><span aria-hidden="true">→</span></a>
+            <a href="livro.html"><span>Livro interativo<small>119 ilustrações, glossário, simulado e busca</small></span><span aria-hidden="true">→</span></a>
+            <a href="livro.html#videoteca-oficial"><span>Videoteca oficial<small>100 técnicas Kodokan × IJF Academy</small></span><span aria-hidden="true">→</span></a>
+            <a href="judo-tecnicas-e-exames-de-faixa.pdf" download><span>PDF do livro<small>A4, com sumário e índice</small></span><span aria-hidden="true">↓</span></a>
+          </div>
         </div>
-      </div>
-    </article>
-    <article class="opt bjj" id="jiu-jitsu" aria-labelledby="h-bjj">
-      <div class="kj" lang="ja" aria-hidden="true">柔術</div>
-      <h2 id="h-bjj">Jiu-Jitsu<small lang="ja">柔術 · Jūjutsu · Jiu-Jitsu Brasileiro (BJJ)</small></h2>
-      <p class="lead">Programa técnico da JJIF por faixa, ficha de exame editável, lista de componentes (guardas, raspagens, transições, chaves, estrangulamentos), regras IBJJF/CBJJ e a apostila da LBJJ.</p>
-      <div class="cols">
-        <ul class="terms" lang="ja">
-          <li><b>柔術</b><span>jūjutsu · arte da suavidade</span></li><li><b>寝技</b><span>ne-waza · técnicas de solo</span></li><li><b>押忍</b><span>osu (oss) · saudação</span></li>
-          <li><b>帯</b><span>obi · faixa</span></li><li><b>道着</b><span>dōgi · kimono</span></li><li><b>絞め技</b><span>shime-waza · estrangulamentos</span></li>
-          <li><b>関節技</b><span>kansetsu-waza · chaves</span></li><li><b>抑込技</b><span>osaekomi-waza · imobilizações</span></li><li><b>参った</b><span>maitta · rendição (tap)</span></li>
-          <li><b style="font-family:var(--body)">Guarda</b><span>raspagem · passagem · montada</span></li>
-        </ul>
-        <div class="btns">
-          <a class="main" href="explorar/#/jiu-jitsu"><span>Explorar o Jiu-Jitsu<small>{{NB}} exames, da faixa à técnica, com golpes proibidos por faixa</small></span><span aria-hidden="true">→</span></a>
-          <a href="explorar/#/jiu-jitsu/t/guardas"><span>Lista de componentes<small>quedas, guardas, raspagens, transições, chaves, estrangulamentos, defesa pessoal</small></span><span aria-hidden="true">→</span></a>
-          <a href="explorar/#/jiu-jitsu/t/lbjj"><span>Apostila LBJJ<small>sequências desenhadas por assunto</small></span><span aria-hidden="true">→</span></a>
-          <a href="app/#bjj/b01"><span>App faixa a faixa<small>progresso, ficha de exame editável e idioma PT/EN</small></span><span aria-hidden="true">→</span></a>
+      </article>
+      <article class="opt bjj" id="jiu-jitsu" aria-labelledby="h-bjj">
+        <div class="kj" lang="ja" aria-hidden="true">柔術</div>
+        <h2 id="h-bjj">Jiu-Jitsu<small lang="ja">柔術 · Jūjutsu · Jiu-Jitsu Brasileiro (BJJ)</small></h2>
+        <p class="lead">Programa técnico da JJIF por faixa, ficha de exame editável, lista de componentes (guardas, raspagens, transições, chaves, estrangulamentos), regras IBJJF/CBJJ e a apostila da LBJJ.</p>
+        <div class="cols">
+          <ul class="terms" lang="ja">
+            <li><b>柔術</b><span>jūjutsu · arte da suavidade</span></li><li><b>寝技</b><span>ne-waza · técnicas de solo</span></li><li><b>押忍</b><span>osu (oss) · saudação</span></li>
+            <li><b>帯</b><span>obi · faixa</span></li><li><b>道着</b><span>dōgi · kimono</span></li><li><b>絞め技</b><span>shime-waza · estrangulamentos</span></li>
+            <li><b>関節技</b><span>kansetsu-waza · chaves</span></li><li><b>抑込技</b><span>osaekomi-waza · imobilizações</span></li><li><b>参った</b><span>maitta · rendição (tap)</span></li>
+            <li><b style="font-family:var(--body)">Guarda</b><span>raspagem · passagem · montada</span></li>
+          </ul>
+          <div class="btns">
+            <a class="main" href="#/jiu-jitsu"><span>Explorar o Jiu-Jitsu<small>{{NB}} exames, da faixa à técnica, com golpes proibidos por faixa</small></span><span aria-hidden="true">→</span></a>
+            <a href="explorar/#/jiu-jitsu"><span>Explorador completo<small>tópicos, componentes e referências</small></span><span aria-hidden="true">→</span></a>
+            <a href="explorar/#/jiu-jitsu/t/guardas"><span>Lista de componentes<small>quedas, guardas, raspagens, transições, chaves, estrangulamentos, defesa pessoal</small></span><span aria-hidden="true">→</span></a>
+            <a href="explorar/#/jiu-jitsu/t/lbjj"><span>Apostila LBJJ<small>sequências desenhadas por assunto</small></span><span aria-hidden="true">→</span></a>
+            <a href="app/#bjj/b01"><span>App faixa a faixa<small>progresso, ficha de exame editável e idioma PT/EN</small></span><span aria-hidden="true">→</span></a>
+          </div>
         </div>
+      </article>
+    </div>
+    <section class="box" id="como" aria-labelledby="h-como">
+      <h2 id="h-como">Como usar</h2>
+      <div class="grid3">
+        <div class="card"><h3>Escolha o exame</h3><p>Em “Faixa a faixa”, toque na faixa que você quer: o app mostra o que é cobrado, com o trecho do documento oficial.</p></div>
+        <div class="card"><h3>Português ou inglês</h3><p>O botão com o globo, no topo do app, troca os textos entre PT-BR e EN. Os nomes em japonês são sempre mantidos.</p></div>
+        <div class="card"><h3>Simule e estude</h3><p>Marque o que já estudou e preencha a ficha de exame da JJIF para simular uma avaliação. O progresso fica só no seu aparelho.</p></div>
       </div>
-    </article>
+    </section>
+    <section class="box" id="fontes" aria-labelledby="h-fontes">
+      <h2 id="h-fontes">Fontes e referências do app</h2>
+      <ol class="refs">{{REFS}}</ol>
+      <p class="card" style="margin-top:16px"><b>Aviso.</b> Material de estudo independente, sem vínculo com as entidades citadas. Trechos de documentos oficiais aparecem em miniatura, sempre com a fonte, para estudo. Os regulamentos mudam: confira a versão vigente com a sua federação ou professor. Nomes em português marcados como “app” são sugestões, sem fonte oficial. As traduções PT/EN foram geradas com tradução automática e correções manuais.</p>
+    </section>
   </div>
-
-  <section class="box" id="como" aria-labelledby="h-como">
-    <h2 id="h-como">Como usar</h2>
-    <div class="grid3">
-      <div class="card"><h3>Escolha o exame</h3><p>Em “Faixa a faixa”, toque na faixa que você quer: o app mostra o que é cobrado, com o trecho do documento oficial.</p></div>
-      <div class="card"><h3>Português ou inglês</h3><p>O botão com o globo, no topo do app, troca os textos entre PT-BR e EN. Os nomes em japonês são sempre mantidos.</p></div>
-      <div class="card"><h3>Simule e estude</h3><p>Marque o que já estudou e preencha a ficha de exame da JJIF para simular uma avaliação. O progresso fica só no seu aparelho.</p></div>
-    </div>
-  </section>
-  <section class="box" id="fontes" aria-labelledby="h-fontes">
-    <h2 id="h-fontes">Fontes e referências do app</h2>
-    <ol class="refs">{{REFS}}</ol>
-    <p class="card" style="margin-top:16px"><b>Aviso.</b> Material de estudo independente, sem vínculo com as entidades citadas. Trechos de documentos oficiais aparecem em miniatura, sempre com a fonte, para estudo. Os regulamentos mudam: confira a versão vigente com a sua federação ou professor. Nomes em português marcados como “app” são sugestões, sem fonte oficial. As traduções PT/EN foram geradas com tradução automática e correções manuais.</p>
-  </section>
-</main>
+</div>
 <footer>Texto, ilustrações e site gerados com apoio de IA (Claude, Anthropic). <a href="livro.html#transparencia">Transparência sobre o uso de IA</a> · <a href="https://github.com/joaoventuraoliveira/judobjj">Código no GitHub</a></footer>
 
+<!-- textos usados pelo script (ficam aqui para o tradutor PT/EN os encontrar) -->
+<div hidden aria-hidden="true" id="ui"><span data-k="top1">tópico</span><span data-k="topn">tópicos</span><span data-k="item1">item</span><span data-k="itemn">itens</span><span data-k="back">Nível anterior</span><span data-k="open">Abrir esta seção no explorador</span><span data-k="openx">Abrir o exame no explorador</span><span data-k="faixa">Faixa</span><span data-k="grp-Faixas">Faixas</span><span data-k="grp-Infantil">Infantil</span><span data-k="grp-Graus superiores">Graus superiores</span><span data-k="pick">Escolha uma faixa para ver o que é cobrado.</span><span data-k="expJudo">Abrir no explorador →</span></div>
+<script type="application/json" id="tree">{{TREE}}</script>
 <script>
 (function(){
   var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
-  var body=document.body,sels=$$('.sel'),panels={judo:$('#judo'),bjj:$('#jiu-jitsu')};
-  var slides={judo:$$('.sl[data-m="judo"]'),bjj:$$('.sl[data-m="bjj"]')};
-  var cur='judo',idx=0,timer=null,reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function load(img){if(img&&!img.getAttribute('src')&&img.dataset.src)img.setAttribute('src',img.dataset.src)}
-  function paint(){
-    var list=slides[cur];
-    $$('.sl').forEach(function(s){s.classList.remove('on')});
-    var s=list[idx];load(s);load(list[(idx+1)%list.length]);s.classList.add('on');
-    $('#gNum').textContent=String(idx+1).padStart(2,'0')+' / '+String(list.length).padStart(2,'0');
-    $('#gCap').textContent=s.getAttribute('alt')||'';
-    $$('.dot').forEach(function(d,i){d.classList.toggle('on',i===idx)});
-  }
+  var UI=function(k){var e=$('#ui [data-k="'+k+'"]');return e?e.textContent:k};
+  var TREE=JSON.parse($('#tree').textContent), body=document.body, reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var esc=function(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+  var sels=$$('.sel'),panels={judo:$('#judo'),bjj:$('#jiu-jitsu')},slides={judo:$$('.sl[data-m="judo"]'),bjj:$$('.sl[data-m="bjj"]')};
+  var cur='judo',idx=0,timer=null,modName={judo:'Judô',bjj:'Jiu-Jitsu'},kj={judo:'柔道',bjj:'柔術'},hashRoute={judo:'judo',bjj:'jiu-jitsu'};
+  /* ---------- galeria ---------- */
+  function load(i){if(i&&!i.getAttribute('src')&&i.dataset.src)i.setAttribute('src',i.dataset.src)}
+  function paint(){var l=slides[cur];$$('.sl').forEach(function(s){s.classList.remove('on')});var s=l[idx];load(s);load(l[(idx+1)%l.length]);s.classList.add('on');$('#gNum').textContent=String(idx+1).padStart(2,'0')+' / '+String(l.length).padStart(2,'0');$('#gCap').textContent=s.getAttribute('alt')||'';$$('.dot').forEach(function(d,i){d.classList.toggle('on',i===idx)})}
   function dots(){var h='';for(var i=0;i<slides[cur].length;i++)h+='<span class="dot"></span>';$('#gDots').innerHTML=h}
   function step(n){var L=slides[cur].length;idx=(idx+n+L)%L;paint()}
-  function run(){clearInterval(timer);if(reduce)return;timer=setInterval(function(){if(!document.hidden)step(1)},3600)}
-  function setM(m){
-    if(m===cur)return;cur=m;idx=0;body.setAttribute('data-active',m);
-    sels.forEach(function(b){var on=b.dataset.m===m;b.classList.toggle('is-active',on);b.setAttribute('aria-pressed',String(on))});
-    panels.judo.classList.toggle('on',m==='judo');panels.bjj.classList.toggle('on',m==='bjj');
-    dots();paint();run();
-  }
+  function run(){clearInterval(timer);if(reduce)return;timer=setInterval(function(){if(!document.hidden&&!body.classList.contains('in-study'))step(1)},3600)}
+  function setM(m){if(m===cur)return;cur=m;idx=0;body.setAttribute('data-active',m);sels.forEach(function(b){var on=b.dataset.m===m;b.classList.toggle('is-active',on);b.setAttribute('aria-pressed',String(on))});panels.judo.classList.toggle('on',m==='judo');panels.bjj.classList.toggle('on',m==='bjj');dots();paint();run()}
   sels.forEach(function(b){
     b.addEventListener('mouseenter',function(){if(matchMedia('(hover:hover)').matches)setM(b.dataset.m)});
     b.addEventListener('focus',function(){setM(b.dataset.m)});
     b.addEventListener('touchstart',function(){setM(b.dataset.m)},{passive:true});
-    b.addEventListener('click',function(){setM(b.dataset.m);panels[b.dataset.m].scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'})});
+    b.addEventListener('click',function(){setM(b.dataset.m);go(b.dataset.m,null,null,true)});
   });
   $('#gPrev').addEventListener('click',function(){step(-1);run()});$('#gNext').addEventListener('click',function(){step(1);run()});
-  $$('nav.main a[href^="#"]').forEach(function(a){a.addEventListener('click',function(){var h=a.getAttribute('href');if(h==='#judo')setM('judo');else if(h==='#jiu-jitsu')setM('bjj')})});
-  if(location.hash==='#jiu-jitsu')setM('bjj');
-  dots();paint();run();
+  /* ---------- faixa amarrada (desenho) ---------- */
+  function hex(h){h=String(h||'#888').replace('#','');if(h.length===3)h=h.replace(/(.)/g,'$1$1');var n=parseInt(h,16);return [n>>16,n>>8&255,n&255]}
+  function mix(h,f){var c=hex(h).map(function(v){return Math.max(0,Math.min(255,Math.round(f>1?v+(255-v)*(f-1):v*f)))});return '#'+c.map(function(v){return v.toString(16).padStart(2,'0')}).join('')}
+  function lum(h){var c=hex(h);return (c[0]*299+c[1]*587+c[2]*114)/1000}
+  function beltSvg(cols,cls,label){
+    var c1=cols[0],c2=cols[1]||cols[0],sh=mix(c1,.72),hi=mix(c1,1.5),tip=lum(c1)<60&&!cols[1]?'#ef4444':'#0b0d11',st=lum(c1)<70&&lum(c2)<70?'#8b93a1':'#050608';
+    return '<svg class="bsvg '+(cls||'')+'" viewBox="0 0 84 54" fill="none" '+(label?'role="img" aria-label="'+esc(label)+'"':'aria-hidden="true"')+'>'+
+    '<path d="M5 14.5C16 18.5 26 19.5 35 19.5V28.5C25 28.5 14 27 5 22.8V14.5Z" fill="'+c1+'" stroke="'+st+'" stroke-width="2.4" stroke-linejoin="round"/><path d="M8 17.5C16 20.2 24 21 32 21" stroke="'+hi+'" stroke-width="1.6" stroke-linecap="round" opacity=".65"/>'+
+    '<path d="M79 14.5C68 18.5 58 19.5 49 19.5V28.5C59 28.5 70 27 79 22.8V14.5Z" fill="'+c2+'" stroke="'+st+'" stroke-width="2.4" stroke-linejoin="round"/><path d="M76 17.5C68 20.2 60 21 52 21" stroke="'+mix(c2,1.5)+'" stroke-width="1.6" stroke-linecap="round" opacity=".65"/>'+
+    '<path d="M36.5 26.5L18 45.5L26.5 50.5L42 31.5L36.5 26.5Z" fill="'+c1+'" stroke="'+st+'" stroke-width="2.4" stroke-linejoin="round"/><path d="M21.2 42.2L18 45.5L26.5 50.5L29.6 46.8L21.2 42.2Z" fill="'+tip+'" stroke="'+st+'" stroke-width="2" stroke-linejoin="round"/><path d="M35.5 31.5L29 38.5" stroke="'+sh+'" stroke-width="1.8" stroke-linecap="round"/>'+
+    '<path d="M47.5 26.5L66 45.5L57.5 50.5L42 31.5L47.5 26.5Z" fill="'+c2+'" stroke="'+st+'" stroke-width="2.4" stroke-linejoin="round"/><path d="M62.8 42.2L66 45.5L57.5 50.5L54.4 46.8L62.8 42.2Z" fill="'+tip+'" stroke="'+st+'" stroke-width="2" stroke-linejoin="round"/><path d="M48.5 31.5L55 38.5" stroke="'+mix(c2,.72)+'" stroke-width="1.8" stroke-linecap="round"/>'+
+    '<rect x="34" y="16.5" width="16" height="14.5" rx="4.5" fill="'+c1+'" stroke="'+st+'" stroke-width="2.5"/><path d="M37 20.5L47 26.5" stroke="'+sh+'" stroke-width="2" stroke-linecap="round"/><path d="M37.5 19.2H45.5" stroke="'+hi+'" stroke-width="1.7" stroke-linecap="round" opacity=".75"/></svg>';
+  }
+  /* ---------- tela 2 ---------- */
+  var layout='line',mod='judo',beltId=null,path=[],strip=$('#strip'),stage=$('#bstage'),crumb=$('#crumb'),rev=$('#rev'),dragged=false;
+  function belts(){return TREE[mod]}
+  function renderStrip(){
+    strip.innerHTML='';var last='';
+    belts().forEach(function(f){
+      if(f.g!==last){var s=document.createElement('span');s.className='gsep';s.setAttribute('role','presentation');s.innerHTML='<span>'+esc(UI('grp-'+f.g))+'</span>';strip.appendChild(s);last=f.g}
+      var b=document.createElement('button');b.type='button';b.className='bb';b.dataset.id=f.id;b.setAttribute('role','option');b.setAttribute('aria-selected','false');
+      b.setAttribute('aria-label',f.t+(f.s?' · '+f.s:''));b.title=f.t+(f.s?' · '+f.s:'');b.innerHTML=beltSvg(f.c)+(f.g==='Graus superiores'?'<span class="bcap">'+esc(f.t.replace(/\s*\(.*\)/,''))+'</span>':'');if(f.g==='Graus superiores')b.classList.add('has-cap');
+      b.addEventListener('click',function(){if(dragged)return;go(mod,f.id,null)});strip.appendChild(b);
+    });
+    markStrip();
+  }
+  function markStrip(){strip.classList.toggle('sel-on',!!beltId);$$('.bb',strip).forEach(function(b){var on=b.dataset.id===beltId;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on))})}
+  function node(){return path[path.length-1]}
+  function renderCrumb(){
+    crumb.innerHTML='';
+    path.forEach(function(n,i){
+      var last=i===path.length-1,p=document.createElement('button');p.type='button';p.className='cp'+(last?' cur':'');
+      p.innerHTML=(n.c?beltSvg(n.c,'sm'):'')+'<span>'+esc(n.t)+'</span>';
+      if(!last)p.addEventListener('click',function(){go(mod,beltId,i===0?null:path[i].h)});
+      crumb.appendChild(p);
+      if(!last){var s=document.createElement('span');s.className='csep';s.textContent='›';crumb.appendChild(s)}
+    });
+  }
+  var ARR='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>';
+  function renderStage(){
+    var f=path[0],n=node(),h='';
+    if(path.length===1){
+      h='<div class="bh"><div class="bt">'+beltSvg(f.c,'md')+'<div><h3>'+esc(f.t)+'</h3>'+(f.s?'<small>'+esc(f.s)+'</small>':'')+'</div></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="bcount">'+f.cards.length+' '+UI(f.cards.length===1?'top1':'topn')+'</span><a class="pbtn go" href="'+esc(f.href)+'">'+esc(UI('openx'))+' →</a></div></div><div class="ngrid">';
+      f.cards.forEach(function(c,i){
+        var tag=c.items&&c.items.length?'button':'a',at=tag==='a'?' href="'+esc(f.base+c.h)+'"':' type="button" data-h="'+esc(c.h)+'"';
+        h+='<'+tag+' class="nc"'+at+' style="animation-delay:'+(i*45)+'ms"><div class="top2"><span class="ic" lang="ja">'+(c.ic?esc(c.ic):'·')+'</span><span class="arr">'+ARR+'</span></div><h4>'+esc(c.t)+'</h4><p>'+esc(c.p)+'</p>'+(c.n?'<span class="nn">'+esc(c.n)+'</span>':'')+'</'+tag+'>';
+      });
+      h+='</div>';
+    }else{
+      h='<div class="bh"><div class="bt">'+beltSvg(f.c,'md')+'<div><h3>'+esc(n.t)+'</h3><small>'+esc(f.t)+'</small></div></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="bcount">'+n.items.length+' '+UI(n.items.length===1?'item1':'itemn')+'</span><a class="pbtn go" href="'+esc(f.base+n.h)+'">'+esc(UI('open'))+' →</a><button type="button" class="pbtn" data-back="1">← '+esc(UI('back'))+'</button></div></div><div class="ngrid">';
+      n.items.forEach(function(it,i){h+='<a class="nc" href="'+esc(it.href)+'" style="animation-delay:'+Math.min(i,24)*30+'ms"><div class="top2"><span class="ja" lang="ja">'+esc(it.ja)+'</span><span class="arr">'+ARR+'</span></div><h4>'+esc(it.n)+'</h4>'+(it.s&&it.s!==it.n?'<p>'+esc(it.s)+'</p>':'')+'</a>'});
+      h+='</div>';
+    }
+    stage.innerHTML=h;
+    $$('.nc[data-h]',stage).forEach(function(c){c.addEventListener('click',function(){go(mod,beltId,c.dataset.h)})});
+    var bk=$('[data-back]',stage);if(bk)bk.addEventListener('click',function(){go(mod,beltId,null)});
+  }
+  function show(){
+    $('#stKc').textContent=kj[mod];$('#stKc').className='kc t-'+mod;$('#stTitle').textContent=modName[mod];$('#stExp').href='explorar/#/'+hashRoute[mod];
+    renderStrip();
+    if(!beltId){rev.classList.remove('on');crumb.innerHTML='';stage.innerHTML='';return}
+    var f=belts().filter(function(x){return x.id===beltId})[0];if(!f){beltId=null;rev.classList.remove('on');return}
+    path=[{t:f.t,c:f.c,cards:f.cards,base:f.base,href:f.href,s:f.s}];
+    if(secH){var c=f.cards.filter(function(x){return x.h===secH&&x.items&&x.items.length})[0];if(c)path.push({t:c.t,h:c.h,items:c.items})}
+    markStrip();renderCrumb();stage.classList.add('out');
+    setTimeout(function(){renderStage();stage.classList.remove('out');rev.classList.add('on')},reduce?0:160);
+    var b=$('.bb.on',strip);if(b&&layout==='line')b.scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest',inline:'center'});
+  }
+  var secH=null,fromHome=false;
+  function go(m,b,h,morph){
+    fromHome=!!morph;var hs='#/'+hashRoute[m]+(b?'/'+b+(h?'/'+h:''):'');
+    if(location.hash===hs)apply();else location.hash=hs;
+  }
+  function parse(){var m=location.hash.match(/^#\/(judo|jiu-jitsu)(?:\/([\w-]+))?(?:\/([\w-]+))?$/);return m?{mod:m[1]==='judo'?'judo':'bjj',b:m[2]||null,h:m[3]||null}:null}
+  function apply(){
+    var r=parse();
+    if(!r){if(body.classList.contains('in-study'))leave(false);return}
+    var entering=!body.classList.contains('in-study');
+    mod=r.mod;beltId=r.b;secH=r.h;setM(mod);
+    if(entering){enter(mod)}else show();
+  }
+  window.addEventListener('hashchange',apply);
+  /* transição: círculo de kanji voa da tela 1 para a tela 2 */
+  function fly(from,to,mFrom,mTo,done){
+    var a=from.getBoundingClientRect(),c=document.createElement('div');c.className='kc morph t-'+mod;c.lang='ja';c.textContent=kj[mod];
+    c.style.cssText+='top:'+a.top+'px;left:'+a.left+'px;width:'+a.width+'px;height:'+a.height+'px';document.body.appendChild(c);
+    requestAnimationFrame(function(){requestAnimationFrame(function(){var b=to.getBoundingClientRect();c.style.top=b.top+'px';c.style.left=b.left+'px';c.style.width=b.width+'px';c.style.height=b.height+'px';c.style.fontSize=mTo})});
+    setTimeout(function(){c.remove();if(done)done()},reduce?0:660);
+  }
+  function enter(m){
+    var src=$(m==='judo'?'#kcJudo':'#kcBjj'),kc=$('#stKc'),was=src.getBoundingClientRect();
+    body.classList.add('in-study');window.scrollTo(0,0);show();
+    if(fromHome&&!reduce&&was.width){kc.classList.add('morphing');var c=document.createElement('div');c.className='kc morph t-'+m;c.lang='ja';c.textContent=kj[m];c.style.cssText='top:'+was.top+'px;left:'+was.left+'px;width:'+was.width+'px;height:'+was.height+'px;font-size:1.2rem';document.body.appendChild(c);
+      requestAnimationFrame(function(){requestAnimationFrame(function(){var t=kc.getBoundingClientRect();c.style.top=t.top+'px';c.style.left=t.left+'px';c.style.width=t.width+'px';c.style.height=t.height+'px';c.style.fontSize='1.05rem'})});
+      setTimeout(function(){kc.classList.remove('morphing');c.remove()},660)}
+    fromHome=false;
+  }
+  function leave(updateHash){
+    body.classList.remove('in-study');beltId=null;secH=null;
+    if(updateHash!==false&&parse())history.pushState('',document.title,location.pathname+location.search);
+    window.scrollTo(0,0);run();
+  }
+  $('#stHome').addEventListener('click',function(){leave(true)});
+  $('#stKc').addEventListener('click',function(){leave(true)});
+  $('#stKc').addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();leave(true)}});
+  $('#vLine').addEventListener('click',function(){setLayout('line')});$('#vList').addEventListener('click',function(){setLayout('list')});
+  function setLayout(l){layout=l;strip.classList.toggle('list',l==='list');$('#vLine').setAttribute('aria-pressed',String(l==='line'));$('#vList').setAttribute('aria-pressed',String(l==='list'))}
+  /* roda do mouse e arrastar na faixa em linha */
+  strip.addEventListener('wheel',function(e){if(layout!=='line')return;if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.preventDefault();strip.scrollLeft+=e.deltaY*1.15}},{passive:false});
+  var down=false,sx=0,sl0=0;
+  strip.addEventListener('mousedown',function(e){if(layout!=='line')return;down=true;dragged=false;sx=e.pageX;sl0=strip.scrollLeft;strip.classList.add('drag')});
+  window.addEventListener('mousemove',function(e){if(!down)return;var w=(e.pageX-sx)*1.3;if(Math.abs(w)>6)dragged=true;strip.scrollLeft=sl0-w});
+  window.addEventListener('mouseup',function(){if(!down)return;down=false;strip.classList.remove('drag');setTimeout(function(){dragged=false},40)});
+  /* ---------- gaveta ---------- */
   var dr=$('#drawer'),sc=$('#scrim'),bi=$('#bIdx'),q=$('#dq');
   function open(f){dr.classList.add('open');sc.classList.add('open');bi.classList.add('on');bi.setAttribute('aria-expanded','true');if(f)setTimeout(function(){q.focus()},200)}
   function close(){dr.classList.remove('open');sc.classList.remove('open');bi.classList.remove('on');bi.setAttribute('aria-expanded','false')}
   bi.addEventListener('click',function(){dr.classList.contains('open')?close():open(false)});
   $('#bSea').addEventListener('click',function(){open(true)});$('#bCls').addEventListener('click',close);sc.addEventListener('click',close);
-  function filt(){
-    var t=q.value.trim().toLowerCase(),n=0;
-    $$('#dc li').forEach(function(li){var ok=!t||(li.dataset.q||'').indexOf(t)>-1;li.hidden=!ok;if(ok)n++});
-    $$('#dc .dm').forEach(function(m){m.hidden=!$$('li',m).some(function(l){return !l.hidden})});
-    $$('#dc .dd').forEach(function(d){d.hidden=!$$('li',d).some(function(l){return !l.hidden})});
-    $('#dempty').style.display=n?'none':'block';
-  }
+  function filt(){var t=q.value.trim().toLowerCase(),n=0;$$('#dc li').forEach(function(li){var ok=!t||(li.dataset.q||'').indexOf(t)>-1;li.hidden=!ok;if(ok)n++});$$('#dc .dm').forEach(function(m){m.hidden=!$$('li',m).some(function(l){return !l.hidden})});$$('#dc .dd').forEach(function(d){d.hidden=!$$('li',d).some(function(l){return !l.hidden})});$('#dempty').style.display=n?'none':'block'}
   q.addEventListener('input',filt);
-  $$('#dc a').forEach(function(a){a.addEventListener('mouseenter',function(){var d=a.closest('.dd');if(d&&d.dataset.m)setM(d.dataset.m)})});
+  $$('#dc a').forEach(function(a){
+    a.addEventListener('mouseenter',function(){var d=a.closest('.dd');if(d&&d.dataset.m&&!body.classList.contains('in-study'))setM(d.dataset.m)});
+    if(a.dataset.belt)a.addEventListener('click',function(e){e.preventDefault();var d=a.closest('.dd');close();go(d.dataset.m,a.dataset.belt,null,true)});
+  });
   document.addEventListener('keydown',function(e){
     var typing=/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement||{}).tagName||'');
     if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();open(true);return}
     if(e.key==='/'&&!typing){e.preventDefault();open(true);return}
-    if(e.key==='Escape'&&dr.classList.contains('open')){close();return}
-    if(!typing&&!dr.classList.contains('open')&&(e.key==='ArrowDown'||e.key==='ArrowUp')&&document.activeElement&&document.activeElement.classList.contains('sel')){e.preventDefault();setM(cur==='judo'?'bjj':'judo');var a=$('.sel.is-active');if(a)a.focus()}
+    if(e.key==='Escape'){if(dr.classList.contains('open')){close();return}if(body.classList.contains('in-study')){leave(true);return}}
+    if(!typing&&!dr.classList.contains('open')&&!body.classList.contains('in-study')&&(e.key==='ArrowDown'||e.key==='ArrowUp')&&document.activeElement&&document.activeElement.classList.contains('sel')){e.preventDefault();setM(cur==='judo'?'bjj':'judo');var a=$('.sel.is-active');if(a)a.focus()}
   });
+  dots();paint();run();apply();
 })();
 </script>
 <script src="assets/i18n.js" data-dict="assets/i18n-landing.js"></script>
