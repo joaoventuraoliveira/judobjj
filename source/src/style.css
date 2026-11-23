@@ -288,3 +288,9 @@ html.lay-mobile .vmeta { font-size: 13px; }
 .vpl-meta span { font-size: 13px; color: var(--muted); }
 .vplaylist > a { font-size: 13px; text-decoration: none; }
 .vplaylist .vslot { flex-basis: 100%; }
+
+/* portal: links para o início e para o app */
+.portal { display: flex; gap: 6px; margin-left: 6px; }
+.portal a { padding: 6px 12px; border-radius: 999px; font-size: 14px; font-weight: 700; text-decoration: none; color: var(--ink); border: 1px solid var(--line, rgba(128,128,128,.35)); white-space: nowrap; }
+.portal a:hover { background: var(--ink); color: var(--bg); }
+html.lay-mobile .portal a:not(:first-child) { display: none; }

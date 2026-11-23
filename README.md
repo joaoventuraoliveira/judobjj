@@ -35,3 +35,12 @@ Conteúdo baseado nos regulamentos da CBJ, de federações estaduais e nas regra
 ## Ponto de restauração
 
 A versão anterior (site em página única, antes do livro interativo) está no ramo `backup/v1.0`. Para voltar a ela: `git checkout main && git reset --hard backup/v1.0 && git push --force origin main`.
+
+## Portal: Judô e Jiu-Jitsu
+
+A página inicial (`site/index.html`) apresenta as duas modalidades, com os kanjis e os termos habituais:
+
+- **Judô (柔道):** o livro interativo (`site/livro.html`, antigo `index.html`), a videoteca oficial e o app **Faixa a faixa** (`site/app/#judo/j01`) com o programa de cada kyū, dan e grau superior.
+- **Jiu-Jitsu (柔術):** o app **Faixa a faixa** (`site/app/#bjj/b01`) com o programa técnico da JJIF por faixa, ficha de exame editável, lista de componentes (guardas, raspagens, transições, chaves, estrangulamentos, defesa pessoal), regras IBJJF/CBJJ, apostila da LBJJ e vídeos oficiais.
+- **App:** `site/app/` (HTML, `data.js` e miniaturas) é gerado pelo projeto local Judo_BJJ (ver `source/app-gerador/`), com tema escuro, botão de idioma PT-BR/EN (nomes em japonês sempre mantidos), busca, progresso salvo no aparelho e as fontes de cada página. Links antigos do livro (`.../#capitulo`) são redirecionados para `livro.html`.
+- Para remontar: `python source/portal/montar_portal.py <pasta www do app>`.
