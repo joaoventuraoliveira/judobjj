@@ -3,8 +3,8 @@
    (alt, aria-label, <title>, texto oculto .sr) ou ser decorativo explícito (aria-hidden) ao lado de texto visível. */
 async page => {
   const BASE = 'http://127.0.0.1:8793';
-  const URLS = ['/', '/#/judo', '/#/judo/j04', '/#/jiu-jitsu/b03', '/explorar/#/judo', '/explorar/#/jiu-jitsu', '/explorar/#/judo/faixa/j04', '/explorar/#/judo/faixa/j04/nage',
-    '/explorar/#/judo/tecnica/uchi-mata', '/explorar/#/judo/t/glossario', '/explorar/#/judo/t/proibidas', '/explorar/#/jiu-jitsu/faixa/b03', '/explorar/#/jiu-jitsu/faixa/b03/proib', '/explorar/#/jiu-jitsu/t/guardas',
+  const URLS = ['/', '/#/sobre', '/#/judo', '/#/judo/j04', '/#/jiu-jitsu/b03', '/explorar/#/judo', '/explorar/#/jiu-jitsu', '/explorar/#/judo/faixa/j04', '/explorar/#/judo/faixa/j04/nage',
+    '/explorar/#/judo/tecnica/uchi-mata', '/explorar/#/judo/t/glossario', '/explorar/#/judo/t/proibidas', '/explorar/#/jiu-jitsu/faixa/b03', '/explorar/#/jiu-jitsu/faixa/b03/proib', '/explorar/#/jiu-jitsu/t/guardas', '/explorar/#/jiu-jitsu/item/o-soto-gari', '/explorar/#/jiu-jitsu/item/single-leg',
     '/livro.html', '/app/#judo/j01', '/app/#bjj/b03'];
   const bad = [], seen = new Set();
   for (const u of URLS) {
