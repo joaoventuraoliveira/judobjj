@@ -58,10 +58,16 @@ def _bjj_items():
 _bjj_items()
 # faixas: "Branca → Cinza" etc.
 BELT = UI.BELT_EN
+def _ord(n):
+    n = int(n); return f"{n}th" if 10 <= n % 100 <= 20 else f"{n}" + {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+BELT_L = {k.lower(): v for k, v in BELT.items()}
+_BELT_RE = re.compile(r"\b(" + "|".join(map(re.escape, BELT_L)) + r")\b", re.I)
 def belt_en(s):
-    r = re.sub(r"\b(" + "|".join(map(re.escape, BELT)) + r")\b", lambda m: BELT[m.group(1)], s)
-    r = re.sub(r"(\d+)º Kyû", r"\1th Kyu", r); r = r.replace("º Dan", "th Dan")
-    return r
+    def sub(m):
+        v = BELT_L[m.group(1).lower()]
+        return v.lower() if m.group(1)[:1].islower() else v
+    r = _BELT_RE.sub(sub, s).replace("Kyû", "Kyu").replace("kyô", "kyu")
+    return re.sub(r"(\d+)º", lambda m: _ord(m.group(1)), r)
 BELT_STR = set()
 for f in PORTAL["judo"]["faixas"] + PORTAL["bjj"]["faixas"]:
     BELT_STR.add(f["titulo"]); BELT_STR.add(f.get("sub", ""))
@@ -124,7 +130,7 @@ GRUPOS_KODOKAN = {"Kansetsu-waza (chaves de braço)":"Kansetsu-waza (armlocks)",
 for _pt, _en in GRUPOS_KODOKAN.items():
     EXTRA_RULES.append([r"^(.+) é uma técnica do grupo " + re.escape(_pt) + r" da classificação do Kodokan/IJF\. O livro não traz ficha de estudo para esta técnica: use o vídeo oficial e a página da IJF\.$", "$1 is a technique of the " + _en + " group in the Kodokan/IJF classification. The book has no study sheet for this technique: use the official video and the IJF page."])
 def build(nome, strings, extra_rules=EXTRA_RULES):
-    pt = sorted({norm(s) for s in strings if eh_pt(s)}, key=len)
+    pt = sorted({norm(s) for s in strings if eh_pt(s) or norm(s) in BELT_STR}, key=len)
     print(nome, ":", len(pt), "textos a traduzir"); sys.stdout.flush()
     dic = {}; n = 0
     for s in pt:
