@@ -71,6 +71,8 @@ for row in PORTAL["judo"]["idade"]:
 def traduzir(s):
     k = norm(s)
     if k in manual: return manual[k]
+    if k.endswith('.') and k[:-1] in manual: return manual[k[:-1]] + '.'
+    if not k.endswith('.') and (k + '.') in manual: return manual[k + '.'].rstrip('.')
     if k in BELT_STR and re.search(r"Branca|Cinza|Amarela|Laranja|Verde|Azul|Roxa|Marrom|Preta|Vermelha|Kyû|Dan", k): return belt_en(k)
     if k in NAMES: return NAMES[k]
     if k in UI_EN: return UI_EN[k]
