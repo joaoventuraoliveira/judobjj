@@ -29,7 +29,7 @@
 <script src="assets/belts.js"></script>
 <link rel="stylesheet" href="assets/tokens.css">
 <link rel="stylesheet" href="assets/prefs.css">
-<script>try{ if(location.hash.length>1 && !/^#(\/(judo|jiu-jitsu)(\/[\w-]+)*|\/sobre(\/fontes)?|judo|jiu-jitsu|fontes|como)$/.test(location.hash)) location.replace('livro.html'+location.hash); }catch(e){}</script>
+<script>try{ if(location.hash.length>1 && !/^#(\/(judo|jiu-jitsu)(\/[\w-]+)*|\/sobre(\/(fontes|creditos))?|judo|jiu-jitsu|fontes|como)$/.test(location.hash)) location.replace('livro.html'+location.hash); }catch(e){}</script>
 <style>
 :root{--judo:#2f64c8;--bjj:#7a3fa3;--ease:cubic-bezier(.22,1,.36,1);--ease2:cubic-bezier(.25,1.15,.4,1);--acc:var(--judo);--glow:color-mix(in srgb,var(--judo) 26%,transparent)}
 body[data-active="bjj"]{--acc:var(--bjj);--glow:color-mix(in srgb,var(--bjj) 30%,transparent)}
@@ -40,14 +40,14 @@ a{color:inherit}button{font:inherit;color:inherit}:focus-visible{outline:2px sol
 .skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;background:#fff;color:#000;padding:8px 12px;z-index:99}
 header.top{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;padding:12px clamp(16px,4vw,48px);position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
 .prefs-bar{margin-left:auto}.logo{font:650 1.2rem var(--display);letter-spacing:-.02em;text-decoration:none}.logo span{font-family:var(--jp);font-weight:700;margin-left:8px;color:var(--muted)}
-nav.main{display:flex;gap:6px;flex-wrap:wrap}nav.main a{padding:7px 14px;border-radius:999px;background:var(--soft);text-decoration:none;font-weight:700;font-size:.88rem;transition:background var(--t),color var(--t)}nav.main a:hover{background:var(--ink);color:var(--bg)}
+nav.main{display:flex;gap:6px;flex-wrap:wrap}nav.main a.about-link{display:inline-flex;align-items:center;gap:6px}nav.main a{padding:7px 14px;border-radius:999px;background:var(--soft);text-decoration:none;font-weight:700;font-size:.88rem;transition:background var(--t),color var(--t)}nav.main a:hover{background:var(--ink);color:var(--bg)}
 .wrap{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,48px) 72px clamp(16px,4vw,48px)}
 /* ---- tela 1: entrada ---- */
 .home-view{min-height:calc(100vh - 64px);display:flex;flex-direction:column;justify-content:center;padding:clamp(20px,4vw,40px) 0 clamp(28px,5vw,56px) clamp(0px,3vw,48px)}
 .home-view h1{font:650 clamp(1.9rem,3.8vw,3rem)/1.1 var(--display);letter-spacing:-.025em;margin:0 0 clamp(20px,3.4vw,38px)}
-.stage{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:clamp(20px,3.4vw,44px);align-items:center}
-.selectors{display:flex;flex-direction:column;gap:clamp(16px,3vw,18px)}
-.sel{appearance:none;text-align:left;cursor:pointer;display:flex;align-items:center;gap:18px;padding:16px 20px;border-radius:20px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 78%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:.64;transform:scale(.99);transition:transform .6s var(--ease),opacity .6s var(--ease),border-color .6s var(--ease),box-shadow .6s var(--ease),background .6s var(--ease)}
+.stage{position:relative;display:flex;align-items:stretch;min-height:clamp(440px,60vh,580px);border-radius:28px;overflow:hidden;border:1px solid var(--line);background:#0c0d11;box-shadow:0 26px 60px -22px rgba(0,0,0,.6)}
+.selectors{position:relative;z-index:4;display:flex;flex-direction:column;justify-content:center;gap:clamp(26px,4vw,34px);width:min(100%,470px);padding:clamp(22px,4vw,52px)}
+.sel{appearance:none;text-align:left;cursor:pointer;display:flex;align-items:center;gap:18px;padding:16px 20px;border-radius:20px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:.82;transform:scale(.99);transition:transform .6s var(--ease),opacity .6s var(--ease),border-color .6s var(--ease),box-shadow .6s var(--ease),background .6s var(--ease)}
 .sel:hover{opacity:.9}.sel.is-active{opacity:1;transform:translateX(10px) scale(1.01);background:var(--surface)}
 .sel[data-m="judo"].is-active{border-color:color-mix(in srgb,var(--judo) 60%,transparent);box-shadow:0 18px 40px -14px color-mix(in srgb,var(--judo) 55%,transparent)}
 .sel[data-m="bjj"].is-active{border-color:color-mix(in srgb,var(--bjj) 60%,transparent);box-shadow:0 18px 40px -14px color-mix(in srgb,var(--bjj) 55%,transparent)}
@@ -56,18 +56,16 @@ nav.main{display:flex;gap:6px;flex-wrap:wrap}nav.main a{padding:7px 14px;border-
 .sel[data-m="bjj"].is-active .kc,.kc.t-bjj{color:#fff;border-color:var(--bjj);background:color-mix(in srgb,var(--bjj) 70%,#000);box-shadow:0 0 22px color-mix(in srgb,var(--bjj) 45%,transparent)}
 .sel b{display:block;font:650 1.5rem/1.1 var(--display);letter-spacing:-.01em}.sel small{display:block;margin-top:4px;color:var(--muted);font-size:.84rem;line-height:1.3}
 .sel .go{margin-left:auto;font-size:1.2rem;opacity:.4;transition:opacity .5s,transform .5s var(--ease)}.sel.is-active .go{opacity:.9;transform:translateX(3px)}
-.gallery{position:relative;aspect-ratio:16/10;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:#0c0d11;box-shadow:0 26px 60px -22px rgba(0,0,0,.6)}
-.gallery .sl{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 25%;background:linear-gradient(160deg,#1b2030,#0c0d11);opacity:0;transform:scale(1.06);transition:opacity 1.2s var(--ease)}
-.gallery .sl.on{opacity:1;animation:kb 9s ease-out forwards}
+.gallery{position:absolute;inset:0;z-index:1;overflow:hidden;background:#0c0d11;--fit:contain;--pos:76% center}.gallery.fotos{--fit:cover;--pos:center 30%}
+.gallery .sl{position:absolute;inset:0;width:100%;height:100%;object-fit:var(--fit,contain);object-position:var(--pos,76% center);background:linear-gradient(160deg,#1b2030,#0c0d11);opacity:0;transform:scale(1.06);transition:opacity 1.2s var(--ease)}
+.gallery .sl.on{opacity:.66;animation:kb 9s ease-out forwards}
 @keyframes kb{from{transform:scale(1) translate(0,0)}to{transform:scale(1.07) translate(-1%,-.5%)}}
 .gpause{appearance:none;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(10,10,12,.5);color:#fff;cursor:pointer;display:grid;place-items:center;font-size:.8rem;margin-left:4px}
-.gallery::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(7,7,9,.25),transparent 28%,rgba(7,7,9,.7))}
-.hud{position:absolute;left:18px;right:18px;bottom:14px;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px;color:rgba(255,255,255,.8);font-size:.78rem;letter-spacing:.08em;font-variant-numeric:tabular-nums}
+.gallery::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(7,7,9,.82) 0%,rgba(7,7,9,.38) 52%,rgba(7,7,9,.5) 100%),linear-gradient(180deg,rgba(7,7,9,.2),transparent 30%,rgba(7,7,9,.62))}
+.hud{position:absolute;left:18px;right:18px;bottom:14px;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;color:rgba(255,255,255,.8);font-size:.78rem;letter-spacing:.08em;font-variant-numeric:tabular-nums}
 .hud .cap{max-width:60%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0}
 .dots{display:flex;gap:5px;align-items:center}.dot{width:12px;height:2px;border-radius:2px;background:rgba(255,255,255,.25);transition:width .5s var(--ease),background .5s}.dot.on{width:22px;background:rgba(255,255,255,.9)}
-.gbtn{position:absolute;top:50%;z-index:3;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:rgba(10,10,12,.5);color:#fff;font-size:1.1rem;cursor:pointer;display:grid;place-items:center;opacity:0;transition:opacity .3s}
-.gallery:hover .gbtn,.gbtn:focus-visible{opacity:1}.gbtn.prev{left:12px}.gbtn.next{right:12px}
-@media (hover:none){.gbtn{opacity:.85}}
+.gbtn{appearance:none;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(10,10,12,.5);color:#fff;font-size:1.1rem;cursor:pointer;display:grid;place-items:center;margin-left:4px}
 .morph{position:fixed;z-index:60;pointer-events:none;margin:0;transition:top .65s var(--ease),left .65s var(--ease),width .65s var(--ease),height .65s var(--ease),font-size .65s var(--ease)}
 /* ---- tela 2: faixas (só desenhos) + árvore ---- */
 .study-view{display:none;padding:clamp(16px,3vw,30px) 0 0 clamp(0px,3vw,48px)}
@@ -129,7 +127,7 @@ ol.refs{padding-left:1.2rem;color:var(--muted);font-size:.92rem}ol.refs li{margi
 footer{position:relative;z-index:2;border-top:1px solid var(--line);padding:22px clamp(16px,4vw,48px);color:var(--muted);font-size:.9rem;text-align:center}footer a{color:var(--accent)}
 /* ---- barra flutuante e gaveta ---- */
 .fnav{position:fixed;left:16px;top:50%;transform:translateY(-50%);z-index:30;display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 7px;border-radius:999px;background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 16px 38px rgba(0,0,0,.35)}
-.fnav button{appearance:none;border:0;background:transparent;color:var(--muted);width:38px;height:38px;border-radius:50%;display:grid;place-items:center;cursor:pointer;transition:color var(--t),background var(--t)}
+.fnav .fbtn{border:0;background:transparent;color:var(--muted);width:38px;height:38px;border-radius:50%;display:grid;place-items:center;text-decoration:none;transition:color var(--t),background var(--t)}.fnav .fbtn:hover,.fnav .fbtn:focus-visible{color:var(--ink);background:var(--surface-2)}.fnav button{appearance:none;border:0;background:transparent;color:var(--muted);width:38px;height:38px;border-radius:50%;display:grid;place-items:center;cursor:pointer;transition:color var(--t),background var(--t)}
 .fnav button:hover,.fnav button.on{color:var(--ink);background:var(--surface-2)}.fnav i{width:18px;height:1px;background:var(--line-strong)}
 .drawer{position:fixed;left:16px;top:16px;bottom:16px;width:340px;max-width:calc(100vw - 32px);z-index:40;display:flex;flex-direction:column;background:color-mix(in srgb,var(--surface) 94%,transparent);border:1px solid var(--line-strong);border-radius:22px;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);box-shadow:0 28px 70px rgba(0,0,0,.5);transform:translateX(calc(-100% - 32px));opacity:0;visibility:hidden;transition:transform .5s var(--ease),opacity .4s var(--ease),visibility .5s}
 .drawer.open{transform:none;opacity:1;visibility:visible}
@@ -147,7 +145,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--line);padding:22px
 [hidden]{display:none!important}
 .sr{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
 @media (max-width:920px){
-  .stage{grid-template-columns:minmax(0,1fr);gap:20px}.home-view{padding-left:0}.study-view{padding-left:0}
+  .stage{min-height:600px;border-radius:22px}.selectors{width:100%;padding:24px 18px 64px}.home-view{padding-left:0}.study-view{padding-left:0}
   .sel.is-active{transform:translateX(5px) scale(1.01)}
   .cols{grid-template-columns:minmax(0,1fr)}
   .fnav{top:auto;bottom:16px;left:16px;transform:none;flex-direction:row;padding:6px 10px}.fnav i{width:1px;height:18px}
@@ -156,8 +154,8 @@ footer{position:relative;z-index:2;border-top:1px solid var(--line);padding:22px
   .prefs-bar{margin-left:0;width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.prefs-bar::-webkit-scrollbar{display:none}.prefs-bar>*{flex:0 0 auto}
   .wrap{padding-bottom:96px}
   .home-view{min-height:0;justify-content:flex-start;padding-top:18px}.home-view h1{font-size:1.75rem;margin-bottom:18px}
-  .selectors{gap:24px}.sel{padding:16px 18px;gap:14px;min-height:88px}.kc{width:54px;height:54px;min-width:54px;font-size:1.05rem}.sel b{font-size:1.3rem}
-  .gallery{aspect-ratio:4/3;border-radius:20px}.hud{left:14px;right:14px;gap:8px}.hud .cap{display:none}.dots{margin-right:auto}#gNum{white-space:nowrap}
+  .selectors{gap:34px}.sel{padding:16px 18px;gap:14px;min-height:92px}.kc{width:54px;height:54px;min-width:54px;font-size:1.05rem}.sel b{font-size:1.3rem}
+  .hud{left:14px;right:14px;gap:6px;bottom:auto;top:12px}.hud .cap{display:none}.dots{margin-right:auto}#gNum{white-space:nowrap}
   .stbar{gap:10px;padding-bottom:14px;margin-bottom:12px}.sid .kc{width:46px;height:46px;min-width:46px}
   .tact{width:100%;justify-content:space-between;gap:8px}.lsw button{padding:6px 12px}.pbtn{padding:7px 12px;font-size:.8rem}#stExp{display:none}
   .bb{width:86px;height:64px}.bsvg{width:62px;height:40px}.crumb{margin:2px 0 16px;padding:8px 10px;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}.cp{flex:0 0 auto}
@@ -174,6 +172,8 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
 <aside class="fnav" aria-label="Acesso rápido ao sumário e à busca">
   <button type="button" id="bIdx" title="Sumário e índice" aria-label="Abrir o sumário e o índice" aria-expanded="false" aria-controls="drawer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h11M4 18h14"/></svg></button>
   <i aria-hidden="true"></i>
+  <a class="fbtn" id="bAbout" href="#/sobre" title="Sobre o site" aria-label="Sobre o site"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5h.01"/></svg></a>
+  <i aria-hidden="true"></i>
   <button type="button" id="bSea" title="Buscar técnica ou exame (Ctrl+K)" aria-label="Buscar técnica ou exame"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg></button>
 </aside>
 <div class="scrim" id="scrim"></div>
@@ -181,6 +181,7 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
   <div class="dh"><h2>Sumário e índice</h2><button type="button" id="bCls" aria-label="Fechar o sumário">✕</button></div>
   <div class="ds"><input type="search" id="dq" placeholder="Buscar técnica, exame ou termo" aria-label="Buscar técnica, exame ou termo" autocomplete="off"></div>
   <div class="dc" id="dc">
+<section class="dd" data-m="sobre"><h3><span class="bd" aria-hidden="true">i</span><span>Sobre</span></h3><div class="dm"><ul><li data-q="sobre o site sobre portal como usar fontes referências aviso"><a href="#/sobre"><span>Sobre o site</span><small>explicações gerais</small></a></li><li data-q="créditos das imagens fotos licença autoria"><a href="#/sobre/creditos"><span>Créditos das imagens</span><small>autoria das fotos</small></a></li><li data-q="fontes e referências bibliografia fontes oficiais"><a href="#/sobre/fontes"><span>Fontes e referências</span><small>origem das informações</small></a></li></ul></div></section>
 {{DRAWER}}
     <p class="dempty" id="dempty">Nada encontrado para essa busca.</p>
   </div>
@@ -188,7 +189,7 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
 
 <header class="top">
   <a class="logo" href="./">Judô &amp; Jiu-Jitsu<span lang="ja">柔道 · 柔術</span></a>
-  <nav class="main" aria-label="Principal"><a href="#/judo">Judô</a><a href="#/jiu-jitsu">Jiu-Jitsu</a><a href="#/sobre">Sobre</a><a href="#/sobre/fontes">Fontes</a><a href="livro.html#transparencia">Uso de IA</a></nav>
+  <nav class="main" aria-label="Principal"><a href="#/judo">Judô</a><a href="#/jiu-jitsu">Jiu-Jitsu</a><a href="#/sobre" class="about-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5h.01"/></svg> Sobre</a><a href="#/sobre/fontes">Fontes</a><a href="livro.html#transparencia">Uso de IA</a></nav>
   <div class="prefs-bar" data-prefs></div>
 </header>
 
@@ -201,11 +202,9 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
         <button type="button" class="sel is-active" data-m="judo" aria-pressed="true"><span class="kc" id="kcJudo" lang="ja" aria-hidden="true">柔道</span><span><b>Judô</b><small>Programa da CBJ e regras da IJF</small></span><span class="go" aria-hidden="true">→</span></button>
         <button type="button" class="sel" data-m="bjj" aria-pressed="false"><span class="kc" id="kcBjj" lang="ja" aria-hidden="true">柔術</span><span><b>Jiu-Jitsu</b><small>Programa técnico da JJIF e regras IBJJF/CBJJ</small></span><span class="go" aria-hidden="true">→</span></button>
       </div>
-      <div class="gallery" id="gal" role="group" aria-roledescription="carrossel" aria-label="Ilustrações da modalidade">
+      <div class="gallery fotos" id="gal" role="group" aria-roledescription="carrossel" aria-label="Ilustrações da modalidade">
 {{SLIDES}}
-        <button type="button" class="gbtn prev" id="gPrev" aria-label="Imagem anterior">‹</button>
-        <button type="button" class="gbtn next" id="gNext" aria-label="Próxima imagem">›</button>
-        <div class="hud"><span class="cap" id="gCap" aria-live="polite"></span><span class="dots" id="gDots" aria-hidden="true"></span><span id="gNum">01 / 10</span><button type="button" class="gpause" id="gPause" aria-label="Pausar a apresentação de imagens" aria-pressed="false"><span aria-hidden="true">❚❚</span></button></div>
+        <div class="hud"><span class="cap" id="gCap"></span><span class="dots" id="gDots" aria-hidden="true"></span><span id="gNum">01 / 10</span><button type="button" class="gbtn prev" id="gPrev" aria-label="Imagem anterior"><span aria-hidden="true">‹</span></button><button type="button" class="gbtn next" id="gNext" aria-label="Próxima imagem"><span aria-hidden="true">›</span></button><button type="button" class="gpause" id="gPause" aria-label="Pausar a apresentação de imagens" aria-pressed="false"><span aria-hidden="true">❚❚</span></button></div>
       </div>
     </section>
   </main>
@@ -279,6 +278,11 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
         <div class="card"><h3>Simule e estude</h3><p>Marque o que já estudou e preencha a ficha de exame da JJIF para simular uma avaliação. O progresso fica só no seu aparelho.</p></div>
       </div>
     </section>
+    <section class="box" id="creditos" aria-labelledby="h-creditos">
+      <h2 id="h-creditos">Créditos das imagens</h2>
+      <p class="lead">As fotos da tela inicial são de licença livre, obtidas na Wikimedia Commons (CC0, domínio público ou CC BY 2.0), e foram reduzidas e escurecidas para servir de fundo. Autoria e licença de cada uma:</p>
+      <ul class="refs">{{CREDITOS}}</ul>
+    </section>
     <section class="box" id="fontes" aria-labelledby="h-fontes">
       <h2 id="h-fontes">Fontes e referências do app</h2>
       <ol class="refs">{{REFS}}</ol>
@@ -301,7 +305,7 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
   var cur='judo',idx=0,timer=null,modName={judo:'Judô',bjj:'Jiu-Jitsu'},kj={judo:'柔道',bjj:'柔術'},hashRoute={judo:'judo',bjj:'jiu-jitsu'};
   /* ---------- galeria ---------- */
   function load(i){if(i&&!i.getAttribute('src')&&i.dataset.src)i.setAttribute('src',i.dataset.src)}
-  function paint(){var l=slides[cur];$$('.sl').forEach(function(s){s.classList.remove('on')});var s=l[idx];load(s);load(l[(idx+1)%l.length]);s.classList.add('on');$('#gNum').textContent=String(idx+1).padStart(2,'0')+' / '+String(l.length).padStart(2,'0');$('#gCap').textContent=s.getAttribute('alt')||'';$$('.dot').forEach(function(d,i){d.classList.toggle('on',i===idx)})}
+  function paint(){var l=slides[cur];$$('.sl').forEach(function(s){s.classList.remove('on')});var s=l[idx];load(s);load(l[(idx+1)%l.length]);s.classList.add('on');$('#gNum').textContent=String(idx+1).padStart(2,'0')+' / '+String(l.length).padStart(2,'0');$('#gCap').textContent=s.dataset.cap||s.getAttribute('alt')||'';$$('.dot').forEach(function(d,i){d.classList.toggle('on',i===idx)})}
   function dots(){var h='';for(var i=0;i<slides[cur].length;i++)h+='<span class="dot"></span>';$('#gDots').innerHTML=h}
   function step(n){var L=slides[cur].length;idx=(idx+n+L)%L;paint()}
   var paused=false;function run(){clearInterval(timer);timer=setInterval(function(){if(!paused&&!document.hidden&&!body.classList.contains('in-study')&&!body.classList.contains('in-about'))step(1)},reduce?5200:4200)}
@@ -388,11 +392,11 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
     fromHome=!!morph;var hs='#/'+hashRoute[m]+(b?'/'+b+(h?'/'+h:''):'');
     if(location.hash===hs)apply();else location.hash=hs;
   }
-  function parseAbout(){var m=location.hash.match(/^#\/sobre(?:\/(fontes))?$/);return m?{f:m[1]||''}:null}
+  function parseAbout(){var m=location.hash.match(/^#\/sobre(?:\/(fontes|creditos))?$/);return m?{f:m[1]||''}:null}
   function parse(){var m=location.hash.match(/^#\/(judo|jiu-jitsu)(?:\/([\w-]+))?(?:\/([\w-]+))?$/);return m?{mod:m[1]==='judo'?'judo':'bjj',b:m[2]||null,h:m[3]||null}:null}
   function apply(){
     var ab=parseAbout();
-    if(ab){body.classList.remove('in-study');body.classList.add('in-about');document.title='Sobre · Judô e Jiu-Jitsu';if(ab.f){var fe=document.getElementById('fontes');if(fe)setTimeout(function(){fe.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'})},60)}else window.scrollTo(0,0);return}
+    if(ab){body.classList.remove('in-study');body.classList.add('in-about');document.title='Sobre · Judô e Jiu-Jitsu';if(ab.f){var fe=document.getElementById(ab.f);if(fe)setTimeout(function(){fe.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'})},60)}else window.scrollTo(0,0);return}
     if(body.classList.contains('in-about')){body.classList.remove('in-about');document.title='Judô e Jiu-Jitsu: exames de faixa'}
     var r=parse();
     if(!r){if(body.classList.contains('in-study'))leave(false);return}
@@ -442,7 +446,8 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
   function filt(){var t=q.value.trim().toLowerCase(),n=0;$$('#dc li').forEach(function(li){var ok=!t||(li.dataset.q||'').indexOf(t)>-1;li.hidden=!ok;if(ok)n++});$$('#dc .dm').forEach(function(m){m.hidden=!$$('li',m).some(function(l){return !l.hidden})});$$('#dc .dd').forEach(function(d){d.hidden=!$$('li',d).some(function(l){return !l.hidden})});$('#dempty').style.display=n?'none':'block'}
   q.addEventListener('input',filt);
   $$('#dc a').forEach(function(a){
-    a.addEventListener('mouseenter',function(){var d=a.closest('.dd');if(d&&d.dataset.m&&!body.classList.contains('in-study'))setM(d.dataset.m)});
+    a.addEventListener('mouseenter',function(){var d=a.closest('.dd');if(d&&(d.dataset.m==='judo'||d.dataset.m==='bjj')&&!body.classList.contains('in-study')&&!body.classList.contains('in-about'))setM(d.dataset.m)});
+    if(/^#\/sobre/.test(a.getAttribute('href')||''))a.addEventListener('click',function(){close()});
     if(a.dataset.belt)a.addEventListener('click',function(e){e.preventDefault();var d=a.closest('.dd');close();go(d.dataset.m,a.dataset.belt,null,true)});
   });
   document.addEventListener('keydown',function(e){
