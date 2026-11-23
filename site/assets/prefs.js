@@ -42,8 +42,8 @@
   function build(c) {
     var only = c.getAttribute("data-prefs"), h = "";
     if (only !== "lang" && only !== "theme") h += '<div class="seg" role="group" aria-label="' + T.layout + '"><button type="button" data-layout-set="auto" title="' + T.l0 + '">' + T.auto + '</button><button type="button" data-layout-set="desktop" title="' + T.l1 + '">' + T.pc + '</button><button type="button" data-layout-set="mobile" title="' + T.l2 + '">' + T.cel + '</button></div>';
-    if (only !== "layout" && only !== "lang") h += '<div class="seg" role="group" aria-label="' + T.tema + '"><button type="button" data-theme-set="auto" title="' + T.t0 + '">◐</button><button type="button" data-theme-set="light" title="' + T.t1 + '">☀</button><button type="button" data-theme-set="dark" title="' + T.t2 + '">☾</button></div>';
-    if (only !== "layout" && only !== "theme") h += '<div class="seg" role="group" aria-label="' + T.idioma + '"><button type="button" data-lang-set="pt">PT-BR</button><button type="button" data-lang-set="en">EN</button></div>';
+    if (only !== "layout" && only !== "lang") h += '<div class="seg" role="group" aria-label="' + T.tema + '"><button type="button" data-theme-set="auto" title="' + T.t0 + '" aria-label="' + T.t0 + '"><span aria-hidden="true">◐</span></button><button type="button" data-theme-set="light" title="' + T.t1 + '" aria-label="' + T.t1 + '"><span aria-hidden="true">☀</span></button><button type="button" data-theme-set="dark" title="' + T.t2 + '" aria-label="' + T.t2 + '"><span aria-hidden="true">☾</span></button></div>';
+    if (only !== "layout" && only !== "theme") h += '<div class="seg" role="group" aria-label="' + T.idioma + '"><button type="button" data-lang-set="pt" lang="pt-BR" aria-label="Português (Brasil)">PT-BR</button><button type="button" data-lang-set="en" lang="en" aria-label="English">EN</button></div>';
     c.innerHTML = h;
   }
   document.addEventListener("DOMContentLoaded", function () { document.querySelectorAll("[data-prefs]").forEach(build); press(); });

@@ -14,7 +14,7 @@ function shade(h, f) { const n = parseInt(h.slice(1), 16); const c = [n >> 16, n
 function belt(c, label) {
   const c1 = c[0], c2 = c[1] || null, st = "rgba(0,0,0,.4)";
   const bar = (pts) => c2 ? `<polygon points="${pts}" fill="${c2}" stroke="${st}" stroke-width="1"/>` : "";
-  return `<svg viewBox="0 0 200 138" role="img" aria-label="Faixa ${esc(label || "")}">
+  return `<svg viewBox="0 0 200 138" role="img" aria-label="${esc((window.JTBelts && JTBelts.label(c)) || ("Faixa " + (label || "")))}">
   <polygon points="92,64 52,126 78,134 110,72" fill="${c1}" stroke="${st}" stroke-width="1.5"/>
   <polygon points="108,64 148,122 124,132 90,72" fill="${c1}" stroke="${st}" stroke-width="1.5"/>
   ${bar("60,112 70,126 78,134 83,124")}${bar("133,109 140,117 124,132 118,121")}
@@ -29,7 +29,7 @@ function belt(c, label) {
 const crumbs = list => `<nav class="crumbs" aria-label="Você está em">${list.map((x, i) => i === list.length - 1 ? `<span aria-current="page">${esc(x[0])}</span>` : `<span><a href="${x[1]}">${esc(x[0])}</a></span>`).join("")}</nav>`;
 const names = o => `<div class="names">${o.ja ? `<div class="jp" lang="ja">${esc(o.ja)}</div>` : ""}<div class="ro">${esc(o.nome || o.ro || "")}</div>${o.en ? `<div class="tr">${esc(o.en)} <em>(inglês, Kodokan)</em></div>` : ""}${o.pt ? `<div class="tr">${esc(o.pt)} <em>(português, sugestão do app)</em></div>` : ""}</div>`;
 function player(id, title) {
-  return `<div class="player" data-yt="${esc(id)}"><img src="${yt(id)}" alt="Prévia do vídeo: ${esc(title)}" loading="lazy"><button type="button" data-play="${esc(id)}" aria-label="Assistir aqui: ${esc(title)}"><span>▶</span></button></div>`;
+  return `<div class="player" data-yt="${esc(id)}"><img src="${yt(id)}" alt="Prévia do vídeo: ${esc(title)}" loading="lazy"><button type="button" data-play="${esc(id)}" aria-label="Assistir aqui: ${esc(title)}"><span aria-hidden="true">▶</span></button></div>`;
 }
 const tcard = s => { const t = T[s]; if (!t) return ""; const im = t.imgs[0] ? "../" + t.imgs[0].src : yt(t.yt); return `<a class="tcard" href="#/judo/tecnica/${s}"><div class="th" style="background-image:url('${esc(im)}')"></div><div class="tx"><span class="jp" lang="ja">${esc(t.ja)}</span><b>${esc(t.nome)}</b><small>${esc(t.pt || t.en)}</small></div></a>`; };
 const tlink = s => T[s] ? `<a class="pill" href="#/judo/tecnica/${s}"><span class="jp" lang="ja">${esc(T[s].ja)}</span> ${esc(T[s].nome)}</a>` : esc(s);
@@ -76,16 +76,16 @@ route(/^\/judo$/, () => ({ crumbs: [["Início", "../"], ["Judô", "#/judo"]], ht
 ${dashJudo()}
 <h2 class="sec">Tópicos principais</h2>
 <div class="cards">
- <a class="card" href="#/judo/t/nage"><div class="ic" lang="ja">投技</div><h3>Projeções (Nage-waza)</h3><p>68 técnicas do Kodokan em cinco grupos, com vídeo oficial.</p><span class="n">${J.grupos.filter(g => g.tipo === "nage").reduce((a, g) => a + g.itens.length, 0)} técnicas</span></a>
- <a class="card" href="#/judo/t/katame"><div class="ic" lang="ja">固技</div><h3>Solo (Katame-waza)</h3><p>Imobilizações, estrangulamentos e chaves de braço.</p><span class="n">${J.grupos.filter(g => g.tipo !== "nage").reduce((a, g) => a + g.itens.length, 0)} técnicas</span></a>
- <a class="card" href="#/judo/t/kaeshi"><div class="ic" lang="ja">返技</div><h3>Contragolpes (Kaeshi-waza)</h3><p>A que técnica cada contragolpe responde.</p><span class="n">${D.kaeshi.length} contragolpes</span></a>
- <a class="card" href="#/judo/t/renraku"><div class="ic" lang="ja">連絡技</div><h3>Combinações (Renraku-waza)</h3><p>Em pé e do pé ao solo, com ilustração.</p><span class="n">${D.renraku.length} combinações</span></a>
- <a class="card" href="#/judo/t/fundamentos"><div class="ic" lang="ja">礼 受身</div><h3>Fundamentos</h3><p>Saudação, quedas (ukemi), postura, pegada e deslocamento.</p></a>
- <a class="card" href="#/judo/t/proibidas"><div class="ic">⛔</div><h3>Técnicas proibidas</h3><p>Hansoku-make direto e principais shidos (regras IJF).</p></a>
- <a class="card" href="#/judo/t/glossario"><div class="ic" lang="ja">文</div><h3>Glossário</h3><p>Termos em japonês com kanji.</p><span class="n">${J.glossario.length} termos</span></a>
- <a class="card" href="#/judo/t/videoteca"><div class="ic">▶</div><h3>Videoteca oficial</h3><p>Kodokan × IJF Academy: toca aqui, sem sair da página.</p></a>
- <a class="card" href="#/judo/t/referencias"><div class="ic">📚</div><h3>Referências</h3><p>Fontes do app e referências do livro.</p></a>
- <a class="card" href="../livro.html"><div class="ic">📖</div><h3>Livro interativo</h3><p>Texto completo, simulado e busca.</p></a>
+ <a class="card" href="#/judo/t/nage"><div class="ic" aria-hidden="true" lang="ja">投技</div><h3>Projeções (Nage-waza)</h3><p>68 técnicas do Kodokan em cinco grupos, com vídeo oficial.</p><span class="n">${J.grupos.filter(g => g.tipo === "nage").reduce((a, g) => a + g.itens.length, 0)} técnicas</span></a>
+ <a class="card" href="#/judo/t/katame"><div class="ic" aria-hidden="true" lang="ja">固技</div><h3>Solo (Katame-waza)</h3><p>Imobilizações, estrangulamentos e chaves de braço.</p><span class="n">${J.grupos.filter(g => g.tipo !== "nage").reduce((a, g) => a + g.itens.length, 0)} técnicas</span></a>
+ <a class="card" href="#/judo/t/kaeshi"><div class="ic" aria-hidden="true" lang="ja">返技</div><h3>Contragolpes (Kaeshi-waza)</h3><p>A que técnica cada contragolpe responde.</p><span class="n">${D.kaeshi.length} contragolpes</span></a>
+ <a class="card" href="#/judo/t/renraku"><div class="ic" aria-hidden="true" lang="ja">連絡技</div><h3>Combinações (Renraku-waza)</h3><p>Em pé e do pé ao solo, com ilustração.</p><span class="n">${D.renraku.length} combinações</span></a>
+ <a class="card" href="#/judo/t/fundamentos"><div class="ic" aria-hidden="true" lang="ja">礼 受身</div><h3>Fundamentos</h3><p>Saudação, quedas (ukemi), postura, pegada e deslocamento.</p></a>
+ <a class="card" href="#/judo/t/proibidas"><div class="ic" aria-hidden="true">⛔</div><h3>Técnicas proibidas</h3><p>Hansoku-make direto e principais shidos (regras IJF).</p></a>
+ <a class="card" href="#/judo/t/glossario"><div class="ic" aria-hidden="true" lang="ja">文</div><h3>Glossário</h3><p>Termos em japonês com kanji.</p><span class="n">${J.glossario.length} termos</span></a>
+ <a class="card" href="#/judo/t/videoteca"><div class="ic" aria-hidden="true">▶</div><h3>Videoteca oficial</h3><p>Kodokan × IJF Academy: toca aqui, sem sair da página.</p></a>
+ <a class="card" href="#/judo/t/referencias"><div class="ic" aria-hidden="true">📚</div><h3>Referências</h3><p>Fontes do app e referências do livro.</p></a>
+ <a class="card" href="../livro.html"><div class="ic" aria-hidden="true">📖</div><h3>Livro interativo</h3><p>Texto completo, simulado e busca.</p></a>
 </div>`, init: wireRail }));
 
 // ---- Judô: faixa ----
@@ -94,7 +94,7 @@ function acumulado(f, campo) { const i = J.faixas.indexOf(f); const set = []; fo
 route(/^\/judo\/faixa\/(\w+)$/, m => {
   const f = jf(m[1]); if (!f) return null; const a = f.cores.para[1] || f.cores.para[0];
   const tecCats = f.cats.filter(c => c.grupo === "tec"), fundCats = f.cats.filter(c => c.grupo === "fund"), naoCats = f.cats.filter(c => c.grupo === "nao");
-  const card = (h, t, p, n, ic) => `<a class="card" href="#/judo/faixa/${f.id}/${h}"><div class="ic">${ic || ""}</div><h3>${t}</h3><p>${p}</p>${n ? `<span class="n">${n}</span>` : ""}</a>`;
+  const card = (h, t, p, n, ic) => `<a class="card" href="#/judo/faixa/${f.id}/${h}"><div class="ic" aria-hidden="true">${ic || ""}</div><h3>${t}</h3><p>${p}</p>${n ? `<span class="n">${n}</span>` : ""}</a>`;
   return { crumbs: [["Início", "../"], ["Judô", "#/judo"], [f.titulo, ""]], html: `
 <div class="hero" style="--a:${a}"><div class="hero-belt">${belt(f.cores.para, f.titulo)}<div><h1>${esc(f.titulo)}</h1><p class="lead">${esc(f.sub)} · exame de faixa</p><ul class="facts">${f.fatos.map(x => `<li><b>${esc(x[0])}</b>${esc(x[1])}</li>`).join("")}</ul></div></div></div>
 ${f.nota ? `<p class="lead" style="margin-top:12px">${esc(f.nota)}</p>` : ""}
@@ -217,7 +217,7 @@ function progGrupo(slugs) { if (!slugs.length) return 0; return slugs.reduce((a,
 const meter = p => `<div class="meter sm" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(p * 100)}"><span style="width:${Math.round(p * 100)}%"></span></div>`;
 function dashJudo() {
   let u = ST.get("jt-ultima", null); if (u && !/^#\/[\w\/-]+$/.test(String(u.h))) u = null;
-  return `<h2 class="sec">Módulos de estudo</h2><div class="cards">${J.grupos.map((g, i) => { const p = progGrupo(g.itens); return `<a class="card" href="#/judo/modulo/${i}"><div class="ic" lang="ja">${g.tipo === "nage" ? "投技" : "固技"}</div><h3>${esc(g.nome)}</h3><p>${g.itens.length} técnicas</p>${meter(p)}<span class="n">${Math.round(p * 100)}% estudado</span></a>`; }).join("")}</div>` + (u ? `<div class="box cont"><h3>Continuar de onde parou</h3><a class="pill" href="${esc(u.h)}"><span class="jp" lang="ja">${esc(u.ja)}</span> ${esc(u.nome)}</a></div>` : "");
+  return `<h2 class="sec">Módulos de estudo</h2><div class="cards">${J.grupos.map((g, i) => { const p = progGrupo(g.itens); return `<a class="card" href="#/judo/modulo/${i}"><div class="ic" aria-hidden="true" lang="ja">${g.tipo === "nage" ? "投技" : "固技"}</div><h3>${esc(g.nome)}</h3><p>${g.itens.length} técnicas</p>${meter(p)}<span class="n">${Math.round(p * 100)}% estudado</span></a>`; }).join("")}</div>` + (u ? `<div class="box cont"><h3>Continuar de onde parou</h3><a class="pill" href="${esc(u.h)}"><span class="jp" lang="ja">${esc(u.ja)}</span> ${esc(u.nome)}</a></div>` : "");
 }
 route(/^\/judo\/modulo\/(\d+)$/, m => {
   const g = J.grupos[+m[1]]; if (!g) return null;
@@ -267,8 +267,8 @@ const ICON_B = { fund: "基本", quedas: "投", posicoes: "固", guardas: "守",
 route(/^\/jiu-jitsu$/, () => ({ crumbs: [["Início", "../"], ["Jiu-Jitsu", "#/jiu-jitsu"]], html: `
 <div class="hero" style="--a:#7a3fa3"><h1>Jiu-Jitsu <span lang="ja">柔術</span></h1><p class="lead">Escolha o exame da sua faixa ou explore a lista de componentes. Cada página leva mais fundo, até a técnica, com nomes em japonês, inglês e português, fotos e vídeos oficiais.</p></div>
 <h2 class="sec">Programa de exames <small style="color:var(--muted)">(clique na faixa)</small></h2>${beltLadder("jiu-jitsu", B.faixas)}
-<h2 class="sec">Tópicos principais</h2><div class="cards">${B.comp.map(g => `<a class="card" href="#/jiu-jitsu/t/${g.id}"><div class="ic" lang="ja">${ICON_B[g.id] || ""}</div><h3>${esc(g.nome)}</h3><p>${esc(g.desc)}</p><span class="n">${(g.subs && g.subs.length ? g.subs.reduce((a, s) => a + s.itens.length + s.blocos.length, 0) : g.itens.length) || ""} ${g.subs && g.subs.length ? "tópicos" : "itens"}</span></a>`).join("")}
-<a class="card" href="#/jiu-jitsu/proibidas"><div class="ic">⛔</div><h3>Golpes proibidos por idade e faixa</h3><p>Tabela da IBJJF/CBJJ, p. 29.</p></a><a class="card" href="#/jiu-jitsu/t/referencias"><div class="ic">📚</div><h3>Referências</h3><p>Fontes do app.</p></a><a class="card" href="../app/#bjj/b01"><div class="ic">📝</div><h3>Ficha de exame e progresso</h3><p>Simulador editável (app).</p></a></div>`, init: wireRail }));
+<h2 class="sec">Tópicos principais</h2><div class="cards">${B.comp.map(g => `<a class="card" href="#/jiu-jitsu/t/${g.id}"><div class="ic" aria-hidden="true" lang="ja">${ICON_B[g.id] || ""}</div><h3>${esc(g.nome)}</h3><p>${esc(g.desc)}</p><span class="n">${(g.subs && g.subs.length ? g.subs.reduce((a, s) => a + s.itens.length + s.blocos.length, 0) : g.itens.length) || ""} ${g.subs && g.subs.length ? "tópicos" : "itens"}</span></a>`).join("")}
+<a class="card" href="#/jiu-jitsu/proibidas"><div class="ic" aria-hidden="true">⛔</div><h3>Golpes proibidos por idade e faixa</h3><p>Tabela da IBJJF/CBJJ, p. 29.</p></a><a class="card" href="#/jiu-jitsu/t/referencias"><div class="ic" aria-hidden="true">📚</div><h3>Referências</h3><p>Fontes do app.</p></a><a class="card" href="../app/#bjj/b01"><div class="ic" aria-hidden="true">📝</div><h3>Ficha de exame e progresso</h3><p>Simulador editável (app).</p></a></div>`, init: wireRail }));
 
 function itemsList(its, bel) { return `<div class="tcards" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">${its.map(i => `<a class="tcard" href="#/jiu-jitsu/item/${slug(i.t)}"><div class="tx"><span class="jp" lang="ja">${esc((i.nm && i.nm.ja || "").split(" · ")[0])}</span><b>${esc(i.nm && i.nm.pt || i.t)}</b><small>${esc(i.t)}</small></div></a>`).join("")}</div>`; }
 function matrizCols(f) {
@@ -289,7 +289,7 @@ route(/^\/jiu-jitsu\/proibidas$/, () => ({ crumbs: [["Início", "../"], ["Jiu-Ji
 // ---- Jiu-Jitsu: faixa ----
 route(/^\/jiu-jitsu\/faixa\/(\w+)$/, m => {
   const f = bf(m[1]); if (!f) return null; const a = f.cores.para[1] || f.cores.para[0];
-  const card = (h, t, p, n, ic) => `<a class="card" href="#/jiu-jitsu/faixa/${f.id}/${h}"><div class="ic">${ic || ""}</div><h3>${t}</h3><p>${p}</p>${n ? `<span class="n">${n}</span>` : ""}</a>`;
+  const card = (h, t, p, n, ic) => `<a class="card" href="#/jiu-jitsu/faixa/${f.id}/${h}"><div class="ic" aria-hidden="true">${ic || ""}</div><h3>${t}</h3><p>${p}</p>${n ? `<span class="n">${n}</span>` : ""}</a>`;
   const sec = f.secoes.filter(s => !/defesa pessoal|self defense|basic/i.test(s.cat)), fund = f.secoes.filter(s => /basic/i.test(s.cat)), nao = f.secoes.filter(s => /defesa pessoal|self defense/i.test(s.cat));
   return { crumbs: [["Início", "../"], ["Jiu-Jitsu", "#/jiu-jitsu"], [f.titulo, ""]], html: `
 <div class="hero" style="--a:${a}"><div class="hero-belt">${belt(f.cores.para, f.titulo)}<div><h1>${esc(f.titulo)}</h1><p class="lead">${esc(f.sub || "Exame de faixa")}</p><ul class="facts">${f.fatos.map(x => `<li><b>${esc(x[0])}</b>${esc(x[1])}</li>`).join("")}</ul></div></div></div>

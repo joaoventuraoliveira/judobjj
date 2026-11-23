@@ -26,6 +26,7 @@
 <meta name="description" content="Judô (柔道) e Jiu-Jitsu (柔術): o que é cobrado em cada exame de faixa, com ilustrações, vídeos oficiais, nomes em japonês, inglês e português e as fontes de cada informação.">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <script src="assets/prefs.js"></script>
+<script src="assets/belts.js"></script>
 <link rel="stylesheet" href="assets/tokens.css">
 <link rel="stylesheet" href="assets/prefs.css">
 <script>try{ if(location.hash.length>1 && !/^#(\/(judo|jiu-jitsu)(\/[\w-]+)*|judo|jiu-jitsu|fontes|como)$/.test(location.hash)) location.replace('livro.html'+location.hash); }catch(e){}</script>
@@ -142,6 +143,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--line);padding:22px
 .dempty{display:none;text-align:center;padding:26px 12px;color:var(--muted);font-size:.88rem}
 .scrim{position:fixed;inset:0;z-index:35;background:rgba(0,0,0,.35);opacity:0;visibility:hidden;transition:opacity .4s}.scrim.open{opacity:1;visibility:visible}
 [hidden]{display:none!important}
+.sr{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
 @media (max-width:920px){
   .stage{grid-template-columns:minmax(0,1fr);gap:20px}.home-view{padding-left:0}.study-view{padding-left:0}
   .sel.is-active{transform:translateX(5px) scale(1.01)}
@@ -209,7 +211,7 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
   <!-- tela 2: faixas (só desenhos) e árvore até o conteúdo -->
   <section class="study-view" id="studyView" aria-label="Faixas e conteúdos">
     <div class="stbar">
-      <div class="sid"><div class="kc t-judo" id="stKc" role="button" tabindex="0" title="Voltar à seleção inicial" lang="ja">柔道</div><h2 id="stTitle">Judô</h2></div>
+      <div class="sid"><div class="kc t-judo" id="stKc" role="button" tabindex="0" aria-label="Voltar à seleção inicial" title="Voltar à seleção inicial" lang="ja">柔道</div><h2 id="stTitle">Judô</h2></div>
       <div class="tact">
         <div class="lsw" role="group" aria-label="Visualização das faixas"><button type="button" id="vLine" aria-pressed="true">Em linha</button><button type="button" id="vList" aria-pressed="false">Em lista</button></div>
         <a class="pbtn go" id="stExp" href="explorar/">Abrir no explorador →</a>
@@ -329,7 +331,7 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
     belts().forEach(function(f){
       if(f.g!==last){var s=document.createElement('span');s.className='gsep';s.setAttribute('role','presentation');s.innerHTML='<span>'+esc(UI('grp-'+f.g))+'</span>';strip.appendChild(s);last=f.g}
       var b=document.createElement('button');b.type='button';b.className='bb';b.dataset.id=f.id;b.setAttribute('role','option');b.setAttribute('aria-selected','false');
-      b.setAttribute('aria-label',f.t+(f.s?' · '+f.s:''));b.title=f.t+(f.s?' · '+f.s:'');b.innerHTML=beltSvg(f.c)+(f.g==='Graus superiores'?'<span class="bcap">'+esc(f.t.replace(/\s*\(.*\)/,''))+'</span>':'');if(f.g==='Graus superiores')b.classList.add('has-cap');
+      var bl=(window.JTBelts?JTBelts.label(f.c):UI('faixa')),lb=bl;b.title=bl;b.innerHTML=beltSvg(f.c)+'<span class="sr">'+esc(bl)+': <span>'+esc(f.t)+'</span>'+(f.s?', <span>'+esc(f.s)+'</span>':'')+'</span>'+(f.g==='Graus superiores'?'<span class="bcap" aria-hidden="true">'+esc(f.t.replace(/\s*\(.*\)/,''))+'</span>':'');if(f.g==='Graus superiores')b.classList.add('has-cap');
       b.addEventListener('click',function(){if(dragged)return;go(mod,f.id,null)});strip.appendChild(b);
     });
     markStrip();
@@ -350,10 +352,10 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
   function renderStage(){
     var f=path[0],n=node(),h='';
     if(path.length===1){
-      h='<div class="bh"><div class="bt">'+beltSvg(f.c,'md')+'<div><h3>'+esc(f.t)+'</h3>'+(f.s?'<small>'+esc(f.s)+'</small>':'')+'</div></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="bcount">'+f.cards.length+' '+UI(f.cards.length===1?'top1':'topn')+'</span><a class="pbtn go" href="'+esc(f.href)+'">'+esc(UI('openx'))+' →</a></div></div><div class="ngrid">';
+      h='<div class="bh"><div class="bt">'+beltSvg(f.c,'md')+'<div><h3><span class="sr">'+esc((window.JTBelts?JTBelts.label(f.c):UI('faixa'))+': ')+'</span>'+esc(f.t)+'</h3>'+(f.s?'<small>'+esc(f.s)+'</small>':'')+'</div></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="bcount">'+f.cards.length+' '+UI(f.cards.length===1?'top1':'topn')+'</span><a class="pbtn go" href="'+esc(f.href)+'">'+esc(UI('openx'))+' →</a></div></div><div class="ngrid">';
       f.cards.forEach(function(c,i){
         var tag=c.items&&c.items.length?'button':'a',at=tag==='a'?' href="'+esc(f.base+c.h)+'"':' type="button" data-h="'+esc(c.h)+'"';
-        h+='<'+tag+' class="nc"'+at+' style="animation-delay:'+(i*45)+'ms"><div class="top2"><span class="ic" lang="ja">'+(c.ic?esc(c.ic):'·')+'</span><span class="arr">'+ARR+'</span></div><h4>'+esc(c.t)+'</h4><p>'+esc(c.p)+'</p>'+(c.n?'<span class="nn">'+esc(c.n)+'</span>':'')+'</'+tag+'>';
+        h+='<'+tag+' class="nc"'+at+' style="animation-delay:'+(i*45)+'ms"><div class="top2"><span class="ic" aria-hidden="true" lang="ja">'+(c.ic?esc(c.ic):'·')+'</span><span class="arr">'+ARR+'</span></div><h4>'+esc(c.t)+'</h4><p>'+esc(c.p)+'</p>'+(c.n?'<span class="nn">'+esc(c.n)+'</span>':'')+'</'+tag+'>';
       });
       h+='</div>';
     }else{

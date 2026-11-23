@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <script src="../assets/prefs.js"></script>
+<script src="../assets/belts.js"></script>
 <link rel="stylesheet" href="../assets/prefs.css">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' file:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: file:; connect-src 'self'; base-uri 'none'; form-action 'none'">
 <meta property="og:type" content="website"><meta property="og:title" content="App faixa a faixa: Judô e Jiu-Jitsu"><meta property="og:description" content="Progresso, ficha de exame editável e idioma PT/EN."><meta property="og:url" content="https://joaoventuraoliveira.github.io/judobjj/app/"><meta property="og:image" content="https://joaoventuraoliveira.github.io/judobjj/assets/og/portal.jpg?v=1"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
@@ -447,7 +448,7 @@ langBtn();
 
 const ORDER = ["Elegibilidade","Reverência e quedas (Rei/Ukemi)","Fundamentos de aplicação","Projeção (Nage waza)","Imobilização (Osae komi waza)","Estrangulamento (Shime waza)","Chave de cotovelo (Kansetsu waza)","Solo: viradas, escapes e defesas","Sequências e contragolpes","Kata","Vocabulário","Histórico, princípios e cultura","Arbitragem","Provas teóricas","Provas práticas","Atividades de ensino","Outros critérios"];
 function beltCss(b){return `--b1:${b[0]};${b[1]?`--b2:${b[1]};`:""}`}
-function beltEl(b,extra=""){return `<div class="belt ${extra}" style="${beltCss(b)}" role="img" aria-label="faixa"></div>`}
+function beltEl(b,extra=""){return `<div class="belt ${extra}" style="${beltCss(b)}" role="img" aria-label="${(window.JTBelts?JTBelts.label(b):"Faixa")}"></div>`}
 function inkFor(h){const n=parseInt(h.slice(1),16),c=[n>>16,n>>8&255,n&255].map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});const L=.2126*c[0]+.7152*c[1]+.0722*c[2];return (1.05/(L+.05))>=((L+.05)/.0584)?"#fff":"#10171D"}
 function accent(t){const c=(t.bpara||t.bde); let a=c[1]||c[0]; if(/^#F5/i.test(a)||/^#9A/i.test(a)||/^#F2C/i.test(a)||/^#EE8/i.test(a)) a=c[0]; if(/^#F5/i.test(a)||/^#9A/i.test(a)) a="#4A5C6B"; return a}
 function lum(h){const n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;return (.299*r+.587*g+.114*b)/255}
@@ -468,7 +469,7 @@ function stickHtml(t){
 }
 function pagerHtml(){
   const L=D[mode].trans, i=L.findIndex(x=>x.id===cur.id), p=L[i-1], n=L[i+1];
-  return `<div class="pager"><button data-go="${p?p.id:""}" ${p?"":"disabled"}>← ${p?esc(p.titulo):""}</button><button data-go="${n?n.id:""}" ${n?"":"disabled"}>${n?esc(n.titulo):""} →</button></div>`;
+  return `<div class="pager"><button data-go="${p?p.id:""}" ${p?"":"disabled"} aria-label="${p?"Faixa anterior: "+esc(p.titulo):"Sem faixa anterior"}"><span aria-hidden="true">←</span> ${p?esc(p.titulo):""}</button><button data-go="${n?n.id:""}" ${n?"":"disabled"} aria-label="${n?"Próxima faixa: "+esc(n.titulo):"Sem próxima faixa"}">${n?esc(n.titulo):""} <span aria-hidden="true">→</span></button></div>`;
 }
 function renderLadder(){
   const L = D[mode].trans; const ul = $("#ladder"); ul.innerHTML = "";
@@ -498,7 +499,7 @@ function thumbs(imgs,pages,cap){
 function galHtml(){
   const g=D.judo.galeria; if(!g||!g.tecs||!g.tecs.length) return "";
   const cats=[...new Set(g.tecs.map(x=>x.cat))];
-  const tc=cats.map(c=>{const L=g.tecs.filter(x=>x.cat===c); return `<h3>${esc(c)} · ${esc(L[0].catpt)} <span class="jgc">(${L.length})</span></h3><div class="jgg">${L.map(x=>`<div class="jgt"><button data-img="${x.img}" data-cap="${esc(x.rom+" — Judo Québec / IJF")}" aria-label="Ampliar ${esc(x.rom)}"><img loading="lazy" decoding="async" src="${thumbUrl(x.img)}" alt="Técnica ${esc(x.rom)}"></button><div class="jgn"><b>${esc(x.rom)}</b>${x.ja?`<span lang="ja">${esc(x.ja)}</span><br>`:""}${x.en?`<span lang="en">${esc(x.en)}</span><br>`:""}<a target="_blank" rel="noopener" href="${x.url}">▶ Vídeo IJF</a></div></div>`).join("")}</div>`}).join("");
+  const tc=cats.map(c=>{const L=g.tecs.filter(x=>x.cat===c); return `<h3>${esc(c)} · ${esc(L[0].catpt)} <span class="jgc">(${L.length})</span></h3><div class="jgg">${L.map(x=>`<div class="jgt"><button data-img="${x.img}" data-cap="${esc(x.rom+" — Judo Québec / IJF")}" aria-label="Ampliar ${esc(x.rom)}"><img loading="lazy" decoding="async" src="${thumbUrl(x.img)}" alt="Técnica ${esc(x.rom)}"></button><div class="jgn"><b>${esc(x.rom)}</b>${x.ja?`<span lang="ja">${esc(x.ja)}</span><br>`:""}${x.en?`<span lang="en">${esc(x.en)}</span><br>`:""}<a target="_blank" rel="noopener" href="${x.url}"><span aria-hidden="true">▶</span> Vídeo IJF</a></div></div>`).join("")}</div>`}).join("");
   const bj=(g.bja||[]).map(x=>`<div class="jgt"><button data-img="${x.img}" data-cap="${esc("BJA Pictorial Guide, p. "+x.pag+" — "+x.tit)}" aria-label="Ampliar página ${x.pag} do guia BJA"><img loading="lazy" decoding="async" src="${thumbUrl(x.img)}" alt="Guia BJA página ${x.pag}" style="height:auto"></button><div class="jgn">p. ${x.pag} · ${esc(x.tit)}</div></div>`).join("");
   return `<section class="jgal"><details class="rule"><summary>Galeria visual das técnicas do Kodokan, com vídeo oficial (${g.tecs.length})</summary><p class="jgc" style="margin:4px 12px">Fonte: aide-mémoire do Judo Québec (syllabus Judo Canada 2021; vídeos Kodokan/IJF). Material de referência internacional: não é o programa da CBJ acima. Nomes em japonês e inglês: dicionário IJF/Kodokan. Sem nome em português (sem fonte).</p><div style="padding:0 12px 12px">${tc}</div></details>${bj?`<details class="rule"><summary>Guia ilustrado por faixa (British Judo Association, ${g.bja.length} págs.)</summary><p class="jgc" style="margin:4px 12px">Sistema britânico de kyu; não equivale exatamente às faixas da CBJ. Use como apoio visual dos movimentos.</p><div class="jgbja" style="padding:0 12px 12px">${bj}</div></details>`:""}</section>`;
 }
