@@ -311,7 +311,7 @@ css = (ROOT / 'src' / 'style.css').read_text(encoding='utf-8')
 js = (ROOT / 'src' / 'app.js').read_text(encoding='utf-8')
 
 PAGE = f'''<!DOCTYPE html>
-<html lang="pt-BR" data-theme="auto" data-layout="auto">
+<html lang="pt-BR" data-theme="auto" data-layout="auto" data-book>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -319,6 +319,7 @@ PAGE = f'''<!DOCTYPE html>
 <meta name="description" content="{SUB}. Técnicas do Gokyo em três fases, programa de cada faixa, combinações, contragolpes e técnicas proibidas.">
 <meta name="theme-color" content="#0f3d8c">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script src="assets/prefs.js"></script>
 <meta name="author" content="Ventura">
 <meta name="generator" content="{MODEL} ({VENDOR}) — texto, ilustrações por código e site gerados com IA">
 <meta name="ai-disclosure" content="ai-assisted; model={MODEL}; provider={VENDOR}; details=ai-disclosure.json">
@@ -342,6 +343,7 @@ PAGE = f'''<!DOCTYPE html>
     <div class="seg" role="group" aria-label="Tema">
       <button data-theme-set="auto" title="Seguir o sistema">◐</button><button data-theme-set="light" title="Modo claro">☀</button><button data-theme-set="dark" title="Modo escuro">☾</button>
     </div>
+    <div class="seg" role="group" aria-label="Idioma"><button data-lang-set="pt">PT-BR</button><button data-lang-set="en">EN</button></div>
     <a class="pdf" href="judo-tecnicas-e-exames-de-faixa.pdf" download>PDF</a>
   </div>
 </header>
@@ -353,6 +355,7 @@ PAGE = f'''<!DOCTYPE html>
       <div class="side-prefs">
         <div class="seg" role="group" aria-label="Layout"><button data-layout-set="auto">Auto</button><button data-layout-set="desktop">PC</button><button data-layout-set="mobile">Celular</button></div>
         <div class="seg" role="group" aria-label="Tema"><button data-theme-set="auto" title="Seguir o sistema">◐</button><button data-theme-set="light" title="Modo claro">☀</button><button data-theme-set="dark" title="Modo escuro">☾</button></div>
+        <div class="seg" role="group" aria-label="Idioma"><button data-lang-set="pt">PT-BR</button><button data-lang-set="en">EN</button></div>
       </div>
     </div>
     <p class="side-h">Sumário</p>
@@ -386,6 +389,7 @@ PAGE = f'''<!DOCTYPE html>
 <dialog class="lightbox" aria-label="Imagem ampliada"><button class="lb-close" aria-label="Fechar">✕</button><div class="lb-stage"><img alt=""></div></dialog>
 <div class="pop" role="tooltip" hidden></div>
 <script>window.SEARCH={SEARCH_DATA};window.GLOSS={GLOSS_JSON};window.REFS={REFS_JSON};</script>
+<script src="assets/i18n.js" data-dict="assets/i18n-livro.js"></script>
 <script src="assets/app.js" defer></script>
 </body>
 </html>'''
@@ -402,7 +406,7 @@ PRINT = PRINT.replace('data-theme="auto" data-layout="auto"', 'data-theme="light
 PRINT = re.sub(r'assets/(img|diag)/([a-z0-9_]+)\.webp', r'assets/print/\2.jpg', PRINT)
 PRINT = re.sub(r'<script>try\{.*?</script>', '', PRINT, flags=re.S)
 PRINT = re.sub(r'<script>window\.SEARCH=.*?</script>', '', PRINT, flags=re.S)
-PRINT = PRINT.replace('<script src="assets/app.js" defer></script>', '')
+PRINT = PRINT.replace('<script src="assets/app.js" defer></script>', '').replace('<script src="assets/i18n.js" data-dict="assets/i18n-livro.js"></script>', '').replace('<script src="assets/prefs.js"></script>', '')
 (ROOT / 'dist' / 'print.html').write_text(PRINT, encoding='utf-8')
 (ROOT / 'dist' / 'assets' / 'print.css').write_text((ROOT / 'src' / 'print.css').read_text(encoding='utf-8'), encoding='utf-8')
 print('ok', len(sections), 'capítulos', len(idx), 'entradas no índice', N_VBTN, 'ilustrações com vídeo')

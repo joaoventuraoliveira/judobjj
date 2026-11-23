@@ -1,7 +1,9 @@
 <!doctype html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR">
 <head>
 <meta charset="utf-8">
+<script src="../assets/prefs.js"></script>
+<link rel="stylesheet" href="../assets/prefs.css">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' file:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: file:; connect-src 'self'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0b0d11">
@@ -102,15 +104,7 @@ dialog img{display:block;max-width:100%;max-height:82vh;margin:auto;background:#
 dialog form{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;font-size:.9rem}
 dialog button{border:1px solid var(--line);background:var(--soft);padding:6px 14px;border-radius:8px;cursor:pointer}
 .theme{position:fixed;right:14px;bottom:14px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:8px 14px;cursor:pointer;z-index:5}
-@media (max-width:980px){
-  .app{grid-template-columns:1fr}
-  .rail{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}
-  .ladder{grid-auto-flow:column;grid-auto-columns:minmax(210px,1fr);overflow-x:auto;padding-bottom:8px}
-  .item{grid-template-columns:auto minmax(0,1fr)}
-  .thumbs{grid-column:2}
-  .ficha{grid-template-columns:1fr}
-  .belts{grid-template-columns:1fr}.arrow{display:none}
-}
+@media (max-width:980px){html:not(.lay-desktop) .app{grid-template-columns:1fr}html:not(.lay-desktop) .rail{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}html:not(.lay-desktop) .ladder{grid-auto-flow:column;grid-auto-columns:minmax(210px,1fr);overflow-x:auto;padding-bottom:8px}html:not(.lay-desktop) .item{grid-template-columns:auto minmax(0,1fr)}html:not(.lay-desktop) .thumbs{grid-column:2}html:not(.lay-desktop) .ficha{grid-template-columns:1fr}html:not(.lay-desktop) .belts{grid-template-columns:1fr}html:not(.lay-desktop) .arrow{display:none}}html.lay-mobile .app{grid-template-columns:1fr}html.lay-mobile .rail{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}html.lay-mobile .ladder{grid-auto-flow:column;grid-auto-columns:minmax(210px,1fr);overflow-x:auto;padding-bottom:8px}html.lay-mobile .item{grid-template-columns:auto minmax(0,1fr)}html.lay-mobile .thumbs{grid-column:2}html.lay-mobile .ficha{grid-template-columns:1fr}html.lay-mobile .belts{grid-template-columns:1fr}html.lay-mobile .arrow{display:none}
 @media (prefers-reduced-motion:no-preference){
   .hero .belt{transition:background .35s}
   .sec{animation:none}
@@ -211,7 +205,7 @@ details.rule p{margin:0 12px 10px;font-size:.88rem;line-height:1.5}
 .skip{position:absolute;left:-999px;top:0;background:var(--ink);color:var(--panel);padding:10px 14px;z-index:99;border-radius:0 0 8px 0}
 .skip:focus{left:0}
 
-@media (max-width:980px){.fx-r{min-height:44px}.fx-b{min-height:44px}}
+@media (max-width:980px){html:not(.lay-desktop) .fx-r{min-height:44px}html:not(.lay-desktop) .fx-b{min-height:44px}}html.lay-mobile .fx-r{min-height:44px}html.lay-mobile .fx-b{min-height:44px}
 .item input,.chip input,.tc input,.ck input{width:24px;height:24px}
 .jgal{margin:18px 0}.jgal h2{font-size:1.1rem}.jgal .jgc{font-size:.82rem;color:var(--muted)}.jgal h3{margin:14px 0 6px;font-size:.95rem}.jgg{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}.jgt{border:1px solid var(--line);border-radius:10px;background:var(--panel);overflow:hidden;display:flex;flex-direction:column}.jgt button{border:0;padding:0;background:#fff;cursor:zoom-in}.jgt img{display:block;width:100%;height:120px;object-fit:contain}.jgt .jgn{padding:6px 8px;font-size:.78rem;line-height:1.3}.jgt .jgn b{display:block}.jgt .jgn a{display:inline-block;min-height:32px;padding:6px 0 0;color:var(--ink);font-weight:600}.jgbja{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
 /* ===== camada visual da versão multiplataforma ===== */
@@ -269,12 +263,8 @@ main{padding:6px clamp(16px,4vw,48px) 72px;max-width:1320px;margin:0 auto}
 .rnav:hover{background:var(--a);color:var(--a-ink);border-color:var(--a)}
 .rnav[hidden]{display:none}
 .rnav.prev{left:10px}.rnav.next{right:10px}
-@media (max-width:700px){.rnav{width:40px;height:40px;margin-top:-20px;font-size:1.4rem}.rnav.prev{left:4px}.rnav.next{right:4px}}
-@media (max-width:700px){
-  .rail{gap:8px 12px;padding:10px 14px}.brand{font-size:1.1rem}.mode{min-width:0;flex:1}.search{flex:1 1 100%;margin:0;width:100%}
-  .rails .ladder button{width:148px;height:204px}.rails .ladder .belt{height:96px;flex-basis:96px}
-  .hero{border-radius:16px}.stick{top:0}
-}
+@media (max-width:700px){html:not(.lay-desktop) .rnav{width:40px;height:40px;margin-top:-20px;font-size:1.4rem}html:not(.lay-desktop) .rnav.prev{left:4px}html:not(.lay-desktop) .rnav.next{right:4px}}html.lay-mobile .rnav{width:40px;height:40px;margin-top:-20px;font-size:1.4rem}html.lay-mobile .rnav.prev{left:4px}html.lay-mobile .rnav.next{right:4px}
+@media (max-width:700px){html:not(.lay-desktop) .rail{gap:8px 12px;padding:10px 14px}html:not(.lay-desktop) .brand{font-size:1.1rem}html:not(.lay-desktop) .mode{min-width:0;flex:1}html:not(.lay-desktop) .search{flex:1 1 100%;margin:0;width:100%}html:not(.lay-desktop) .rails .ladder button{width:148px;height:204px}html:not(.lay-desktop) .rails .ladder .belt{height:96px;flex-basis:96px}html:not(.lay-desktop) .hero{border-radius:16px}html:not(.lay-desktop) .stick{top:0}}html.lay-mobile .rail{gap:8px 12px;padding:10px 14px}html.lay-mobile .brand{font-size:1.1rem}html.lay-mobile .mode{min-width:0;flex:1}html.lay-mobile .search{flex:1 1 100%;margin:0;width:100%}html.lay-mobile .rails .ladder button{width:148px;height:204px}html.lay-mobile .rails .ladder .belt{height:96px;flex-basis:96px}html.lay-mobile .hero{border-radius:16px}html.lay-mobile .stick{top:0}
 </style>
 <style>a.brand{color:var(--ink);text-decoration:none}</style></head>
 <body>
@@ -287,6 +277,7 @@ main{padding:6px clamp(16px,4vw,48px) 72px;max-width:1320px;margin:0 auto}
       <button id="m-bjj" aria-pressed="false">Jiu-Jitsu</button>
     </div>
     <button id="lang" class="langbtn" type="button" aria-label="Idioma"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.8 4 5.8 4 9s-1.4 6.2-4 9c-2.6-2.8-4-5.8-4-9s1.4-6.2 4-9z"/></svg><span class="lt">PT-BR</span></button>
+    <div class="prefs-bar" data-prefs="layout"></div>
     <input class="search" id="q" type="search" placeholder="Buscar técnica ou termo" aria-label="Buscar técnica ou termo">
   </header>
   <section class="rails" aria-label="Transições de faixa"><h2 class="railt">Escolha o exame</h2><div class="railwrap"><button class="rnav prev" type="button" aria-label="Ver faixas anteriores (rolar para a esquerda)" hidden>&#8249;</button><ul class="ladder" id="ladder"></ul><button class="rnav next" type="button" aria-label="Ver mais faixas (rolar para a direita)" hidden>&#8250;</button></div></section>
@@ -329,8 +320,8 @@ main{padding:6px clamp(16px,4vw,48px) 72px;max-width:1320px;margin:0 auto}
 .fx-sum .nt{flex-basis:100%;font-size:.78rem;color:var(--muted)}
 .fx-tit{font:700 1.1rem var(--display);margin:22px 0 8px}
 .fx-hint{font-size:.84rem;color:var(--muted);margin:0 0 10px}
-@media (max-width:980px){.fx-r{min-height:44px}.fx-b{min-height:44px}}
-@media (max-width:760px){.fx-cols{grid-template-columns:1fr;padding:8px 10px 14px}.fx-box{grid-template-columns:1fr;margin:12px 10px 6px}.fx-h,.fx-r{grid-template-columns:minmax(0,1fr) 50px 50px}.fx-n{font-size:.95rem}.fx-b{min-height:44px}.fx-r{min-height:44px}}
+@media (max-width:980px){html:not(.lay-desktop) .fx-r{min-height:44px}html:not(.lay-desktop) .fx-b{min-height:44px}}html.lay-mobile .fx-r{min-height:44px}html.lay-mobile .fx-b{min-height:44px}
+@media (max-width:760px){html:not(.lay-desktop) .fx-cols{grid-template-columns:1fr;padding:8px 10px 14px}html:not(.lay-desktop) .fx-box{grid-template-columns:1fr;margin:12px 10px 6px}html:not(.lay-desktop) .fx-h,html:not(.lay-desktop) .fx-r{grid-template-columns:minmax(0,1fr) 50px 50px}html:not(.lay-desktop) .fx-n{font-size:.95rem}html:not(.lay-desktop) .fx-b{min-height:44px}html:not(.lay-desktop) .fx-r{min-height:44px}}html.lay-mobile .fx-cols{grid-template-columns:1fr;padding:8px 10px 14px}html.lay-mobile .fx-box{grid-template-columns:1fr;margin:12px 10px 6px}html.lay-mobile .fx-h,html.lay-mobile .fx-r{grid-template-columns:minmax(0,1fr) 50px 50px}html.lay-mobile .fx-n{font-size:.95rem}html.lay-mobile .fx-b{min-height:44px}html.lay-mobile .fx-r{min-height:44px}
 @media print{
   body *{visibility:hidden}
   .fx-sheet,.fx-sheet *,.fx-print-info,.fx-print-info *{visibility:visible}
@@ -418,7 +409,7 @@ const store = {get(k){try{return JSON.parse(localStorage.getItem(k)||"null")}cat
 const done = store.get("done")||{};
 const esc = s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const thumbUrl=s=>String(s).replace(/^img\/(.+)\.(png|jpe?g)$/i,"img/th/$1.jpg");
-let LANG=store.get("lang")==="en"?"en":"pt"; document.documentElement.lang=LANG==="en"?"en":"pt-BR";
+let LANG=(window.JTPrefs&&JTPrefs.state.lang)||"pt"; document.documentElement.lang=LANG==="en"?"en":"pt-BR";
 const I18=window.I18N||{pt:{},en:{},ui_en:{},ui_pt:{},rules_en:[],belt_en:{}};
 const DICT=LANG==="en"?Object.assign({},I18.en,I18.ui_en):Object.assign({},I18.pt,I18.ui_pt);
 const RULES=(LANG==="en"?(I18.rules_en||[]):[]).map(r=>[new RegExp(r[0]),r[1]]);
@@ -435,7 +426,7 @@ function trNode(n){ if(n.nodeType===3){ const p=n.parentElement; if(!p||/SCRIPT|
 { let pend=false; const OPT={childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:TRATTR};
   const mo=new MutationObserver(()=>{ if(pend) return; pend=true; requestAnimationFrame(()=>{ pend=false; mo.disconnect(); trNode(document.body); const t=trs(document.title); if(t!==document.title) document.title=t; mo.observe(document.body,OPT) }) });
   mo.observe(document.body,OPT); trNode(document.body); }
-function langBtn(){ const b=$("#lang"); if(!b) return; b.querySelector(".lt").textContent=LANG==="en"?"EN":"PT-BR"; b.setAttribute("aria-label",LANG==="en"?"Change language to Brazilian Portuguese":"Mudar idioma para inglês (English)"); b.title=b.getAttribute("aria-label"); b.onclick=()=>{ store.set("lang",LANG==="en"?"pt":"en"); location.reload() } }
+function langBtn(){ const b=$("#lang"); if(!b) return; b.querySelector(".lt").textContent=LANG==="en"?"EN":"PT-BR"; b.setAttribute("aria-label",LANG==="en"?"Change language to Brazilian Portuguese":"Mudar idioma para inglês (English)"); b.title=b.getAttribute("aria-label"); b.onclick=()=>{ JTPrefs.setLang(LANG==="en"?"pt":"en") } }
 langBtn();
 
 const ORDER = ["Elegibilidade","Reverência e quedas (Rei/Ukemi)","Fundamentos de aplicação","Projeção (Nage waza)","Imobilização (Osae komi waza)","Estrangulamento (Shime waza)","Chave de cotovelo (Kansetsu waza)","Solo: viradas, escapes e defesas","Sequências e contragolpes","Kata","Vocabulário","Histórico, princípios e cultura","Arbitragem","Provas teóricas","Provas práticas","Atividades de ensino","Outros critérios"];
@@ -606,8 +597,8 @@ document.addEventListener("keydown",e=>{
 function setMode(m){ mode=m; $("#m-judo").setAttribute("aria-pressed",m==="judo"); $("#m-bjj").setAttribute("aria-pressed",m==="bjj"); query=""; $("#q").value=""; const hh=fromHash(); const last=(hh&&hh.mode===m)?hh.id:store.get("last:"+m); cur=null; select((D[m].trans.find(t=>t.id===last)||D[m].trans[0]).id); }
 $("#m-judo").onclick=()=>setMode("judo"); $("#m-bjj").onclick=()=>setMode("bjj");
 $("#q").addEventListener("input",e=>{ query=e.target.value; renderLadder(); renderMain(); });
-$("#theme").onclick=()=>{ const r=document.documentElement; const dark = r.dataset.theme? r.dataset.theme==="dark" : matchMedia("(prefers-color-scheme: dark)").matches; r.dataset.theme = dark?"light":"dark"; store.set("theme",r.dataset.theme) };
-const th = store.get("theme"); if(th) document.documentElement.dataset.theme = th;
+$("#theme").onclick=()=>JTPrefs.cycleTheme();
+
 { const hh=fromHash(); setMode(hh?hh.mode:"judo"); }
 }
 (function load(n){

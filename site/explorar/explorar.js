@@ -73,6 +73,7 @@ function wireRail() {
 route(/^\/judo$/, () => ({ crumbs: [["Início", "../"], ["Judô", "#/judo"]], html: `
 <div class="hero" style="--a:#2f64c8"><h1>Judô <span lang="ja">柔道</span></h1><p class="lead">Escolha o exame da sua faixa ou explore os tópicos principais. Cada página leva mais fundo, até a técnica, com nomes em japonês, inglês e português, ilustrações e vídeos oficiais.</p></div>
 <h2 class="sec">Programa de exames <small style="color:var(--muted)">(clique na faixa)</small></h2>${beltLadder("judo", J.faixas)}
+${dashJudo()}
 <h2 class="sec">Tópicos principais</h2>
 <div class="cards">
  <a class="card" href="#/judo/t/nage"><div class="ic" lang="ja">投技</div><h3>Projeções (Nage-waza)</h3><p>68 técnicas do Kodokan em cinco grupos, com vídeo oficial.</p><span class="n">${J.grupos.filter(g => g.tipo === "nage").reduce((a, g) => a + g.itens.length, 0)} técnicas</span></a>
@@ -150,26 +151,89 @@ function proibHtml() {
   return `<h2 class="sec">Hansoku-make direto</h2><ul>${P.hansoku.map(x => `<li>${esc(x)}</li>`).join("")}</ul><h2 class="sec">Principais shidos</h2><ul>${P.shido.map(x => `<li>${esc(x)}</li>`).join("")}</ul>${P.imgs.length ? `<h2 class="sec">Ilustrações</h2><div class="imgs" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">${P.imgs.map(s => `<figure><img loading="lazy" src="../${esc(s)}" alt="Ação proibida"><figcaption>Ilustração produzida por código (IA)</figcaption></figure>`).join("")}</div>` : ""}<p class="vnote">Fonte: regras IJF vigentes, conforme o livro (capítulo 15).</p>`;
 }
 
-// ---- Judô: técnica ----
+// ---- Judô: técnica = ambiente de estudo (aula) ----
+/* PENDENTE (invisível no site): marcadores de tempo de cada fase da técnica no vídeo.
+   Preencher em site/explorar/fases-tempo.js: window.FASES_TEMPO = { "seoi-nage": { kumikata: 12, kuzushi: 31, tsukuri: 44, kake: 52 } }  (segundos).
+   Enquanto um tempo não existir, a interface não mostra nenhum campo vazio. Ver source/portal/PENDENCIAS.md. */
+const TEMPOS = window.FASES_TEMPO || {};
+const ST = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+const GL = n => (J.glossario.find(g => g.termo === n) || {}).def || "";
+const mmss = s => Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+function fasesDe(t) {
+  const f = t.ficha, tri = t.imgs.find(i => /tri_/.test(i.src));
+  if (t.tipo === "nage") return [
+    { id: "kumikata", nome: "Kumi-kata", ja: "組み方", pt: "Pegada", texto: GL("Kumi-kata") + " Nas fichas do livro, a descrição considera tori destro, com pegada direita." },
+    { id: "kuzushi", nome: "Kuzushi", ja: "崩し", pt: "Desequilíbrio", texto: (f ? "Direção principal: " + f.kuzushi + ". " : "") + GL("Kuzushi"), img: tri, slice: 0 },
+    { id: "tsukuri", nome: "Tsukuri", ja: "作り", pt: "Entrada", texto: GL("Tsukuri"), img: tri, slice: 1 },
+    { id: "kake", nome: "Kake", ja: "掛け", pt: "Execução", texto: (f ? "Ação-chave: " + f.acao + ". " : "") + GL("Kake"), img: tri, slice: 2 },
+    { id: "erros", nome: "Biomecânica e erros comuns", ja: "", pt: "", texto: "Erros frequentes em projeções: tentar a técnica sem desequilibrar uke antes; entrar sem apoio firme dos pés; soltar a pegada da manga; olhar para baixo e perder a postura; puxar só com os braços em vez de usar o quadril e as pernas; terminar sem controlar a queda de uke. Orientação geral de ensino do judô, redigida com IA; confirme com o seu professor." }];
+  const g = /imobiliza/i.test(t.grupo) ? "Osaekomi-waza" : /estrangul/i.test(t.grupo) ? "Shime-waza" : "Kansetsu-waza";
+  const fim = { "Osaekomi-waza": "Manter uke imobilizado de costas pelo tempo regulamentar, sem deixar o tronco e o quadril abrirem espaço.", "Shime-waza": "Aplicar o estrangulamento com controle até a desistência de uke ou a decisão do árbitro; confira as variações permitidas na sua federação.", "Kansetsu-waza": "Aplicar a chave com controle; em competição só é permitida no cotovelo, e a pressão deve ser progressiva." }[g];
+  return [
+    { id: "entrada", nome: "Entrada e controle inicial", ja: "", pt: "", texto: "Passagem do combate em pé ou do solo para a posição de controle. Veja, mais abaixo, as combinações em que esta técnica aparece." },
+    { id: "controle", nome: "Posição de controle", ja: "", pt: "", texto: GL(g) },
+    { id: "finalizacao", nome: "Finalização", ja: "", pt: "", texto: fim },
+    { id: "saidas", nome: "Saídas e defesas", ja: "", pt: "", texto: "Estude também a técnica pelo lado de uke: saídas e defesas. A videoteca traz saídas oficiais de algumas imobilizações (kuzure-kesa-gatame, kata-gatame, uki-gatame e ura-gatame)." },
+    { id: "erros", nome: "Biomecânica e erros comuns", ja: "", pt: "", texto: "Erros frequentes no solo: perder o controle do tronco ou do quadril; abrir espaço entre os corpos; ter pressa de finalizar antes de estabilizar; deixar a cabeça sem proteção. Orientação geral de ensino do judô, redigida com IA; confirme com o seu professor." }];
+}
+function studyAside(key, fases, nomeTec) {
+  const chk = ST.get("jt-chk:" + key, {}), nota = ST.get("jt-nota:" + key, ""), feitos = fases.filter(f => chk[f.id]).length;
+  return `<aside class="aula-panel" aria-label="Painel de estudo">
+ <div class="panel-h"><h2>Fases da técnica</h2><span class="prog-txt" data-prog-txt>${feitos} de ${fases.length}</span></div>
+ <div class="meter" role="progressbar" aria-label="Progresso nesta técnica" aria-valuemin="0" aria-valuemax="${fases.length}" aria-valuenow="${feitos}"><span style="width:${Math.round(feitos * 100 / fases.length)}%"></span></div>
+ <!-- PENDENTE: marcadores de tempo por fase (site/explorar/fases-tempo.js). Não aparece no site. -->
+ <ol class="fases" data-pendente-tempos="true">${fases.map((f, i) => { const sec = (TEMPOS[key] || {})[f.id]; return `<li class="fase ${chk[f.id] ? "ok" : ""}"><div class="fase-h"><label><input type="checkbox" data-fase="${f.id}" ${chk[f.id] ? "checked" : ""}> <span class="fn">${i + 1}</span><span class="ft"><b>${esc(f.nome)}</b>${f.ja ? ` <span class="jp" lang="ja">${esc(f.ja)}</span>` : ""}${f.pt ? `<small>${esc(f.pt)}</small>` : ""}</span></label>${typeof sec === "number" ? `<button type="button" class="seek" data-seek="${sec}" aria-label="Ir para ${mmss(sec)} no vídeo">▶ ${mmss(sec)}</button>` : ""}</div>
+   <div class="fase-b">${f.img ? `<div class="slice" role="img" aria-label="${esc(f.nome)}: trecho da ilustração" style="background-image:url('../${esc(f.img.src)}');background-position:${f.slice * 50}% 0"></div>` : ""}<p>${esc(f.texto)}</p></div></li>`; }).join("")}</ol>
+ <h2 class="panel-t">Minhas anotações</h2>
+ <label class="sr" for="nota">Anotações sobre ${esc(nomeTec)}</label><textarea id="nota" data-nota="${esc(key)}" rows="5" placeholder="Escreva o que percebeu ao treinar esta técnica">${esc(nota)}</textarea>
+ <p class="vnote">As anotações e o checklist ficam só neste aparelho.</p></aside>`;
+}
 route(/^\/judo\/tecnica\/([\w-]+)$/, m => {
-  const t = T[m[1]]; if (!t) return null; const f = t.ficha;
-  const where = t.faixas.map(id => jf(id)).filter(Boolean);
-  const kae = t.kaeshi, resp = t.respondeA;
+  const t = T[m[1]]; if (!t) return null; const f = t.ficha; ST.set("jt-ultima", { h: "#/judo/tecnica/" + t.id, nome: t.nome, ja: t.ja });
+  const where = t.faixas.map(id => jf(id)).filter(Boolean), kae = t.kaeshi, resp = t.respondeA, fases = fasesDe(t);
   return { crumbs: [["Início", "../"], ["Judô", "#/judo"], [t.tipo === "nage" ? "Projeções" : "Solo", "#/judo/t/" + (t.tipo === "nage" ? "nage" : "katame")], [t.nome, ""]], html: `
-<div class="hero" style="--a:${t.tipo === "nage" ? "#2f64c8" : "#7a3fa3"}"><h1 style="font-size:clamp(1.6rem,3.6vw,2.4rem)">${esc(t.grupo)}</h1>${names(t)}<ul class="facts"><li><b>Tipo</b>${t.tipo === "nage" ? "Nage-waza (projeção)" : "Katame-waza (solo)"}</li>${f ? `<li><b>Classe</b>${esc(f.classe)}</li><li><b>Grupo / faixa (Gokyo)</b>${esc(f.faixa)}</li>` : ""}${where.length ? `<li><b>Entra no exame</b>${where.map(w => esc(w.titulo)).join("; ")}</li>` : ""}</ul></div>
-<div class="two" style="margin-top:18px"><div>
- <div class="box"><h3>Descrição</h3>${f ? `<p><b>Kuzushi principal (desequilíbrio):</b> ${esc(f.kuzushi)}.</p><p><b>Ação-chave:</b> ${esc(f.acao)}.</p><p class="vnote">Síntese didática do livro, para tori destro (pegada direita); não substitui o professor.</p>` : `<p>${esc(t.nome)}${t.en ? " (" + esc(t.en) + ")" : ""} é uma técnica do grupo ${esc(t.grupo)} da classificação do Kodokan/IJF. O livro não traz ficha de estudo para esta técnica: use o vídeo oficial e a página da IJF.</p>`}</div>
- ${t.imgs.length ? `<div class="imgs">${t.imgs.map(i => `<figure><img loading="lazy" src="../${esc(i.src)}" alt="${esc(t.nome)}: ${esc(i.cap)}" data-zoom><figcaption>${esc(i.cap)} · ilustração produzida por código (IA)</figcaption></figure>`).join("")}</div>` : ""}
-</div><div>
- <div class="box"><h3>Vídeo oficial</h3>${player(t.yt, t.nome)}<p class="vnote">Kodokan × IJF Academy, “100 Techniques”. Toca aqui, sem sair da página (modo de privacidade do YouTube).</p><p><a class="pill" target="_blank" rel="noopener" href="${esc(t.ijf)}">Página da IJF</a><a class="pill" href="../livro.html#t-${t.id}">No livro</a></p></div>
-</div></div>
+<div class="aula" data-tec="${t.id}">
+ <section class="aula-main">
+  <p class="kicker">${esc(t.grupo)}</p>${names(t)}
+  <div class="player-wrap" id="pw">${player(t.yt, t.nome)}</div>
+  <p class="vnote">Kodokan × IJF Academy, “100 Techniques”. Toca aqui, sem sair da página (modo de privacidade do YouTube).</p>
+  <ul class="facts"><li><b>Tipo</b>${t.tipo === "nage" ? "Nage-waza (projeção)" : "Katame-waza (solo)"}</li>${f ? `<li><b>Classe</b>${esc(f.classe)}</li><li><b>Grupo / faixa (Gokyo)</b>${esc(f.faixa)}</li>` : ""}${where.length ? `<li><b>Entra no exame</b>${where.map(w => esc(w.titulo)).join("; ")}</li>` : ""}</ul>
+  <p><a class="pill" target="_blank" rel="noopener" href="${esc(t.ijf)}">Página da IJF</a><a class="pill" href="../livro.html#t-${t.id}">No livro</a></p>
+  ${t.imgs.length ? `<div class="imgs">${t.imgs.map(i => `<figure><img loading="lazy" src="../${esc(i.src)}" alt="${esc(t.nome)}: ${esc(i.cap)}" data-zoom><figcaption>${esc(i.cap)} · ilustração produzida por código (IA)</figcaption></figure>`).join("")}</div>` : ""}
+ </section>
+ ${studyAside(t.id, fases, t.nome)}
+</div>
 <h2 class="sec">Técnicas e textos relacionados</h2>
 ${kae.length ? `<div class="box"><h3>Kaeshi-waza: contragolpes a ${esc(t.nome)}</h3><ul class="rel">${kae.map(k => `<li><div>${tlink(k.id)}<small>${esc(k.acao)}</small></div></li>`).join("")}</ul></div>` : ""}
 ${resp.length ? `<div class="box"><h3>Este contragolpe responde a</h3>${resp.map(tlink).join(" ")}</div>` : ""}
 ${t.combos.length ? `<div class="box"><h3>Renraku-waza: combinações com ${esc(t.nome)}</h3><div class="cards">${t.combos.map(i => { const c = D.renraku[i]; return `<a class="card" href="#/judo/combo/${i}"><h3>${c.cadeia.map(s => esc(T[s].nome)).join(" → ")}</h3><p>${esc(c.tipo)}: ${esc(c.logica)}</p></a>`; }).join("")}</div></div>` : ""}
-${t.katame.length ? `<div class="box"><h3>Katame-waza associados</h3>${t.katame.map(tlink).join(" ")}<p class="vnote">Técnicas de solo que aparecem encadeadas com esta nas combinações do livro.</p></div>` : ""}
-${!kae.length && !resp.length && !t.combos.length && !t.katame.length ? `<p class="lead">O livro não traz contragolpes nem combinações específicas para esta técnica. Veja a lista completa em <a href="#/judo/t/kaeshi">Kaeshi-waza</a> e <a href="#/judo/t/renraku">Renraku-waza</a>.</p>` : ""}` };
+${t.katame.length ? `<div class="box"><h3>Katame-waza associados</h3>${t.katame.map(tlink).join(" ")}<p class="vnote">Técnicas de solo encadeadas com esta nas combinações do livro.</p></div>` : ""}
+${!kae.length && !resp.length && !t.combos.length && !t.katame.length ? `<p class="lead">O livro não traz contragolpes nem combinações específicas para esta técnica. Veja a lista completa em <a href="#/judo/t/kaeshi">Kaeshi-waza</a> e <a href="#/judo/t/renraku">Renraku-waza</a>.</p>` : ""}`, init: wireStudy };
 });
+function wireStudy() { /* os eventos são delegados no documento (ver handlers abaixo) */ }
+function progTec(slug, n) { const c = ST.get("jt-chk:" + slug, {}); return Object.keys(c).filter(k => c[k]).length / n; }
+function nFases(t) { return t.tipo === "nage" ? 5 : 5; }
+function progGrupo(slugs) { if (!slugs.length) return 0; return slugs.reduce((a, s) => a + (T[s] ? progTec(s, nFases(T[s])) : 0), 0) / slugs.length; }
+const meter = p => `<div class="meter sm" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(p * 100)}"><span style="width:${Math.round(p * 100)}%"></span></div>`;
+function dashJudo() {
+  let u = ST.get("jt-ultima", null); if (u && !/^#\/[\w\/-]+$/.test(String(u.h))) u = null;
+  return `<h2 class="sec">Módulos de estudo</h2><div class="cards">${J.grupos.map((g, i) => { const p = progGrupo(g.itens); return `<a class="card" href="#/judo/modulo/${i}"><div class="ic" lang="ja">${g.tipo === "nage" ? "投技" : "固技"}</div><h3>${esc(g.nome)}</h3><p>${g.itens.length} técnicas</p>${meter(p)}<span class="n">${Math.round(p * 100)}% estudado</span></a>`; }).join("")}</div>` + (u ? `<div class="box cont"><h3>Continuar de onde parou</h3><a class="pill" href="${esc(u.h)}"><span class="jp" lang="ja">${esc(u.ja)}</span> ${esc(u.nome)}</a></div>` : "");
+}
+route(/^\/judo\/modulo\/(\d+)$/, m => {
+  const g = J.grupos[+m[1]]; if (!g) return null;
+  return { crumbs: [["Início", "../"], ["Judô", "#/judo"], [g.nome, ""]], html: `<h1>${esc(g.nome)}</h1><p class="lead">Toque em uma técnica para abrir a aula: vídeo, fases, anotações e checklist.</p><div class="tcards">${g.itens.map(s => `<div class="tcw">${tcard(s)}${meter(progTec(s, nFases(T[s])))}</div>`).join("")}</div>` };
+});
+document.addEventListener("change", e => {
+  const c = e.target.closest("[data-fase]"); if (!c) return; const slug = c.closest("[data-tec]") ? c.closest("[data-tec]").dataset.tec : null; if (!slug) return;
+  const k = "jt-chk:" + slug, v = ST.get(k, {}); v[c.dataset.fase] = c.checked; ST.set(k, v);
+  const n = document.querySelectorAll("[data-fase]").length, feitos = Object.keys(v).filter(x => v[x]).length;
+  const tx = document.querySelector("[data-prog-txt]"); if (tx) tx.textContent = feitos + " de " + n;
+  const mt = document.querySelector(".aula-panel .meter"); if (mt) { mt.setAttribute("aria-valuenow", feitos); mt.firstElementChild.style.width = Math.round(feitos * 100 / n) + "%"; }
+  c.closest(".fase").classList.toggle("ok", c.checked);
+});
+document.addEventListener("input", e => { const n = e.target.closest("[data-nota]"); if (n) ST.set("jt-nota:" + n.dataset.nota, n.value); });
+document.addEventListener("click", e => { const s = e.target.closest("[data-seek]"); if (!s) return; const t = s.closest("[data-tec]"); if (!t) return; const id = T[t.dataset.tec].yt; $("#pw").innerHTML = `<div class="player"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&modestbranding=1&start=${+s.dataset.seek}" title="Vídeo" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>`; });
+
 route(/^\/judo\/combo\/(\d+)$/, m => {
   const c = D.renraku[+m[1]]; if (!c) return null; const id = c.cadeia.find(s => T[s] && T[s].tipo === "nage") || c.cadeia[0];
   return { crumbs: [["Início", "../"], ["Judô", "#/judo"], ["Combinações", "#/judo/t/renraku"], [c.cadeia.map(s => T[s].nome).join(" → "), ""]], html: `
@@ -269,6 +333,11 @@ ${s.itens.length ? `<h2 class="sec">Técnicas</h2>${itemsList(s.itens)}` : ""}
 ${s.blocos.map(b => `<div class="box"><h3>${esc(b.titulo)}</h3>${b.nm && (b.nm.ja || b.nm.en) ? `<div class="names"><div class="jp" lang="ja">${esc((b.nm.ja || "").split(" · ")[0])}</div><div class="tr">${esc(b.nm.en || "")}${b.nm.pt ? " · " + esc(b.nm.pt) : ""}</div></div>` : ""}${b.texto ? `<p style="white-space:pre-line">${esc(b.texto)}</p>` : ""}${b.fotos.length ? `<div class="imgs" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">${b.fotos.map(f => `<figure><img loading="lazy" src="${A(f.img)}" alt="${esc(f.cap)}" data-zoom><figcaption>${esc(f.cap)}</figcaption></figure>`).join("")}</div>` : ""}<p class="vnote">${esc(b.fonte || "")}</p></div>`).join("")}
 ${vids.length ? `<h2 class="sec">Vídeos</h2><div class="cards">${vids.map(v => `<div class="box"><h3>${esc(v.rot)}</h3>${player(v.id, v.rot)}</div>`).join("")}</div>` : ""}` };
 });
+function bjjStudy(id) {
+  const chk = ST.get("jt-chk:bjj:" + id, {}), nota = ST.get("jt-nota:bjj:" + id, "");
+  return `<div class="box" data-bjj="${esc(id)}"><h3>Meu estudo</h3><label class="chk"><input type="checkbox" data-bjj-ok ${chk.ok ? "checked" : ""}> Já estudei esta técnica</label><label class="sr" for="nota">Anotações</label><textarea id="nota" data-nota="bjj:${esc(id)}" rows="4" placeholder="Escreva o que percebeu ao treinar">${esc(nota)}</textarea><p class="vnote">Fica só neste aparelho.</p></div>`;
+}
+document.addEventListener("change", e => { const c = e.target.closest("[data-bjj-ok]"); if (!c) return; const id = c.closest("[data-bjj]").dataset.bjj; ST.set("jt-chk:bjj:" + id, { ok: c.checked }); });
 route(/^\/jiu-jitsu\/item\/([\w-]+)$/, m => {
   const id = m[1]; let it = null, where = [], grp = null;
   B.faixas.forEach(f => f.secoes.forEach(s => s.itens.forEach(i => { if (slug(i.t) === id) { it = it || i; where.push([f, s]); } })));
@@ -282,7 +351,8 @@ ${where.length ? `<div class="box"><h3>Aparece nos exames</h3>${where.map(w => `
 ${eq ? `<div class="box"><h3>Equivalente no Judô (Kodokan)</h3>${tlink(eq)}<p class="vnote">Equivalente aproximado: confira nas fontes.</p></div>` : ""}
 ${grp ? `<div class="box"><h3>Grupo relacionado</h3><a class="pill" href="#/jiu-jitsu/t/${grp.id}">${esc(grp.nome)}</a></div>` : ""}
 ${vids.length ? `<h2 class="sec">Vídeos oficiais do grupo</h2><div class="cards">${vids.map(v => `<div class="box"><h3>${esc(v.rot)}</h3>${player(v.id, v.rot)}</div>`).join("")}</div>` : ""}
-<p><a class="pill" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=${encodeURIComponent(it.t + " jiu-jitsu")}">Buscar vídeo no YouTube</a></p>` };
+<p><a class="pill" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=${encodeURIComponent(it.t + " jiu-jitsu")}">Buscar vídeo no YouTube</a></p>
+${bjjStudy(id)}` };
 });
 
 /* ---------- roteador ---------- */

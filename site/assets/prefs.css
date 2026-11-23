@@ -1,0 +1,9 @@
+﻿/* controles de preferências (tema, layout, idioma) compartilhados */
+.prefs-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.prefs-bar .seg,.seg.jt{display:inline-flex;gap:2px;background:var(--soft,rgba(128,128,128,.18));padding:3px;border-radius:999px}
+.prefs-bar .seg button{border:0;background:transparent;color:var(--ink,inherit);padding:6px 11px;min-height:34px;border-radius:999px;font:700 .8rem var(--body,system-ui);cursor:pointer;white-space:nowrap}
+.prefs-bar .seg button:hover{background:rgba(128,128,128,.22)}
+.prefs-bar .seg button[aria-pressed="true"]{background:var(--ink,#111);color:var(--bg,#fff)}
+html.lay-mobile[data-layout="mobile"] body{max-width:440px;margin-left:auto;margin-right:auto}
+@media (min-width:701px){html.lay-mobile[data-layout="mobile"] body{box-shadow:0 0 0 1px var(--line,rgba(128,128,128,.4)),0 0 60px rgba(0,0,0,.35);min-height:100vh}}
+@media (max-width:520px){.prefs-bar .seg button{padding:6px 9px}}

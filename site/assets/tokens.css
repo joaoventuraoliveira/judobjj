@@ -1,0 +1,23 @@
+﻿/* Tokens do design system (ver DESIGN.md). Escuro por padrão; claro por [data-theme="light"]. */
+@font-face{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/inter-latin-wght.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/inter-latin-ext-wght.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Fraunces";font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/fraunces-latin-wght.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Fraunces";font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/fraunces-latin-ext-wght.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+:root{
+  --bg:#0a0a0b;--surface:#121215;--surface-2:#1a1a1f;--line:rgba(255,255,255,.08);--line-strong:rgba(255,255,255,.16);
+  --ink:#f5f5f2;--muted:#a3a3ad;--accent:#c9a84c;--accent-ink:#0a0a0b;--danger:#b3262e;--danger-ink:#fff;
+  --judo:#2f64c8;--bjj:#7a3fa3;
+  --b-branca:#f5f5f2;--b-cinza:#9aa3ae;--b-amarela:#f2c230;--b-laranja:#ee8a2b;--b-verde:#2e9b5b;--b-azul:#2f64c8;--b-roxa:#7a3fa3;--b-marrom:#7a4a2b;--b-preta:#1e2228;--b-vermelha:#c8352f;
+  --display:"Fraunces","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --jp:"Shippori Mincho","Yu Mincho","Hiragino Mincho ProN","Noto Serif JP","MS PMincho",serif;
+  --r-s:12px;--r-m:16px;--r-pill:999px;--s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:64px;--s9:96px;
+  --t:160ms;
+  /* aliases usados pelas páginas anteriores */
+  --panel:var(--surface);--soft:var(--surface-2);
+}
+:root[data-theme="light"]{
+  --bg:#f6f5f1;--surface:#ffffff;--surface-2:#eeede8;--line:rgba(10,10,11,.12);--line-strong:rgba(10,10,11,.24);
+  --ink:#0e0e10;--muted:#555560;--accent:#8a6d1e;--accent-ink:#ffffff;--danger:#a31f27;
+}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
