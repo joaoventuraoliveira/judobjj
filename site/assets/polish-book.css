@@ -1,0 +1,19 @@
+﻿/* Acabamento visual do livro (2026-11): fontes locais, brilho ambiente, vidro e cartões. Carregado depois de style.css. */
+@font-face{font-family:"Fraunces";font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/fraunces-latin-wght.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Fraunces";font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/fraunces-latin-ext-wght.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/inter-latin-wght.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/inter-latin-ext-wght.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+:root{--display:"Fraunces","Iowan Old Style","Palatino Linotype",Georgia,serif;--font:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Sans CJK JP","Hiragino Sans",sans-serif;--ease:cubic-bezier(.22,1,.36,1);--glow:color-mix(in srgb,var(--blue) 18%,transparent)}
+body{font-feature-settings:"tnum" 1}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 75% 6%,var(--glow),transparent 55%)}
+.layout,.top{position:relative;z-index:2}.top{position:sticky;z-index:50;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.hero h1,.chapter h2,.chapter h3,h1,h2{font-family:var(--display);letter-spacing:-.02em}
+.hero{border-radius:26px;box-shadow:0 24px 60px -34px color-mix(in srgb,var(--blue) 60%,transparent)}
+.btn{transition:transform .3s var(--ease),box-shadow .3s var(--ease),background .2s}.btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px -14px color-mix(in srgb,var(--blue) 70%,transparent)}
+.side{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.toc a{transition:background .2s,transform .2s var(--ease)}.toc a:hover{transform:translateX(3px)}
+.fig,.slide figure,.quiz,.q,.table-wrap{border-radius:18px}
+.fig,.slide figure{transition:transform .35s var(--ease),box-shadow .35s var(--ease)}.fig:hover{transform:translateY(-3px);box-shadow:0 18px 40px -22px color-mix(in srgb,var(--blue) 55%,transparent)}
+.search input{transition:border-color .2s,background .2s}.search input:focus{outline:none;border-color:var(--blue);background:var(--surface)}
+@media (prefers-reduced-motion:reduce){.btn,.fig,.slide figure,.toc a{transition:none}}
+
