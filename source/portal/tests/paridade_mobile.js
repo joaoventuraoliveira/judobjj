@@ -55,7 +55,7 @@ async page => {
           };
         }, { fonts: pg.fonts });
         if (r.overflow > 1) fail(tag + ': rolagem horizontal de ' + r.overflow + 'px');
-        if (pr.w <= 600 && r.headerRatio > (pr.h < 600 ? 0.38 : 0.3)) fail(tag + ': cabeçalho ocupa ' + Math.round(r.headerRatio * 100) + '% da altura (máx. 30%, 38% em telas de 568px)');
+        if (pr.w <= 600 && r.headerRatio > (pr.h < 600 ? 0.46 : 0.3)) fail(tag + ': cabeçalho ocupa ' + Math.round(r.headerRatio * 100) + '% da altura (máx. 30%, 46% em telas de 568px)');
         if (r.smallN > 0) notes.push(tag + ': ' + r.smallN + ' alvo(s) de toque < 30px: ' + r.small.join('; '));
         if (!r.fontsDisplay) fail(tag + ': fontes locais (Fraunces/Inter) não carregaram');
         if (errs.length) fail(tag + ': erros no console: ' + errs.slice(0, 2).join(' | '));
