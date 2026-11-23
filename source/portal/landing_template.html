@@ -28,38 +28,106 @@
 <script src="assets/prefs.js"></script>
 <link rel="stylesheet" href="assets/tokens.css">
 <link rel="stylesheet" href="assets/prefs.css">
-<script>try{ if(location.hash.length>1) location.replace('livro.html'+location.hash); }catch(e){}</script>
+<script>try{ if(location.hash.length>1 && !/^#(judo|jiu-jitsu|fontes|como)$/.test(location.hash)) location.replace('livro.html'+location.hash); }catch(e){}</script>
 <style>
-:root{--judo:#2f64c8;--bjj:#7a3fa3}
+:root{--judo:#2f64c8;--bjj:#7a3fa3;--ease:cubic-bezier(.22,1,.36,1);--glow:color-mix(in srgb,var(--judo) 26%,transparent)}
+body[data-active="bjj"]{--glow:color-mix(in srgb,var(--bjj) 30%,transparent)}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--body);-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 24% 38%,var(--glow),transparent 58%);transition:background .9s var(--ease)}
 a{color:inherit}:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
-.skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;background:#fff;color:#000;padding:8px 12px;z-index:9}
-header{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;padding:14px clamp(16px,4vw,48px);position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px)}
+.skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;background:#fff;color:#000;padding:8px 12px;z-index:99}
+header{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;padding:14px clamp(16px,4vw,48px);position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
 .prefs-bar{margin-left:auto}.logo{font:650 1.25rem var(--display);letter-spacing:-.02em;text-decoration:none}.logo span{font-family:var(--jp);font-weight:700;margin-left:8px;color:var(--muted)}
-nav{display:flex;gap:6px;flex-wrap:wrap}nav a{padding:8px 14px;border-radius:999px;background:var(--soft);text-decoration:none;font-weight:700;font-size:.9rem}nav a:hover{background:var(--ink);color:var(--bg)}
-main{max-width:1240px;margin:0 auto;padding:12px clamp(16px,4vw,48px) 72px}
-.hero{padding:clamp(28px,6vw,72px) 0 28px}.hero h1{font:650 clamp(2.4rem,6.4vw,4.8rem)/1.02 var(--display);letter-spacing:-.03em;margin:0 0 14px}.hero p{max-width:60ch;color:var(--muted);font-size:1.1rem;margin:0}
-.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:20px;margin-top:10px}
-.opt{border-radius:var(--r-m);border:1px solid var(--line);padding:clamp(22px,3.5vw,38px);color:var(--ink);position:relative;overflow:hidden;min-height:420px;display:flex;flex-direction:column}
-.opt.judo{background:linear-gradient(135deg,color-mix(in srgb,var(--judo) 30%,var(--surface)),var(--surface) 62%)}.opt.bjj{background:linear-gradient(135deg,color-mix(in srgb,var(--bjj) 30%,var(--surface)),var(--surface) 62%)}
-.kj{font:700 clamp(4.5rem,13vw,8rem)/1 var(--jp);opacity:.12;position:absolute;right:16px;top:-6px;pointer-events:none;user-select:none}
-.opt h2{font:650 clamp(2.2rem,4.8vw,3.4rem)/1 var(--display);letter-spacing:-.02em;margin:0}.opt h2 small{display:block;font:600 1rem var(--body);opacity:.85;margin-top:8px;letter-spacing:0}
-.opt p.lead{margin:14px 0 18px;max-width:46ch;color:var(--muted)}
-.btns{display:grid;gap:8px;margin-top:auto}.btns a{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:13px 16px;border-radius:var(--r-s);background:var(--surface-2);border:1px solid var(--line);text-decoration:none;font-weight:700;min-height:48px}.btns a:hover{border-color:var(--accent)}.btns a small{font-weight:400;opacity:.8;display:block}.btns a.main{background:var(--accent);color:var(--accent-ink)}.btns a.main:hover{filter:brightness(1.08)}
-.terms{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px;padding:0;list-style:none}.terms li{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:6px 10px;font-size:.84rem;line-height:1.25}.terms b{font:700 1.05rem var(--jp);display:block}.terms span{opacity:.82}
-section.box{margin-top:48px}section.box h2{font:800 1.5rem var(--display);margin:0 0 14px}
+nav.main{display:flex;gap:6px;flex-wrap:wrap}nav.main a{padding:8px 14px;border-radius:999px;background:var(--soft);text-decoration:none;font-weight:700;font-size:.9rem;transition:background var(--t),color var(--t)}nav.main a:hover{background:var(--ink);color:var(--bg)}
+main{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:12px clamp(16px,4vw,48px) 72px clamp(16px,4vw,48px)}
+.hero{padding:clamp(14px,3vw,34px) 0 20px}.hero h1{font:650 clamp(2rem,4.4vw,3.3rem)/1.06 var(--display);letter-spacing:-.03em;margin:0 0 10px;max-width:24ch}.hero p{max-width:64ch;color:var(--muted);font-size:1.02rem;margin:0}
+.stage{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:clamp(20px,3.4vw,44px);align-items:center}
+.selectors{display:flex;flex-direction:column;gap:16px}
+.sel{appearance:none;font:inherit;text-align:left;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:18px;padding:16px 20px;border-radius:20px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 78%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:.66;transform:scale(.99);transition:transform .6s var(--ease),opacity .6s var(--ease),border-color .6s var(--ease),box-shadow .6s var(--ease),background .6s var(--ease)}
+.sel:hover{opacity:.9}
+.sel.is-active{opacity:1;transform:translateX(10px) scale(1.01);background:var(--surface)}
+.sel[data-m="judo"].is-active{border-color:color-mix(in srgb,var(--judo) 60%,transparent);box-shadow:0 18px 40px -14px color-mix(in srgb,var(--judo) 55%,transparent)}
+.sel[data-m="bjj"].is-active{border-color:color-mix(in srgb,var(--bjj) 60%,transparent);box-shadow:0 18px 40px -14px color-mix(in srgb,var(--bjj) 55%,transparent)}
+.kc{width:62px;height:62px;min-width:62px;border-radius:50%;display:grid;place-items:center;font:700 1.2rem var(--jp);background:var(--surface-2);border:1px solid var(--line-strong);color:var(--muted);transition:all .6s var(--ease)}
+.sel[data-m="judo"].is-active .kc{color:#fff;border-color:var(--judo);background:color-mix(in srgb,var(--judo) 70%,#000);box-shadow:0 0 22px color-mix(in srgb,var(--judo) 45%,transparent);transform:scale(1.05)}
+.sel[data-m="bjj"].is-active .kc{color:#fff;border-color:var(--bjj);background:color-mix(in srgb,var(--bjj) 70%,#000);box-shadow:0 0 22px color-mix(in srgb,var(--bjj) 45%,transparent);transform:scale(1.05)}
+.sel b{display:block;font:650 1.5rem/1.1 var(--display);letter-spacing:-.01em}.sel small{display:block;margin-top:4px;color:var(--muted);font-size:.84rem;line-height:1.3}
+.sel .go{margin-left:auto;font-size:1.2rem;opacity:.4;transition:opacity .5s,transform .5s var(--ease)}.sel.is-active .go{opacity:.9;transform:translateX(3px)}
+.gallery{position:relative;aspect-ratio:16/10;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:#0c0d11;box-shadow:0 26px 60px -22px rgba(0,0,0,.6)}
+.gallery .sl{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:4% 4% 9%;background:linear-gradient(160deg,#171a22,#0c0d11);opacity:0;transform:scale(1.05);transition:opacity 1.1s var(--ease),transform 4s ease-out}
+.gallery .sl.on{opacity:1;transform:scale(1)}
+.gallery::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(7,7,9,.25),transparent 28%,rgba(7,7,9,.7))}
+.hud{position:absolute;left:18px;right:18px;bottom:14px;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px;color:rgba(255,255,255,.8);font-size:.78rem;letter-spacing:.08em;font-variant-numeric:tabular-nums}
+.hud .cap{max-width:60%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0}
+.dots{display:flex;gap:5px;align-items:center}.dot{width:12px;height:2px;border-radius:2px;background:rgba(255,255,255,.25);transition:width .5s var(--ease),background .5s}.dot.on{width:22px;background:rgba(255,255,255,.9)}
+.gbtn{position:absolute;top:50%;z-index:3;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:rgba(10,10,12,.5);color:#fff;font-size:1.1rem;cursor:pointer;display:grid;place-items:center;opacity:0;transition:opacity .3s}
+.gallery:hover .gbtn,.gbtn:focus-visible{opacity:1}.gbtn.prev{left:12px}.gbtn.next{right:12px}
+@media (hover:none){.gbtn{opacity:.85}}
+.panels{margin-top:34px}.opt{display:none;border-radius:var(--r-m);border:1px solid var(--line);padding:clamp(22px,3.5vw,38px);position:relative;overflow:hidden;animation:rise .6s var(--ease)}
+.opt.on{display:block}@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.opt.judo{background:linear-gradient(135deg,color-mix(in srgb,var(--judo) 24%,var(--surface)),var(--surface) 60%)}.opt.bjj{background:linear-gradient(135deg,color-mix(in srgb,var(--bjj) 26%,var(--surface)),var(--surface) 60%)}
+.kj{font:700 clamp(4.5rem,13vw,8rem)/1 var(--jp);opacity:.1;position:absolute;right:16px;top:-6px;pointer-events:none;user-select:none}
+.opt h2{font:650 clamp(2rem,4.4vw,3.1rem)/1 var(--display);letter-spacing:-.02em;margin:0}.opt h2 small{display:block;font:600 1rem var(--body);opacity:.85;margin-top:8px;letter-spacing:0}
+.opt p.lead{margin:14px 0 18px;max-width:62ch;color:var(--muted)}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(18px,3vw,34px);align-items:start}
+.terms{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}.terms li{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:6px 10px;font-size:.84rem;line-height:1.25}.terms b{font:700 1.05rem var(--jp);display:block}.terms span{opacity:.82}
+.btns{display:grid;gap:8px}.btns a{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:13px 16px;border-radius:var(--r-s);background:var(--surface-2);border:1px solid var(--line);text-decoration:none;font-weight:700;min-height:48px;transition:border-color var(--t),transform var(--t)}.btns a:hover{border-color:var(--accent);transform:translateX(2px)}.btns a small{font-weight:400;opacity:.8;display:block}.btns a.main{background:var(--accent);color:var(--accent-ink)}.btns a.main:hover{filter:brightness(1.08)}
+section.box{margin-top:52px}section.box h2{font:800 1.5rem var(--display);margin:0 0 14px}
 .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}.card h3{margin:0 0 6px;font:700 1.05rem var(--display)}.card p{margin:0;color:var(--muted);font-size:.95rem}
 ol.refs{padding-left:1.2rem;color:var(--muted);font-size:.92rem}ol.refs li{margin:6px 0}ol.refs b{color:var(--ink)}ol.refs a{color:var(--accent)}
-footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,48px);color:var(--muted);font-size:.9rem;text-align:center}footer a{color:var(--accent)}
-@media (max-width:600px){nav a:nth-child(n+4){display:none}.opt{min-height:0}.prefs-bar{margin-left:0;width:100%}}
+footer{position:relative;z-index:2;border-top:1px solid var(--line);padding:22px clamp(16px,4vw,48px);color:var(--muted);font-size:.9rem;text-align:center}footer a{color:var(--accent)}
+.fnav{position:fixed;left:16px;top:50%;transform:translateY(-50%);z-index:30;display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 7px;border-radius:999px;background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 16px 38px rgba(0,0,0,.35)}
+.fnav button{appearance:none;border:0;background:transparent;color:var(--muted);width:38px;height:38px;border-radius:50%;display:grid;place-items:center;cursor:pointer;transition:color var(--t),background var(--t)}
+.fnav button:hover,.fnav button.on{color:var(--ink);background:var(--surface-2)}.fnav i{width:18px;height:1px;background:var(--line-strong)}
+.drawer{position:fixed;left:16px;top:16px;bottom:16px;width:340px;max-width:calc(100vw - 32px);z-index:40;display:flex;flex-direction:column;background:color-mix(in srgb,var(--surface) 94%,transparent);border:1px solid var(--line-strong);border-radius:22px;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);box-shadow:0 28px 70px rgba(0,0,0,.5);transform:translateX(calc(-100% - 32px));opacity:0;visibility:hidden;transition:transform .5s var(--ease),opacity .4s var(--ease),visibility .5s}
+.drawer.open{transform:none;opacity:1;visibility:visible}
+.dh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 18px 12px;border-bottom:1px solid var(--line)}.dh h2{margin:0;font:700 .76rem var(--body);text-transform:uppercase;letter-spacing:.14em;color:var(--muted)}
+.dh button{appearance:none;width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--surface-2);color:var(--muted);cursor:pointer;font-size:1rem;display:grid;place-items:center}.dh button:hover{color:var(--ink)}
+.ds{padding:12px 18px;border-bottom:1px solid var(--line)}.ds input{width:100%;font:inherit;font-size:.9rem;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:10px 14px;outline:none}.ds input:focus{border-color:var(--accent)}
+.dc{flex:1;overflow-y:auto;padding:12px 14px 20px;scrollbar-width:thin}
+.dd{margin:0 0 18px}.dd>h3{display:flex;align-items:center;gap:9px;margin:0 0 6px;padding:4px 6px;font:700 .76rem var(--body);letter-spacing:.1em;text-transform:uppercase}
+.bd{min-width:38px;height:24px;padding:0 8px;border-radius:999px;display:inline-grid;place-items:center;font:700 .7rem var(--jp);border:1px solid;white-space:nowrap;letter-spacing:.04em}.bd.judo{color:var(--judo);border-color:var(--judo);background:color-mix(in srgb,var(--judo) 14%,transparent)}.bd.bjj{color:var(--bjj);border-color:var(--bjj);background:color-mix(in srgb,var(--bjj) 14%,transparent)}
+.dm{margin:0 0 8px}.dm>h4{margin:0;padding:6px 8px;font:600 .8rem var(--body);color:var(--muted)}
+.dm ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.dm a{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;text-decoration:none;font-size:.86rem;transition:background var(--t),transform var(--t)}.dm a:hover{background:var(--surface-2);transform:translateX(3px)}.dm a small{font-size:.7rem;color:var(--muted);white-space:nowrap}
+.dm a .jp{font-family:var(--jp);color:var(--muted);font-size:.8rem}
+.dempty{display:none;text-align:center;padding:26px 12px;color:var(--muted);font-size:.88rem}
+.scrim{position:fixed;inset:0;z-index:35;background:rgba(0,0,0,.35);opacity:0;visibility:hidden;transition:opacity .4s}.scrim.open{opacity:1;visibility:visible}
+[hidden]{display:none!important}
+@media (max-width:920px){
+  .stage{grid-template-columns:minmax(0,1fr);gap:20px}
+  .sel.is-active{transform:translateX(5px) scale(1.01)}
+  .cols{grid-template-columns:minmax(0,1fr)}
+  .fnav{top:auto;bottom:16px;left:16px;transform:none;flex-direction:row;padding:6px 10px}.fnav i{width:1px;height:18px}
+  nav.main a:nth-child(n+4){display:none}.prefs-bar{margin-left:0;width:100%}
+}
+html.lay-mobile[data-layout="mobile"] .fnav,html.lay-mobile[data-layout="mobile"] .drawer{left:max(16px,calc(50% - 204px))}
+html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px))}
+@media (prefers-reduced-motion:reduce){.sel,.gallery .sl,.opt{transition:none;animation:none}}
 </style>
 </head>
-<body>
+<body data-active="judo">
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+<aside class="fnav" aria-label="Acesso rápido ao sumário e à busca">
+  <button type="button" id="bIdx" title="Sumário e índice" aria-label="Abrir o sumário e o índice" aria-expanded="false" aria-controls="drawer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h11M4 18h14"/></svg></button>
+  <i aria-hidden="true"></i>
+  <button type="button" id="bSea" title="Buscar técnica ou exame (Ctrl+K)" aria-label="Buscar técnica ou exame"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg></button>
+</aside>
+<div class="scrim" id="scrim"></div>
+<nav class="drawer" id="drawer" aria-label="Sumário do portal">
+  <div class="dh"><h2>Sumário e índice</h2><button type="button" id="bCls" aria-label="Fechar o sumário">✕</button></div>
+  <div class="ds"><input type="search" id="dq" placeholder="Buscar técnica, exame ou termo" aria-label="Buscar técnica, exame ou termo" autocomplete="off"></div>
+  <div class="dc" id="dc">
+{{DRAWER}}
+    <p class="dempty" id="dempty">Nada encontrado para essa busca.</p>
+  </div>
+</nav>
+
 <header>
   <a class="logo" href="./">Judô &amp; Jiu-Jitsu<span lang="ja">柔道 · 柔術</span></a>
-  <nav aria-label="Principal"><a href="#judo">Judô</a><a href="#jiu-jitsu">Jiu-Jitsu</a><a href="#fontes">Fontes</a><a href="livro.html#transparencia">Uso de IA</a></nav>
+  <nav class="main" aria-label="Principal"><a href="#judo">Judô</a><a href="#jiu-jitsu">Jiu-Jitsu</a><a href="#fontes">Fontes</a><a href="livro.html#transparencia">Uso de IA</a></nav>
   <div class="prefs-bar" data-prefs></div>
 </header>
 <main id="conteudo">
@@ -67,44 +135,63 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,48px);color:
     <h1>O que é cobrado em cada exame de faixa</h1>
     <p>Escolha a modalidade. Em cada uma há o programa de cada exame, ilustrações, vídeos oficiais, nomes em japonês, inglês e português, e a fonte de cada informação.</p>
   </div>
-  <div class="opts">
-    <article class="opt judo" id="judo" aria-labelledby="h-judo">
+
+  <section class="stage" aria-label="Escolha da modalidade">
+    <div class="selectors" role="group" aria-label="Modalidades">
+      <button type="button" class="sel is-active" data-m="judo" aria-pressed="true"><span class="kc" lang="ja" aria-hidden="true">柔道</span><span><b>Judô</b><small>Programa da CBJ e regras da IJF</small></span><span class="go" aria-hidden="true">→</span></button>
+      <button type="button" class="sel" data-m="bjj" aria-pressed="false"><span class="kc" lang="ja" aria-hidden="true">柔術</span><span><b>Jiu-Jitsu</b><small>Programa técnico da JJIF e regras IBJJF/CBJJ</small></span><span class="go" aria-hidden="true">→</span></button>
+    </div>
+    <div class="gallery" id="gal" role="group" aria-roledescription="carrossel" aria-label="Ilustrações da modalidade">
+{{SLIDES}}
+      <button type="button" class="gbtn prev" id="gPrev" aria-label="Imagem anterior">‹</button>
+      <button type="button" class="gbtn next" id="gNext" aria-label="Próxima imagem">›</button>
+      <div class="hud"><span class="cap" id="gCap" aria-live="polite"></span><span class="dots" id="gDots" aria-hidden="true"></span><span id="gNum">01 / 10</span></div>
+    </div>
+  </section>
+
+  <div class="panels">
+    <article class="opt judo on" id="judo" aria-labelledby="h-judo">
       <div class="kj" lang="ja" aria-hidden="true">柔道</div>
       <h2 id="h-judo">Judô<small lang="ja">柔道 · Jūdō, “o caminho da suavidade”</small></h2>
       <p class="lead">Programa da CBJ, regras e classificação da IJF/Kodokan, técnicas do Gokyo em três fases, combinações, contragolpes e o exame de cada kyū e dan.</p>
-      <ul class="terms" lang="ja">
-        <li><b>道場</b><span>dōjō · local de treino</span></li><li><b>先生</b><span>sensei · professor</span></li><li><b>帯</b><span>obi · faixa</span></li>
-        <li><b>級 · 段</b><span>kyū · dan · graus</span></li><li><b>礼</b><span>rei · saudação</span></li><li><b>受身</b><span>ukemi · quedas</span></li>
-        <li><b>投技</b><span>nage-waza · projeções</span></li><li><b>固技</b><span>katame-waza · solo</span></li><li><b>乱取</b><span>randori · treino livre</span></li>
-        <li><b>形</b><span>kata · formas</span></li><li><b>一本</b><span>ippon · ponto máximo</span></li>
-      </ul>
-      <div class="btns">
-        <a class="main" href="explorar/#/judo"><span>Explorar o Judô<small>{{NJ}} exames, da faixa à técnica: nomes, ilustrações, vídeos e contragolpes</small></span><span aria-hidden="true">→</span></a>
-        <a href="app/#judo/j01"><span>App faixa a faixa<small>progresso, ficha e idioma PT/EN</small></span><span aria-hidden="true">→</span></a>
-        <a href="livro.html"><span>Livro interativo<small>119 ilustrações, glossário, simulado e busca</small></span><span aria-hidden="true">→</span></a>
-        <a href="livro.html#videoteca-oficial"><span>Videoteca oficial<small>100 técnicas Kodokan × IJF Academy</small></span><span aria-hidden="true">→</span></a>
-        <a href="judo-tecnicas-e-exames-de-faixa.pdf" download><span>PDF do livro<small>A4, com sumário e índice</small></span><span aria-hidden="true">↓</span></a>
+      <div class="cols">
+        <ul class="terms" lang="ja">
+          <li><b>道場</b><span>dōjō · local de treino</span></li><li><b>先生</b><span>sensei · professor</span></li><li><b>帯</b><span>obi · faixa</span></li>
+          <li><b>級 · 段</b><span>kyū · dan · graus</span></li><li><b>礼</b><span>rei · saudação</span></li><li><b>受身</b><span>ukemi · quedas</span></li>
+          <li><b>投技</b><span>nage-waza · projeções</span></li><li><b>固技</b><span>katame-waza · solo</span></li><li><b>乱取</b><span>randori · treino livre</span></li>
+          <li><b>形</b><span>kata · formas</span></li><li><b>一本</b><span>ippon · ponto máximo</span></li>
+        </ul>
+        <div class="btns">
+          <a class="main" href="explorar/#/judo"><span>Explorar o Judô<small>{{NJ}} exames, da faixa à técnica: nomes, ilustrações, vídeos e contragolpes</small></span><span aria-hidden="true">→</span></a>
+          <a href="app/#judo/j01"><span>App faixa a faixa<small>progresso, ficha e idioma PT/EN</small></span><span aria-hidden="true">→</span></a>
+          <a href="livro.html"><span>Livro interativo<small>119 ilustrações, glossário, simulado e busca</small></span><span aria-hidden="true">→</span></a>
+          <a href="livro.html#videoteca-oficial"><span>Videoteca oficial<small>100 técnicas Kodokan × IJF Academy</small></span><span aria-hidden="true">→</span></a>
+          <a href="judo-tecnicas-e-exames-de-faixa.pdf" download><span>PDF do livro<small>A4, com sumário e índice</small></span><span aria-hidden="true">↓</span></a>
+        </div>
       </div>
     </article>
     <article class="opt bjj" id="jiu-jitsu" aria-labelledby="h-bjj">
       <div class="kj" lang="ja" aria-hidden="true">柔術</div>
       <h2 id="h-bjj">Jiu-Jitsu<small lang="ja">柔術 · Jūjutsu · Jiu-Jitsu Brasileiro (BJJ)</small></h2>
       <p class="lead">Programa técnico da JJIF por faixa, ficha de exame editável, lista de componentes (guardas, raspagens, transições, chaves, estrangulamentos), regras IBJJF/CBJJ e a apostila da LBJJ.</p>
-      <ul class="terms" lang="ja">
-        <li><b>柔術</b><span>jūjutsu · arte da suavidade</span></li><li><b>寝技</b><span>ne-waza · técnicas de solo</span></li><li><b>押忍</b><span>osu (oss) · saudação</span></li>
-        <li><b>帯</b><span>obi · faixa</span></li><li><b>道着</b><span>dōgi · kimono</span></li><li><b>絞め技</b><span>shime-waza · estrangulamentos</span></li>
-        <li><b>関節技</b><span>kansetsu-waza · chaves</span></li><li><b>抑込技</b><span>osaekomi-waza · imobilizações</span></li><li><b>参った</b><span>maitta · rendição (tap)</span></li>
-        <li><b style="font-family:var(--body)">Guarda</b><span>raspagem · passagem · montada</span></li>
-      </ul>
-      <div class="btns">
-        <a class="main" href="explorar/#/jiu-jitsu"><span>Explorar o Jiu-Jitsu<small>{{NB}} exames, da faixa à técnica, com golpes proibidos por faixa</small></span><span aria-hidden="true">→</span></a>
-        <a href="explorar/#/jiu-jitsu/t/guardas"><span>Lista de componentes<small>quedas, guardas, raspagens, transições, chaves, estrangulamentos, defesa pessoal</small></span><span aria-hidden="true">→</span></a>
-        <a href="explorar/#/jiu-jitsu/t/lbjj"><span>Apostila LBJJ<small>sequências desenhadas por assunto</small></span><span aria-hidden="true">→</span></a>
-        <a href="app/#bjj/b01"><span>App faixa a faixa<small>progresso, ficha de exame editável e idioma PT/EN</small></span><span aria-hidden="true">→</span></a>
+      <div class="cols">
+        <ul class="terms" lang="ja">
+          <li><b>柔術</b><span>jūjutsu · arte da suavidade</span></li><li><b>寝技</b><span>ne-waza · técnicas de solo</span></li><li><b>押忍</b><span>osu (oss) · saudação</span></li>
+          <li><b>帯</b><span>obi · faixa</span></li><li><b>道着</b><span>dōgi · kimono</span></li><li><b>絞め技</b><span>shime-waza · estrangulamentos</span></li>
+          <li><b>関節技</b><span>kansetsu-waza · chaves</span></li><li><b>抑込技</b><span>osaekomi-waza · imobilizações</span></li><li><b>参った</b><span>maitta · rendição (tap)</span></li>
+          <li><b style="font-family:var(--body)">Guarda</b><span>raspagem · passagem · montada</span></li>
+        </ul>
+        <div class="btns">
+          <a class="main" href="explorar/#/jiu-jitsu"><span>Explorar o Jiu-Jitsu<small>{{NB}} exames, da faixa à técnica, com golpes proibidos por faixa</small></span><span aria-hidden="true">→</span></a>
+          <a href="explorar/#/jiu-jitsu/t/guardas"><span>Lista de componentes<small>quedas, guardas, raspagens, transições, chaves, estrangulamentos, defesa pessoal</small></span><span aria-hidden="true">→</span></a>
+          <a href="explorar/#/jiu-jitsu/t/lbjj"><span>Apostila LBJJ<small>sequências desenhadas por assunto</small></span><span aria-hidden="true">→</span></a>
+          <a href="app/#bjj/b01"><span>App faixa a faixa<small>progresso, ficha de exame editável e idioma PT/EN</small></span><span aria-hidden="true">→</span></a>
+        </div>
       </div>
     </article>
   </div>
-  <section class="box" aria-labelledby="h-como">
+
+  <section class="box" id="como" aria-labelledby="h-como">
     <h2 id="h-como">Como usar</h2>
     <div class="grid3">
       <div class="card"><h3>Escolha o exame</h3><p>Em “Faixa a faixa”, toque na faixa que você quer: o app mostra o que é cobrado, com o trecho do documento oficial.</p></div>
@@ -119,6 +206,64 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,48px);color:
   </section>
 </main>
 <footer>Texto, ilustrações e site gerados com apoio de IA (Claude, Anthropic). <a href="livro.html#transparencia">Transparência sobre o uso de IA</a> · <a href="https://github.com/joaoventuraoliveira/judobjj">Código no GitHub</a></footer>
+
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+  var body=document.body,sels=$$('.sel'),panels={judo:$('#judo'),bjj:$('#jiu-jitsu')};
+  var slides={judo:$$('.sl[data-m="judo"]'),bjj:$$('.sl[data-m="bjj"]')};
+  var cur='judo',idx=0,timer=null,reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function load(img){if(img&&!img.getAttribute('src')&&img.dataset.src)img.setAttribute('src',img.dataset.src)}
+  function paint(){
+    var list=slides[cur];
+    $$('.sl').forEach(function(s){s.classList.remove('on')});
+    var s=list[idx];load(s);load(list[(idx+1)%list.length]);s.classList.add('on');
+    $('#gNum').textContent=String(idx+1).padStart(2,'0')+' / '+String(list.length).padStart(2,'0');
+    $('#gCap').textContent=s.getAttribute('alt')||'';
+    $$('.dot').forEach(function(d,i){d.classList.toggle('on',i===idx)});
+  }
+  function dots(){var h='';for(var i=0;i<slides[cur].length;i++)h+='<span class="dot"></span>';$('#gDots').innerHTML=h}
+  function step(n){var L=slides[cur].length;idx=(idx+n+L)%L;paint()}
+  function run(){clearInterval(timer);if(reduce)return;timer=setInterval(function(){if(!document.hidden)step(1)},3600)}
+  function setM(m){
+    if(m===cur)return;cur=m;idx=0;body.setAttribute('data-active',m);
+    sels.forEach(function(b){var on=b.dataset.m===m;b.classList.toggle('is-active',on);b.setAttribute('aria-pressed',String(on))});
+    panels.judo.classList.toggle('on',m==='judo');panels.bjj.classList.toggle('on',m==='bjj');
+    dots();paint();run();
+  }
+  sels.forEach(function(b){
+    b.addEventListener('mouseenter',function(){if(matchMedia('(hover:hover)').matches)setM(b.dataset.m)});
+    b.addEventListener('focus',function(){setM(b.dataset.m)});
+    b.addEventListener('touchstart',function(){setM(b.dataset.m)},{passive:true});
+    b.addEventListener('click',function(){setM(b.dataset.m);panels[b.dataset.m].scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'})});
+  });
+  $('#gPrev').addEventListener('click',function(){step(-1);run()});$('#gNext').addEventListener('click',function(){step(1);run()});
+  $$('nav.main a[href^="#"]').forEach(function(a){a.addEventListener('click',function(){var h=a.getAttribute('href');if(h==='#judo')setM('judo');else if(h==='#jiu-jitsu')setM('bjj')})});
+  if(location.hash==='#jiu-jitsu')setM('bjj');
+  dots();paint();run();
+  var dr=$('#drawer'),sc=$('#scrim'),bi=$('#bIdx'),q=$('#dq');
+  function open(f){dr.classList.add('open');sc.classList.add('open');bi.classList.add('on');bi.setAttribute('aria-expanded','true');if(f)setTimeout(function(){q.focus()},200)}
+  function close(){dr.classList.remove('open');sc.classList.remove('open');bi.classList.remove('on');bi.setAttribute('aria-expanded','false')}
+  bi.addEventListener('click',function(){dr.classList.contains('open')?close():open(false)});
+  $('#bSea').addEventListener('click',function(){open(true)});$('#bCls').addEventListener('click',close);sc.addEventListener('click',close);
+  function filt(){
+    var t=q.value.trim().toLowerCase(),n=0;
+    $$('#dc li').forEach(function(li){var ok=!t||(li.dataset.q||'').indexOf(t)>-1;li.hidden=!ok;if(ok)n++});
+    $$('#dc .dm').forEach(function(m){m.hidden=!$$('li',m).some(function(l){return !l.hidden})});
+    $$('#dc .dd').forEach(function(d){d.hidden=!$$('li',d).some(function(l){return !l.hidden})});
+    $('#dempty').style.display=n?'none':'block';
+  }
+  q.addEventListener('input',filt);
+  $$('#dc a').forEach(function(a){a.addEventListener('mouseenter',function(){var d=a.closest('.dd');if(d&&d.dataset.m)setM(d.dataset.m)})});
+  document.addEventListener('keydown',function(e){
+    var typing=/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement||{}).tagName||'');
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();open(true);return}
+    if(e.key==='/'&&!typing){e.preventDefault();open(true);return}
+    if(e.key==='Escape'&&dr.classList.contains('open')){close();return}
+    if(!typing&&!dr.classList.contains('open')&&(e.key==='ArrowDown'||e.key==='ArrowUp')&&document.activeElement&&document.activeElement.classList.contains('sel')){e.preventDefault();setM(cur==='judo'?'bjj':'judo');var a=$('.sel.is-active');if(a)a.focus()}
+  });
+})();
+</script>
 <script src="assets/i18n.js" data-dict="assets/i18n-landing.js"></script>
 </body>
 </html>
