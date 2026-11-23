@@ -14,7 +14,10 @@ else: S = ns["html_strings"](R / "site/livro.html")
 import re as _re
 UI = ns["UI"]; RX = [_re.compile(r[0]) for r in UI.RULES_EN]
 NOMES = _re.compile(r"^[A-Za-zōūŌŪ\-' ]{2,40}$")
+def sinal_pt(s):
+    return bool(_re.search(r"[ãõçáéíóúâêôà]|\b(de|do|da|dos|das|para|com|que|em|um|uma|os|as|é|se|ou|no|na|nos|nas|ao|por|mais|sua|seu)\b", s))
 def ruido(s):
+    if not sinal_pt(s): return True
     if any(r.search(s) for r in RX): return True
     if NOMES.match(s) and (s == s.lower() and "-" in s or all(w[:1].isupper() or "-" in w for w in s.split())): return True   # nomes em romaji/inglês
     return False
