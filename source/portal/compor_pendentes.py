@@ -16,9 +16,23 @@ def tr(s):
     for k in (s, s.rstrip("."), s.rstrip(".") + "."):
         if k in M: return M[k] if k.endswith(".") == s.endswith(".") or True else M[k]
     return None
+MES = {"nov.":"Nov","dez.":"Dec","jan.":"Jan","fev.":"Feb","mar.":"Mar","abr.":"Apr","mai.":"May","jun.":"Jun","jul.":"Jul","ago.":"Aug","set.":"Sep","out.":"Oct"}
+def cit(s):
+    m = re.search(r"Citada em: (.+)$", s)
+    if not m: return None
+    ts = [tr(x) for x in m.group(1).split(" · ")]
+    if None in ts:
+        for x, y in zip(m.group(1).split(" · "), ts):
+            if y is None: falta[x] = 1
+        return None
+    h = s[:m.start()]
+    h = h.replace(" Disponível em: ", " Available at: ").replace(" Acesso em: ", " Accessed on: ").replace("[s. d.]", "[n.d.]").replace("Série de vídeos", "Video series").replace("Tóquio", "Tokyo")
+    h = re.sub(r"(\d{1,2}) (\w{3,4}\.) (\d{4})", lambda g: f"{MES.get(g.group(2), g.group(2))} {g.group(1)}, {g.group(3)}", h)
+    return h + "Cited in: " + " · ".join(ts)
 def comp(s):
     r = tr(s)
     if r is not None: return r
+    if "Citada em: " in s: return cit(s)
     if s.startswith("Ação-chave: ") and s.endswith(EXEC[0]):
         x = s[len("Ação-chave: "):-len(EXEC[0])].strip().rstrip(".")
         y = tr(x)
