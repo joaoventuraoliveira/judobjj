@@ -26,6 +26,7 @@ def app(www):
     h = h.replace(a, 'JTPrefs.setLang(LANG==="en"?"pt":"en")', 1)
     h = re.sub(r'\$\("#theme"\)\.onclick=\(\)=>\{.*?\n', '$("#theme").onclick=()=>JTPrefs.cycleTheme();\n', h, count=1, flags=re.S)
     h = h.replace('const th = store.get("theme"); if(th) document.documentElement.dataset.theme = th;', '', 1)
+    h = h.replace('<meta name="viewport"', '<meta property="og:type" content="website"><meta property="og:title" content="App faixa a faixa: Judô e Jiu-Jitsu"><meta property="og:description" content="Progresso, ficha de exame editável e idioma PT/EN."><meta property="og:url" content="https://joaoventuraoliveira.github.io/judobjj/app/"><meta property="og:image" content="https://joaoventuraoliveira.github.io/judobjj/assets/og/portal.jpg?v=1"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">\n<meta name="viewport"', 1)
     h = LC.transformar_html_styles(h)
     (out / "index.html").write_text(h, encoding="utf-8")
     shutil.copy2(www / "data.js", out / "data.js")
