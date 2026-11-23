@@ -15,10 +15,13 @@ def app(www):
     h = h.replace(a, '$("#dimg").src=thumbUrl(th.dataset.img);', 1)
     b = '<div class="brand">Faixa a faixa</div>'; assert b in h
     h = h.replace(b, '<a class="brand" href="../" aria-label="Voltar ao início do portal">Faixa a faixa</a>', 1)
+    h = h.replace('<script src="../assets/prefs.js"></script>', '<script src="../assets/prefs.js"></script>\n<script src="../assets/belts.js"></script>', 1)
+    b2 = 'function beltEl(b,extra=""){return `<div class="belt ${extra}" style="${beltCss(b)}" role="img" aria-label="faixa"></div>`}'; assert b2 in h
+    h = h.replace(b2, 'function beltEl(b,extra=""){return `<div class="belt ${extra}" style="${beltCss(b)}" role="img" aria-label="${(window.JTBelts?JTBelts.label(b):"Faixa")}"></div>`}', 1)
     h = h.replace("</head>", "<style>a.brand{color:var(--ink);text-decoration:none}</style><style>" + (ROOT / "source" / "portal" / "app_polish.css").read_text(encoding="utf-8") + "</style></head>", 1)
     # preferências compartilhadas (tema, layout, idioma) e escolha de layout PC/celular
     h = h.replace('<html lang="pt-BR" data-theme="dark">', '<html lang="pt-BR">', 1)
-    h = h.replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<script src="../assets/prefs.js"></script>\n<link rel="stylesheet" href="../assets/prefs.css">', 1)
+    h = h.replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<script src="../assets/prefs.js"></script>\n<script src="../assets/belts.js"></script>\n<link rel="stylesheet" href="../assets/prefs.css">', 1)
     h = h.replace('<input class="search" id="q"', '<div class="prefs-bar" data-prefs="layout"></div>\n    <input class="search" id="q"', 1)
     a = 'let LANG=store.get("lang")==="en"?"en":"pt";'; assert a in h
     h = h.replace(a, 'let LANG=(window.JTPrefs&&JTPrefs.state.lang)||"pt";', 1)
@@ -27,6 +30,11 @@ def app(www):
     h = re.sub(r'\$\("#theme"\)\.onclick=\(\)=>\{.*?\n', '$("#theme").onclick=()=>JTPrefs.cycleTheme();\n', h, count=1, flags=re.S)
     h = h.replace('const th = store.get("theme"); if(th) document.documentElement.dataset.theme = th;', '', 1)
     h = h.replace('<meta name="viewport"', '<meta property="og:type" content="website"><meta property="og:title" content="App faixa a faixa: Judô e Jiu-Jitsu"><meta property="og:description" content="Progresso, ficha de exame editável e idioma PT/EN."><meta property="og:url" content="https://joaoventuraoliveira.github.io/judobjj/app/"><meta property="og:image" content="https://joaoventuraoliveira.github.io/judobjj/assets/og/portal.jpg?v=1"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">\n<meta name="viewport"', 1)
+    # a11y-app: símbolos decorativos ocultos ao leitor de tela, com o texto ao lado
+    h = h.replace('>▶ Vídeo IJF</a>', '><span aria-hidden="true">▶</span> Vídeo IJF</a>')
+    h = re.sub(r'(<button data-go="\$\{p\?p\.id:""\}" \$\{p\?"":"disabled"\}>)← ', r'\1<span aria-hidden="true">←</span> ', h)
+    h = h.replace('<button data-go="${p?p.id:""}" ${p?"":"disabled"}><span aria-hidden="true">←</span> ${p?esc(p.titulo):""}</button><button data-go="${n?n.id:""}" ${n?"":"disabled"}>${n?esc(n.titulo):""} →</button>',
+        '<button data-go="${p?p.id:""}" ${p?"":"disabled"} aria-label="${p?"Faixa anterior: "+esc(p.titulo):"Sem faixa anterior"}"><span aria-hidden="true">←</span> ${p?esc(p.titulo):""}</button><button data-go="${n?n.id:""}" ${n?"":"disabled"} aria-label="${n?"Próxima faixa: "+esc(n.titulo):"Sem próxima faixa"}">${n?esc(n.titulo):""} <span aria-hidden="true">→</span></button>')
     h = LC.transformar_html_styles(h)
     (out / "index.html").write_text(h, encoding="utf-8")
     shutil.copy2(www / "data.js", out / "data.js")
@@ -99,8 +107,8 @@ def drawer_slides():
     bm = [mod("Programa de exames", [item("explorar/#/jiu-jitsu/faixa/" + f["id"], f["titulo"], f.get("sub", ""), belt=f["id"]) for f in B["faixas"]]),
           mod("Lista de componentes", [item("explorar/#/jiu-jitsu/t/" + g["id"], g["nome"]) for g in B["comp"]] + [item("explorar/#/jiu-jitsu/proibidas", "Golpes proibidos por faixa"), item("explorar/#/jiu-jitsu/t/referencias", "Referências")])]
     TREE = tree_data(P)
-    dr = (f'<section class="dd" data-m="judo"><h3><span class="bd judo" lang="ja">柔道</span><span>Judô</span></h3>{"".join(jm)}</section>'
-          f'<section class="dd" data-m="bjj"><h3><span class="bd bjj" lang="ja">柔術</span><span>Jiu-Jitsu</span></h3>{"".join(bm)}</section>')
+    dr = (f'<section class="dd" data-m="judo"><h3><span class="bd judo" lang="ja" aria-hidden="true">柔道</span><span>Judô</span></h3>{"".join(jm)}</section>'
+          f'<section class="dd" data-m="bjj"><h3><span class="bd bjj" lang="ja" aria-hidden="true">柔術</span><span>Jiu-Jitsu</span></h3>{"".join(bm)}</section>')
     G = {"judo": [("o_goshi", "Ilustração: O-goshi, o grande quadril"), ("seoi_nage", "Ilustração: Seoi-nage, projeção por cima do ombro"), ("uchi_mata", "Ilustração: Uchi-mata, a coxa interna"), ("harai_goshi", "Ilustração: Harai-goshi, quadril varrido"), ("tai_otoshi", "Ilustração: Tai-otoshi, queda do corpo"), ("o_soto_gari", "Ilustração: O-soto-gari, grande ceifada exterior"), ("tomoe_nage", "Ilustração: Tomoe-nage, sacrifício em círculo"), ("ura_nage", "Ilustração: Ura-nage, projeção por trás"), ("ippon", "Ilustração: ippon, o ponto máximo"), ("kumikata", "Ilustração: kumi-kata, a pegada")],
          "bjj": [("kesa_gatame", "Ilustração: kesa-gatame, imobilização lateral"), ("ren_kesa_katagatame", "Ilustração: do kesa-gatame ao kata-gatame"), ("ren_yokoshiho_juji", "Ilustração: do yoko-shiho ao juji-gatame"), ("ren_osoto_kesa", "Ilustração: do o-soto-gari ao solo"), ("pro_ashi_garami", "Ilustração: ashi-garami, enredo de pernas"), ("pro_do_jime", "Ilustração: do-jime, estrangulamento de tronco"), ("pro_kansetsu_pe", "Ilustração: chave de articulação em pé"), ("pro_ushiro_sankaku", "Ilustração: ushiro-sankaku, triângulo por trás"), ("faixas", "Ilustração: as faixas, do branco ao preto"), ("banca", "Ilustração: a banca do exame")]}
     sl = []

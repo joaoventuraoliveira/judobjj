@@ -1,4 +1,4 @@
-﻿# Roda os testes de paridade desktop x smartphone (ver tests/paridade_mobile.js).
+﻿# Roda os testes de paridade desktop x smartphone (tests/paridade_mobile.js) e a auditoria de acessibilidade (tests/acessibilidade.js).
 # Uso (na pasta do repositório):  powershell -File source\portal\tests\rodar_testes_mobile.ps1
 # Requer: http-server e playwright-cli globais; o site já montado em .\site
 $ErrorActionPreference = "Stop"
@@ -15,3 +15,4 @@ try {
   playwright-cli close | Out-Null
   if (-not $r.ok) { exit 1 }
 } finally { Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -match "http-server" -and $_.CommandLine -match "8793" } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force } }
+
