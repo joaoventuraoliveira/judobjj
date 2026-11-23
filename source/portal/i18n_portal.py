@@ -117,7 +117,7 @@ def html_strings(path, attrs=("alt", "title", "aria-label", "placeholder", "data
     if soup.title: out.add(norm(soup.title.get_text()))
     return {s for s in out if s}
 
-EXTRA_RULES = [[r"^(.+): Ilustração$", "$1: Illustration"], [r"^(.+): Ação proibida$", "$1: Prohibited action"], [r"^Prévia do vídeo: (.+)$", "Video preview: $1"], [r"^(\d+) nova\(s\) · (\d+) no total$", "$1 new · $2 in total"], [r"^(\d+) anos \+ (\d+) anos de Zempo$", "$1 years + $2 years of Zempo"], [r"^(\d+) meses \+ (\d+) anos? de Zempo$", "$1 months + $2 year(s) of Zempo"], [r"^(\d+) anos \(homologação IJF ?\)$", "$1 years (IJF approval)"], [r"^Saídas do (.+)$", "Escapes from $1"], [r"^(\d+) tópicos?$", "$1 topics"], [r"^(\d+) combinações$", "$1 combinations"], [r"^(\d+) imobilizações$", "$1 pins"]]
+EXTRA_RULES = [[r"^Assistir aqui: Saídas do (.+)$", "Watch here: Escapes from $1"], [r"^Assistir aqui: (.+)$", "Watch here: $1"], [r"^(.+): Ilustração$", "$1: Illustration"], [r"^(.+): Ação proibida$", "$1: Prohibited action"], [r"^Prévia do vídeo: (.+)$", "Video preview: $1"], [r"^(\d+) nova\(s\) · (\d+) no total$", "$1 new · $2 in total"], [r"^(\d+) anos \+ (\d+) anos de Zempo$", "$1 years + $2 years of Zempo"], [r"^(\d+) meses \+ (\d+) anos? de Zempo$", "$1 months + $2 year(s) of Zempo"], [r"^(\d+) anos \(homologação IJF ?\)$", "$1 years (IJF approval)"], [r"^Saídas do (.+)$", "Escapes from $1"], [r"^(\d+) tópicos?$", "$1 topics"], [r"^(\d+) combinações$", "$1 combinations"], [r"^(\d+) imobilizações$", "$1 pins"]]
 def build(nome, strings, extra_rules=EXTRA_RULES):
     pt = sorted({norm(s) for s in strings if eh_pt(s)}, key=len)
     print(nome, ":", len(pt), "textos a traduzir"); sys.stdout.flush()
