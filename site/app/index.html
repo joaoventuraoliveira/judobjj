@@ -294,7 +294,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 <a class="skip" href="#main">Pular para o conteúdo</a>
 <div class="app">
   <header class="rail" aria-label="Navegação">
-    <a class="brand" href="../" aria-label="Voltar ao início do portal">Faixa a faixa</a>
+    <a class="brand" href="../" aria-label="Faixa a faixa, voltar ao início do portal">Faixa a faixa</a>
     <div class="mode" role="group" aria-label="Modalidade">
       <button id="m-judo" aria-pressed="true">Judô</button>
       <button id="m-bjj" aria-pressed="false">Jiu-Jitsu</button>
@@ -449,7 +449,7 @@ function trNode(n){ if(n.nodeType===3){ const p=n.parentElement; if(!p||/SCRIPT|
 { let pend=false; const OPT={childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:TRATTR};
   const mo=new MutationObserver(()=>{ if(pend) return; pend=true; requestAnimationFrame(()=>{ pend=false; mo.disconnect(); trNode(document.body); const t=trs(document.title); if(t!==document.title) document.title=t; mo.observe(document.body,OPT) }) });
   mo.observe(document.body,OPT); trNode(document.body); }
-function langBtn(){ const b=$("#lang"); if(!b) return; b.querySelector(".lt").textContent=LANG==="en"?"EN":"PT-BR"; b.setAttribute("aria-label",LANG==="en"?"Change language to Brazilian Portuguese":"Mudar idioma para inglês (English)"); b.title=b.getAttribute("aria-label"); b.onclick=()=>{ JTPrefs.setLang(LANG==="en"?"pt":"en") } }
+function langBtn(){ const b=$("#lang"); if(!b) return; b.querySelector(".lt").textContent=LANG==="en"?"EN":"PT-BR"; b.setAttribute("aria-label",LANG==="en"?"EN, change language to Brazilian Portuguese":"PT-BR, mudar idioma para inglês (English)"); b.title=b.getAttribute("aria-label"); b.onclick=()=>{ JTPrefs.setLang(LANG==="en"?"pt":"en") } }
 langBtn();
 
 const ORDER = ["Elegibilidade","Reverência e quedas (Rei/Ukemi)","Fundamentos de aplicação","Projeção (Nage waza)","Imobilização (Osae komi waza)","Estrangulamento (Shime waza)","Chave de cotovelo (Kansetsu waza)","Solo: viradas, escapes e defesas","Sequências e contragolpes","Kata","Vocabulário","Histórico, princípios e cultura","Arbitragem","Provas teóricas","Provas práticas","Atividades de ensino","Outros critérios"];
@@ -500,7 +500,7 @@ function select(id,scroll){
 }
 function thumbs(imgs,pages,cap){
   if(!imgs||!imgs.length) return "";
-  return `<div class="thumbs">${imgs.map((s,i)=>`<button data-img="${s}" data-cap="${esc(cap)}" aria-label="Ampliar trecho do documento"><img loading="lazy" decoding="async" src="${thumbUrl(s)}" alt="Trecho do documento oficial">${pages&&pages[i]?`<span class="pg">p. ${pages[i]}</span>`:""}</button>`).join("")}</div>`;
+  return `<div class="thumbs">${imgs.map((s,i)=>`<button data-img="${s}" data-cap="${esc(cap)}" aria-label="Ampliar trecho do documento${pages&&pages[i]?`, p. ${pages[i]}`:""}"><img loading="lazy" decoding="async" src="${thumbUrl(s)}" alt="Trecho do documento oficial">${pages&&pages[i]?`<span class="pg">p. ${pages[i]}</span>`:""}</button>`).join("")}</div>`;
 }
 function galHtml(){
   const g=D.judo.galeria; if(!g||!g.tecs||!g.tecs.length) return "";

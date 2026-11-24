@@ -61,7 +61,7 @@ function wireStudy() { /* os eventos são delegados no documento (ver handlers a
 function progTec(slug, n) { const c = ST.get("jt-chk:" + slug, {}); return Object.keys(c).filter(k => c[k]).length / n; }
 function nFases(t) { return t.tipo === "nage" ? 5 : 5; }
 function progGrupo(slugs) { if (!slugs.length) return 0; return slugs.reduce((a, s) => a + (T[s] ? progTec(s, nFases(T[s])) : 0), 0) / slugs.length; }
-const meter = p => `<div class="meter sm" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(p * 100)}"><span style="width:${Math.round(p * 100)}%"></span></div>`;
+const meter = p => `<div class="meter sm" role="progressbar" aria-label="Progresso de estudo" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(p * 100)}"><span style="width:${Math.round(p * 100)}%"></span></div>`;
 function dashJudo() {
   let u = ST.get("jt-ultima", null); if (u && !/^#\/[\w\/-]+$/.test(String(u.h))) u = null;
   return `<h2 class="sec">Módulos de estudo</h2><div class="cards">${J.grupos.map((g, i) => { const p = progGrupo(g.itens); return `<a class="card" href="#/judo/modulo/${i}"><div class="ic" lang="ja">${g.tipo === "nage" ? "投技" : "固技"}</div><h3>${esc(g.nome)}</h3><p>${g.itens.length} técnicas</p>${meter(p)}<span class="n">${Math.round(p * 100)}% estudado</span></a>`; }).join("")}</div>` + (u ? `<div class="box cont"><h3>Continuar de onde parou</h3><a class="pill" href="${esc(u.h)}"><span class="jp" lang="ja">${esc(u.ja)}</span> ${esc(u.nome)}</a></div>` : "");

@@ -15,7 +15,7 @@ def app(www):
     h = h.replace(a, '$("#dimg").src=thumbUrl(th.dataset.img);$("#dimg").alt=th.getAttribute("aria-label")||th.title||"Trecho do documento oficial, ampliado";', 1)
     h = h.replace('<dialog id="dlg"><img id="dimg" alt="">', '<dialog id="dlg" aria-label="Trecho do documento oficial ampliado"><img id="dimg" alt="Trecho do documento oficial, ampliado">', 1)
     b = '<div class="brand">Faixa a faixa</div>'; assert b in h
-    h = h.replace(b, '<a class="brand" href="../" aria-label="Voltar ao início do portal">Faixa a faixa</a>', 1)
+    h = h.replace(b, '<a class="brand" href="../" aria-label="Faixa a faixa, voltar ao início do portal">Faixa a faixa</a>', 1)
     h = h.replace('<script src="../assets/prefs.js"></script>', '<script src="../assets/prefs.js"></script>\n<script src="../assets/belts.js"></script>', 1)
     b2 = 'function beltEl(b,extra=""){return `<div class="belt ${extra}" style="${beltCss(b)}" role="img" aria-label="faixa"></div>`}'; assert b2 in h
     h = h.replace(b2, 'function beltEl(b,extra=""){return `<div class="belt ${extra}" style="${beltCss(b)}" role="img" aria-label="${(window.JTBelts?JTBelts.label(b):"Faixa")}"></div>`}', 1)
@@ -38,6 +38,10 @@ def app(www):
         '<button data-go="${p?p.id:""}" ${p?"":"disabled"} aria-label="${p?"Faixa anterior: "+esc(p.titulo):"Sem faixa anterior"}"><span aria-hidden="true">←</span> ${p?esc(p.titulo):""}</button><button data-go="${n?n.id:""}" ${n?"":"disabled"} aria-label="${n?"Próxima faixa: "+esc(n.titulo):"Sem próxima faixa"}">${n?esc(n.titulo):""} <span aria-hidden="true">→</span></button>')
     # fix-css-literal: o gerador deixou "\\n" literal no CSS, o que descartava ".hero .facts div" (texto branco sobre branco no tema claro)
     h = h.replace("font-weight:600}\\n.rails .ladder", "font-weight:600}\n.rails .ladder").replace("18px)}\\n.hero .facts div", "18px)}\n.hero .facts div")
+    # fix-lang-label: o nome acessível precisa conter o texto visível (WCAG 2.5.3)
+    h = h.replace('b.setAttribute("aria-label",LANG==="en"?"Change language to Brazilian Portuguese":"Mudar idioma para inglês (English)")', 'b.setAttribute("aria-label",LANG==="en"?"EN, change language to Brazilian Portuguese":"PT-BR, mudar idioma para inglês (English)")')
+    # fix-pg-label: o rótulo do botão da miniatura contém o texto visível "p. N" (WCAG 2.5.3)
+    h = h.replace('data-cap="${esc(cap)}" aria-label="Ampliar trecho do documento">', 'data-cap="${esc(cap)}" aria-label="Ampliar trecho do documento${pages&&pages[i]?`, p. ${pages[i]}`:""}">')
     h = LC.transformar_html_styles(h)
     (out / "index.html").write_text(h, encoding="utf-8")
     shutil.copy2(www / "data.js", out / "data.js")

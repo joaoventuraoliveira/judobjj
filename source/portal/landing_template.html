@@ -93,9 +93,9 @@ body.in-study .home-view{display:none}body.in-study .study-view{display:block;an
 .strip:not(.list) .gsep span{display:none}
 .bb{appearance:none;flex:0 0 auto;width:100px;height:72px;display:grid;place-items:center;background:color-mix(in srgb,var(--surface) 82%,transparent);border:1px solid var(--line);border-radius:18px;cursor:pointer;scroll-snap-align:center;transition:transform .38s var(--ease),border-color .38s,background .38s,box-shadow .38s,opacity .38s}
 .strip.list .bb{width:100%;height:78px}
-.strip.sel-on .bb:not(.on){opacity:.55}.bb:hover{opacity:1!important;transform:translateY(-3px) scale(1.04);border-color:var(--line-strong)}
+.strip.sel-on .bb:not(.on){opacity:.82}.bb:hover{opacity:1!important;transform:translateY(-3px) scale(1.04);border-color:var(--line-strong)}
 .bb.on{opacity:1;transform:translateY(-4px) scale(1.08);background:var(--surface);border-color:var(--acc);box-shadow:0 14px 30px -10px color-mix(in srgb,var(--acc) 55%,transparent)}
-.bcap{display:block;text-align:center;font:600 .62rem/1 var(--body);color:var(--muted);letter-spacing:.04em;margin-top:-2px;white-space:nowrap}.bb.has-cap{align-content:center;gap:0}.bsvg{width:74px;height:48px;pointer-events:none;filter:drop-shadow(0 4px 8px rgba(0,0,0,.45))}.bsvg.sm{width:34px;height:22px;filter:none}.bsvg.md{width:48px;height:31px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))}
+.bcap{display:block;text-align:center;font:600 .62rem/1 var(--body);color:var(--ink);opacity:.9;letter-spacing:.04em;margin-top:-2px;white-space:nowrap}.bb.has-cap{align-content:center;gap:0}.bsvg{width:74px;height:48px;pointer-events:none;filter:drop-shadow(0 4px 8px rgba(0,0,0,.45))}.bsvg.sm{width:34px;height:22px;filter:none}.bsvg.md{width:48px;height:31px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))}
 .rev{opacity:0;transform:translateY(14px);pointer-events:none;transition:opacity .45s var(--ease),transform .45s var(--ease)}.rev.on{opacity:1;transform:none;pointer-events:auto}
 .crumb{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:10px 14px;background:color-mix(in srgb,var(--surface) 82%,transparent);border:1px solid var(--line);border-radius:16px;margin:6px 0 20px;min-height:52px}
 .cp{appearance:none;background:var(--surface-2);border:1px solid transparent;color:var(--muted);padding:5px 12px;border-radius:999px;font-size:.82rem;font-weight:500;display:inline-flex;align-items:center;gap:8px;cursor:pointer;animation:cin .42s var(--ease2) both;transition:background .25s,color .25s}
@@ -199,9 +199,9 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
   <div class="prefs-bar" data-prefs></div>
 </header>
 
-<div class="wrap" id="conteudo">
+<main class="wrap" id="conteudo">
   <!-- tela 1: entrada -->
-  <main class="home-view" id="homeView">
+  <section class="home-view" id="homeView">
       <div class="gallery fotos" id="gal" role="group" aria-roledescription="carrossel" aria-label="Fotos de Judô e Jiu-Jitsu">
 {{SLIDES}}
         <div class="hud"><span class="cap" id="gCap"></span><span class="dots" id="gDots" aria-hidden="true"></span><span id="gNum">01 / 10</span><button type="button" class="gbtn prev" id="gPrev" aria-label="Imagem anterior"><span aria-hidden="true">‹</span></button><button type="button" class="gbtn next" id="gNext" aria-label="Próxima imagem"><span aria-hidden="true">›</span></button><button type="button" class="gpause" id="gPause" aria-label="Pausar a apresentação de imagens" aria-pressed="false"><span aria-hidden="true">❚❚</span></button></div>
@@ -215,12 +215,12 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
       </div>
     </section>
     </div>
-  </main>
+  </section>
 
   <!-- tela 2: faixas (só desenhos) e árvore até o conteúdo -->
   <section class="study-view" id="studyView" aria-label="Faixas e conteúdos">
     <div class="stbar">
-      <div class="sid"><div class="kc t-judo" id="stKc" role="button" tabindex="0" aria-label="Voltar à seleção inicial" title="Voltar à seleção inicial" lang="ja">柔道</div><h1 id="stTitle">Judô</h1></div>
+      <div class="sid"><div class="kc t-judo" id="stKc" role="button" tabindex="0" aria-label="柔道, voltar à seleção inicial" title="Voltar à seleção inicial" lang="ja">柔道</div><h1 id="stTitle">Judô</h1></div>
       <div class="tact">
         <div class="lsw" role="group" aria-label="Visualização das faixas"><button type="button" id="vLine" aria-pressed="true">Em linha</button><button type="button" id="vList" aria-pressed="false">Em lista</button></div>
         <a class="pbtn go" id="stExp" href="explorar/">Abrir no explorador →</a>
@@ -297,11 +297,11 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
       <p class="card" style="margin-top:16px"><b>Aviso.</b> Material de estudo independente, sem vínculo com as entidades citadas. Trechos de documentos oficiais aparecem em miniatura, sempre com a fonte, para estudo. Os regulamentos mudam: confira a versão vigente com a sua federação ou professor. Nomes em português marcados como “app” são sugestões, sem fonte oficial. As traduções PT/EN foram geradas com tradução automática e correções manuais.</p>
     </section>
   </section>
-</div>
+</main>
 <footer>Texto, ilustrações e site gerados com apoio de IA (Claude, Anthropic). <a href="livro.html#transparencia">Transparência sobre o uso de IA</a> · <a href="https://github.com/joaoventuraoliveira/judobjj">Código no GitHub</a></footer>
 
 <!-- textos usados pelo script (ficam aqui para o tradutor PT/EN os encontrar) -->
-<div hidden aria-hidden="true" id="ui"><span data-k="top1">tópico</span><span data-k="topn">tópicos</span><span data-k="item1">item</span><span data-k="itemn">itens</span><span data-k="back">Nível anterior</span><span data-k="open">Abrir esta seção no explorador</span><span data-k="openx">Abrir o exame no explorador</span><span data-k="faixa">Faixa</span><span data-k="grp-Faixas">Faixas</span><span data-k="grp-Infantil">Infantil</span><span data-k="grp-Graus superiores">Graus superiores</span><span data-k="pick">Escolha uma faixa para ver o que é cobrado.</span><span data-k="expJudo">Abrir no explorador →</span><span data-k="pauseL">Pausar a apresentação de imagens</span><span data-k="playL">Retomar a apresentação de imagens</span></div>
+<div hidden aria-hidden="true" id="ui"><span data-k="top1">tópico</span><span data-k="topn">tópicos</span><span data-k="item1">item</span><span data-k="itemn">itens</span><span data-k="back">Nível anterior</span><span data-k="open">Abrir esta seção no explorador</span><span data-k="openx">Abrir o exame no explorador</span><span data-k="faixa">Faixa</span><span data-k="grp-Faixas">Faixas</span><span data-k="grp-Infantil">Infantil</span><span data-k="grp-Graus superiores">Graus superiores</span><span data-k="pick">Escolha uma faixa para ver o que é cobrado.</span><span data-k="backSel">voltar à seleção inicial</span><span data-k="expJudo">Abrir no explorador →</span><span data-k="pauseL">Pausar a apresentação de imagens</span><span data-k="playL">Retomar a apresentação de imagens</span></div>
 <script type="application/json" id="tree">{{TREE}}</script>
 <script>
 (function(){
@@ -385,7 +385,7 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
     var bk=$('[data-back]',stage);if(bk)bk.addEventListener('click',function(){go(mod,beltId,null)});
   }
   function show(){
-    $('#stKc').textContent=kj[mod];$('#stKc').className='kc t-'+mod;$('#stTitle').textContent=modName[mod];$('#stExp').href='explorar/#/'+hashRoute[mod];
+    $('#stKc').textContent=kj[mod];$('#stKc').setAttribute('aria-label',kj[mod]+', '+UI('backSel'));$('#stKc').className='kc t-'+mod;$('#stTitle').textContent=modName[mod];$('#stExp').href='explorar/#/'+hashRoute[mod];
     renderStrip();
     if(!beltId){rev.classList.remove('on');crumb.innerHTML='';stage.innerHTML='';return}
     var f=belts().filter(function(x){return x.id===beltId})[0];if(!f){beltId=null;rev.classList.remove('on');return}
