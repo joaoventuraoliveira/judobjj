@@ -162,7 +162,7 @@ html.lay-mobile .toc.big { columns: 1; }
 html.lay-mobile .idx-letters { columns: 2; }
 html.lay-mobile .bottom { display: grid; grid-template-columns: repeat(4, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 55; background: var(--surface); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); }
 html.lay-mobile .bottom button { border: 0; background: transparent; color: var(--ink); padding: 8px 0 10px; font-size: 20px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-html.lay-mobile .bottom span { font-size: 11px; color: var(--muted); }
+html.lay-mobile .bottom span { font-size: 12px; color: var(--muted); }
 html.lay-mobile main { padding-bottom: 90px; }
 html.lay-mobile .car-hint { display: none; }
 html.lay-mobile .car-prev, html.lay-mobile .car-next { width: 44px; height: 44px; }
@@ -199,7 +199,7 @@ a.term:hover, a.tech:hover { background: var(--chip); border-radius: 4px; }
 /* prévia flutuante */
 .pop { position: fixed; z-index: 90; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.22); padding: 12px 14px; font-size: 14.5px; line-height: 1.5; }
 .pop p { margin: 0 0 6px; }
-.pop-k { font-size: 11px !important; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700; }
+.pop-k { font-size: 12px !important; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700; }
 .pop-t { font-weight: 750; font-size: 16px; }
 .pop img { background: #fff; border-radius: 10px; margin: 4px 0 8px; max-height: 170px; width: 100%; object-fit: contain; }
 .pop a { font-weight: 650; text-decoration: none; display: inline-block; margin-top: 4px; }
@@ -210,7 +210,7 @@ a.term:hover, a.tech:hover { background: var(--chip); border-radius: 4px; }
 .meta-bar { display: flex; flex-wrap: wrap; gap: 8px; margin: -4px 0 18px; }
 .meta-chip { font-size: 12.5px; padding: 4px 10px; border-radius: 999px; background: var(--chip); color: var(--ink) !important; text-decoration: none; border: 1px solid var(--line); line-height: 1.4; }
 .meta-chip.ai-tag { background: color-mix(in srgb, #7c4dff 12%, var(--surface)); }
-.ai-chip { display: inline-block; font-size: 10.5px; font-weight: 800; letter-spacing: .05em; padding: 1px 6px; border-radius: 6px; background: color-mix(in srgb, #7c4dff 16%, var(--surface)); color: #6a3df0; border: 1px solid color-mix(in srgb, #7c4dff 35%, transparent); vertical-align: 1px; cursor: help; }
+.ai-chip { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .05em; padding: 1px 6px; border-radius: 6px; background: color-mix(in srgb, #7c4dff 16%, var(--surface)); color: #6a3df0; border: 1px solid color-mix(in srgb, #7c4dff 35%, transparent); vertical-align: 1px; cursor: help; }
 html[data-theme="dark"] .ai-chip { color: #b9a2ff; }
 @media (prefers-color-scheme: dark) { html[data-theme="auto"] .ai-chip { color: #b9a2ff; } }
 .credit { font-size: 14px; color: var(--muted); margin: 14px 0 0; }
@@ -244,9 +244,9 @@ p.ref { font-size: 14.5px; padding-left: 14px; border-left: 3px solid var(--line
 .side-prefs { display: none; gap: 8px; flex-wrap: wrap; }
 html.lay-mobile .side-prefs { display: flex; }
 html.lay-desktop .side-search { display: none; }
-.results .res-h { padding: 8px 10px 4px; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.results .res-h { padding: 8px 10px 4px; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
 .results a.ft { font-size: 13.5px; line-height: 1.45; }
-.results a.ft small { display: block; color: var(--muted); font-size: 11.5px; }
+.results a.ft small { display: block; color: var(--muted); font-size: 12px; }
 .results mark { background: #ffe58a; color: #111; border-radius: 3px; padding: 0 2px; }
 html.lay-mobile .bottom { grid-template-columns: repeat(5, 1fr); }
 html.lay-mobile .pager { grid-template-columns: 1fr; }
@@ -294,3 +294,6 @@ html.lay-mobile .vmeta { font-size: 13px; }
 .portal a { padding: 6px 12px; border-radius: 999px; font-size: 14px; font-weight: 700; text-decoration: none; color: var(--ink); border: 1px solid var(--line, rgba(128,128,128,.35)); white-space: nowrap; }
 .portal a:hover { background: var(--ink); color: var(--bg); }
 html.lay-mobile .portal a:not(:first-child) { display: none; }
+
+html, body { overflow-x: clip; }
+@media (max-width: 920px) { .meta-chip, .portal a { display: inline-flex; align-items: center; min-height: 44px; } }
