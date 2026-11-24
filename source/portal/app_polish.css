@@ -18,3 +18,6 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 :root[data-theme="light"] .hero{background:linear-gradient(120deg,color-mix(in srgb,var(--a) 72%,#000) 0%,color-mix(in srgb,var(--a) 48%,#1a1a1a) 100%)}
 
 html,body{overflow-x:clip}
+/* contraste (revisão 2026-11-24): rótulos de grupo mais escuros e com 12px */
+.group{color:var(--ink);font-size:.8rem}
+.group[style],.ladder .group{font-size:.75rem}

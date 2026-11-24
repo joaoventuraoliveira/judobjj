@@ -70,6 +70,7 @@ nav.main{display:flex;gap:6px;flex-wrap:wrap}nav.main a.about-link{display:inlin
 .gallery::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(7,7,9,.74) 0%,rgba(7,7,9,.22) 52%,rgba(7,7,9,.3) 100%),linear-gradient(180deg,rgba(7,7,9,.35) 0%,transparent 26%,transparent 58%,var(--bg) 100%)}
 .hud{position:absolute;left:max(18px,calc(50% - 620px + 18px));right:max(18px,calc(50% - 620px + 18px));bottom:26px;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;color:rgba(255,255,255,.88);font-size:.78rem;letter-spacing:.08em;font-variant-numeric:tabular-nums}
 .hud .cap{max-width:60%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0}
+.hud #gNum,.hud .cap{background:rgba(10,12,18,.66);color:#fff;padding:4px 10px;border-radius:999px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .dots{display:flex;gap:5px;align-items:center}.dot{width:12px;height:2px;border-radius:2px;background:rgba(255,255,255,.25);transition:width .5s var(--ease),background .5s}.dot.on{width:22px;background:rgba(255,255,255,.9)}
 .gbtn{appearance:none;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(10,10,12,.5);color:#fff;font-size:1.1rem;cursor:pointer;display:grid;place-items:center;margin-left:4px}
 .morph{position:fixed;z-index:60;pointer-events:none;margin:0;transition:top .65s var(--ease),left .65s var(--ease),width .65s var(--ease),height .65s var(--ease),font-size .65s var(--ease)}
