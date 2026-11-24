@@ -285,10 +285,12 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .thumbs button{transition:transform .3s var(--ease),box-shadow .3s var(--ease)}.thumbs button:hover{transform:translateY(-2px);box-shadow:0 12px 26px -14px color-mix(in srgb,var(--a) 60%,transparent)}
 ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
 @media (prefers-reduced-motion:reduce){.ladder button,.tabs button,.chip,.thumbs button{transition:none}}
-@media (max-width:900px){html:not(.lay-desktop) .prefs-bar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}html:not(.lay-desktop) .prefs-bar::-webkit-scrollbar{display:none}html:not(.lay-desktop) .prefs-bar>*{flex:0 0 auto}}html.lay-mobile .prefs-bar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}html.lay-mobile .prefs-bar::-webkit-scrollbar{display:none}html.lay-mobile .prefs-bar>*{flex:0 0 auto}
+@media (max-width:900px){html:not(.lay-desktop) .prefs-bar{flex-wrap:wrap}}html.lay-mobile .prefs-bar{flex-wrap:wrap}
 
 /* tema claro: o hero termina em branco e o texto é branco; gradiente escuro garante contraste >= 4.5:1 */
 :root[data-theme="light"] .hero{background:linear-gradient(120deg,color-mix(in srgb,var(--a) 72%,#000) 0%,color-mix(in srgb,var(--a) 48%,#1a1a1a) 100%)}
+
+html,body{overflow-x:clip}
 </style></head>
 <body>
 <a class="skip" href="#main">Pular para o conteúdo</a>

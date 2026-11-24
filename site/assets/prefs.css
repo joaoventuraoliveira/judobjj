@@ -10,3 +10,11 @@ html.lay-mobile[data-layout="mobile"] body{max-width:440px;margin-left:auto;marg
 
 /* alvos de toque confortáveis no celular */
 .prefs-bar .seg button{min-width:36px;min-height:36px}
+
+/* revisão de UI 2026-11-24: alvos de toque de 44px e barra de preferências que quebra linha em vez de cortar */
+@media (max-width:920px){
+.prefs-bar{gap:4px 6px;flex-wrap:wrap!important;overflow:visible!important}
+.prefs-bar .seg{padding:2px}
+.prefs-bar .seg button{min-height:44px;min-width:40px;padding:6px 8px;font-size:.78rem}
+}
+@media (max-width:380px){.prefs-bar .seg button{min-width:32px;padding:6px 6px;font-size:.74rem}}
