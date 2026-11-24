@@ -153,6 +153,8 @@ for i, tr in enumerate(APP["judo"]["trans"]):
         for x in b["nage"] + b["katame"]:
             if tr["id"] not in T[x]["faixas"]: T[x]["faixas"].append(tr["id"])
     JUDO_BELTS.append(b)
+import merge_cores as MC
+JUDO_BELTS = MC.mesclar_portal(JUDO_BELTS, T)  # uma etapa por cor; o que é de cada Kyû fica marcado
 IDADE = [[txt(c) for c in r] for r in rows_idade]
 # proibidas (IJF)
 pro = sec("sec-tecnicas-e-acoes-proibidas-regras-ijf-vigentes")

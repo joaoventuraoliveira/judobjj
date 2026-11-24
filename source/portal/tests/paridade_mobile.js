@@ -87,7 +87,7 @@ async page => {
     });
     await page.click('.sel[data-m="judo"]'); await page.waitForTimeout(1000);
     const s1 = await page.evaluate(() => ({ hash: location.hash, study: document.body.classList.contains('in-study'), belts: document.querySelectorAll('.bb').length }));
-    await page.click('.bb:nth-of-type(8)'); await page.waitForTimeout(900);
+    await page.click('.bb:nth-of-type(4)'); await page.waitForTimeout(900);
     const s2 = await page.evaluate(() => {
       const mot = sel => { const e = document.querySelector(sel); if (!e) return 'ausente'; const c = getComputedStyle(e); return (c.transitionDuration !== '0s' || c.animationName !== 'none') ? 'anima' : 'parado'; };
       return { hash: location.hash, crumbPills: document.querySelectorAll('.cp').length, cards: document.querySelectorAll('.nc').length, motion: ['.nc', '.cp', '.bb', '.study-view'].map(mot).join(','), titles: [...document.querySelectorAll('.nc h4')].map(h => h.textContent).join('|') };

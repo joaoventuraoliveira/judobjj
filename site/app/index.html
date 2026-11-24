@@ -294,6 +294,7 @@ html,body{overflow-x:clip}
 /* contraste (revisão 2026-11-24): rótulos de grupo mais escuros e com 12px */
 .group{color:var(--ink);font-size:.8rem}
 .group[style],.ladder .group{font-size:.75rem}
+.et{display:inline-block;font-weight:700;font-size:.75rem;line-height:1.5;padding:1px 9px;margin-right:6px;border-radius:999px;background:var(--soft);border:1px solid var(--line);white-space:nowrap;vertical-align:1px}
 </style></head>
 <body>
 <a class="skip" href="#main">Pular para o conteúdo</a>
@@ -497,7 +498,7 @@ function renderLadder(){
   ul.querySelectorAll("button").forEach(b=>b.onclick=()=>{select(b.dataset.id,true);});
 }
 function select(id,scroll){
-  cur = D[mode].trans.find(t=>t.id===id)||D[mode].trans[0]; tab=0; sub=0; sub2=0;
+  cur = D[mode].trans.find(t=>t.id===id||(t.alias||[]).includes(id))||D[mode].trans[0]; tab=0; sub=0; sub2=0;
   const a = accent(cur); document.documentElement.style.setProperty("--a",a); document.documentElement.style.setProperty("--a-ink", inkFor(a));
   renderLadder(); renderMain(); store.set("last:"+mode, cur.id);
   try{ history.replaceState(null,"","#"+mode+"/"+cur.id) }catch(e){}
@@ -520,7 +521,7 @@ function judoBody0(t){
   t.itens.forEach((it,i)=>{ if(q && !it.t.toLowerCase().includes(q)) return; (groups[it.c]=groups[it.c]||[]).push([it,i]); });
   const cats = Object.keys(groups).sort((a,b)=>ORDER.indexOf(a)-ORDER.indexOf(b));
   if(!cats.length) return `<div class="sec"><div class="empty">Nada encontrado nesta faixa para “${esc(query)}”.</div></div>`;
-  lastCats = cats.slice(); return cats.map(c=>`<section class="sec" id="c-${slug(c)}"><header><h2>${esc(c)}</h2><span class="n">${groups[c].length} ${groups[c].length>1?"trechos":"trecho"}</span></header>${catNmHtml(t,c)}${groups[c].map(([it,i])=>`<div class="item ${done[key(t,i)]?"done":""}"><input type="checkbox" data-k="${key(t,i)}" ${done[key(t,i)]?"checked":""} aria-label="Marcar como estudado"><p>${esc(it.t)}</p>${termosHtml(it.tm)}${thumbs(it.i,it.p,t.titulo)}</div>`).join("")}</section>`).join("");
+  lastCats = cats.slice(); return cats.map(c=>`<section class="sec" id="c-${slug(c)}"><header><h2>${esc(c)}</h2><span class="n">${groups[c].length} ${groups[c].length>1?"trechos":"trecho"}</span></header>${catNmHtml(t,c)}${groups[c].map(([it,i])=>`<div class="item ${done[key(t,i)]?"done":""}"><input type="checkbox" data-k="${key(t,i)}" ${done[key(t,i)]?"checked":""} aria-label="Marcar como estudado"><p>${it.et?`<span class="et">${esc(it.et)}</span> `:""}${esc(it.t)}</p>${termosHtml(it.tm)}${thumbs(it.i,it.p,t.titulo)}</div>`).join("")}</section>`).join("");
 }
 function tabsHtml(names){return `<div class="tabs" role="tablist">${names.map((n,i)=>`<button role="tab" id="tab-${i}" aria-controls="tp" aria-selected="${i===tab}" data-tab="${i}">${esc(n)}</button>`).join("")}</div>`}
 function figs(arr,aviso){

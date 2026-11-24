@@ -404,7 +404,8 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
     if(location.hash===hs)apply();else location.hash=hs;
   }
   function parseAbout(){var m=location.hash.match(/^#\/sobre(?:\/(fontes|creditos))?$/);return m?{f:m[1]||''}:null}
-  function parse(){var m=location.hash.match(/^#\/(judo|jiu-jitsu)(?:\/([\w-]+))?(?:\/([\w-]+))?$/);return m?{mod:m[1]==='judo'?'judo':'bjj',b:m[2]||null,h:m[3]||null}:null}
+  function canon(mod,b){var L=TREE[mod]||[];for(var i=0;i<L.length;i++){if(L[i].id===b||(L[i].alias||[]).indexOf(b)>=0)return L[i].id}return b}
+  function parse(){var m=location.hash.match(/^#\/(judo|jiu-jitsu)(?:\/([\w-]+))?(?:\/([\w-]+))?$/);if(!m)return null;var mod=m[1]==='judo'?'judo':'bjj';return {mod:mod,b:m[2]?canon(mod,m[2]):null,h:m[3]||null}}
   function apply(){
     var ab=parseAbout();
     if(ab){body.classList.remove('in-study');body.classList.add('in-about');document.title='Sobre · Judô e Jiu-Jitsu';if(ab.f){var fe=document.getElementById(ab.f);if(fe)setTimeout(function(){fe.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'})},60)}else window.scrollTo(0,0);return}

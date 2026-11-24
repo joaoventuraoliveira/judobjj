@@ -21,3 +21,4 @@ html,body{overflow-x:clip}
 /* contraste (revisão 2026-11-24): rótulos de grupo mais escuros e com 12px */
 .group{color:var(--ink);font-size:.8rem}
 .group[style],.ladder .group{font-size:.75rem}
+.et{display:inline-block;font-weight:700;font-size:.75rem;line-height:1.5;padding:1px 9px;margin-right:6px;border-radius:999px;background:var(--soft);border:1px solid var(--line);white-space:nowrap;vertical-align:1px}

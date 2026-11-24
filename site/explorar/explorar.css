@@ -139,3 +139,7 @@ html,body{overflow-x:clip}
 @media (max-width:380px){html:not(.lay-desktop) .logo{display:none}}html.lay-mobile .logo{display:none}
 @media (max-width:900px){html:not(.lay-desktop) .logo{display:inline-flex;align-items:center;min-height:44px}}html.lay-mobile .logo{display:inline-flex;align-items:center;min-height:44px}
 @media (max-width:380px){html:not(.lay-desktop) .logo{display:none}}html.lay-mobile .logo{display:none}
+.et{display:inline-block;font-weight:700;font-size:.75rem;line-height:1.5;padding:1px 9px;margin-right:6px;border-radius:999px;background:var(--soft);border:1px solid var(--line);white-space:nowrap;vertical-align:1px}
+
+/* a barra do cabeçalho da faixa usa a cor da própria faixa (marrom = marrom), não o dourado do site */
+.hero::before{background:var(--a)}
