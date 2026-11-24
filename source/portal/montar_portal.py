@@ -5,6 +5,7 @@ Só miniaturas (img/th) são publicadas; a ampliação usa a própria miniatura,
 import sys, re, json, shutil, html, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import layout_css as LC
+import merge_cores as MC
 ROOT = pathlib.Path(__file__).resolve().parents[2]; SITE = ROOT / "site"
 def app(www):
     www = pathlib.Path(www); out = SITE / "app"
@@ -42,9 +43,17 @@ def app(www):
     h = h.replace('b.setAttribute("aria-label",LANG==="en"?"Change language to Brazilian Portuguese":"Mudar idioma para inglês (English)")', 'b.setAttribute("aria-label",LANG==="en"?"EN, change language to Brazilian Portuguese":"PT-BR, mudar idioma para inglês (English)")')
     # fix-pg-label: o rótulo do botão da miniatura contém o texto visível "p. N" (WCAG 2.5.3)
     h = h.replace('data-cap="${esc(cap)}" aria-label="Ampliar trecho do documento">', 'data-cap="${esc(cap)}" aria-label="Ampliar trecho do documento${pages&&pages[i]?`, p. ${pages[i]}`:""}">')
+    a = '<p>${esc(it.t)}</p>${termosHtml(it.tm)}'; assert h.count(a) == 1
+    h = h.replace(a, '<p>${it.et?`<span class="et">${esc(it.et)}</span> `:""}${esc(it.t)}</p>${termosHtml(it.tm)}')
+    a = 'cur = D[mode].trans.find(t=>t.id===id)||D[mode].trans[0];'; assert h.count(a) == 1
+    h = h.replace(a, 'cur = D[mode].trans.find(t=>t.id===id||(t.alias||[]).includes(id))||D[mode].trans[0];')
     h = LC.transformar_html_styles(h)
     (out / "index.html").write_text(h, encoding="utf-8")
-    shutil.copy2(www / "data.js", out / "data.js")
+    raw = (www / "data.js").read_text(encoding="utf-8")
+    pre, sep, rest = raw.partition(";\nwindow.I18N=")
+    D = json.loads(pre.split("window.DATA = ", 1)[1])
+    D["judo"]["trans"] = MC.mesclar_app(D["judo"]["trans"])  # uma etapa por cor
+    (out / "data.js").write_text("window.DATA = " + json.dumps(D, ensure_ascii=False, separators=(",", ":")) + sep + rest, encoding="utf-8")
     for f in (www / "img" / "th").glob("*.jpg"): shutil.copy2(f, out / "img" / "th" / f.name)
     mb = sum(f.stat().st_size for f in out.rglob("*") if f.is_file()) / 1048576
     print("app:", len(list((out / "img" / "th").glob("*.jpg"))), "miniaturas;", round(mb, 1), "MB")
@@ -85,7 +94,7 @@ def tree_data(P):
         for c in f.get("cats", []):
             if c.get("grupo") == "tec": cards.append({"h": "c-" + c["id"], "t": c["nome"], "p": "Texto do regulamento da CBJ.", "n": f"{len(c['itens'])} item(ns)", "ic": "文"})
         cards += [{"h": "fund", "t": "Fundamentos", "p": "Saudações, quedas, postura e pegada.", "n": "", "ic": "礼"}, {"h": "nao", "t": "O que não se cobra em competições", "p": "Kata, vocabulário, história, teoria e ensino.", "n": "", "ic": "形"}, {"h": "proib", "t": "Técnicas proibidas", "p": "Regras IJF de hansoku-make e shido.", "n": "", "ic": "⛔"}, {"h": "refs", "t": "Referências bibliográficas", "p": "Fontes deste exame.", "n": "", "ic": "📚"}]
-        out["judo"].append({"id": f["id"], "t": f["titulo"], "s": f.get("sub") or "", "c": f["cores"]["para"], "g": grupo("judo", f), "base": base, "href": f"explorar/#/judo/faixa/{f['id']}", "cards": cards})
+        out["judo"].append({"id": f["id"], "t": f["titulo"], "s": f.get("sub") or "", "c": f["cores"]["para"], "g": grupo("judo", f), "base": base, "href": f"explorar/#/judo/faixa/{f['id']}", "alias": f.get("alias", []), "cards": cards})
     for f in B["faixas"]:
         base = f"explorar/#/bjj-placeholder/"; cards = []
         base = f"explorar/#/jiu-jitsu/faixa/{f['id']}/"

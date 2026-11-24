@@ -89,7 +89,7 @@ ${dashJudo()}
 </div>`, init: wireRail }));
 
 // ---- Judô: faixa ----
-const jf = id => J.faixas.find(f => f.id === id);
+const jf = id => J.faixas.find(f => f.id === id || (f.alias || []).includes(id));
 function acumulado(f, campo) { const i = J.faixas.indexOf(f); const set = []; for (let k = 0; k <= i; k++) (J.faixas[k][campo] || []).forEach(s => { if (set.indexOf(s) < 0) set.push(s) }); return set; }
 route(/^\/judo\/faixa\/(\w+)$/, m => {
   const f = jf(m[1]); if (!f) return null; const a = f.cores.para[1] || f.cores.para[0];
@@ -114,7 +114,7 @@ ${f.nota ? `<p class="lead" style="margin-top:12px">${esc(f.nota)}</p>` : ""}
 });
 route(/^\/judo\/faixa\/(\w+)\/([\w-]+)$/, m => {
   const f = jf(m[1]); if (!f) return null; const t = m[2]; const base = [["Início", "../"], ["Judô", "#/judo"], [f.titulo, "#/judo/faixa/" + f.id]];
-  const items = c => c.itens.map(it => `<div class="item"><p>${esc(it.t)}</p>${it.tm && it.tm.length ? `<div class="chips">${it.tm.map(x => { const s = slug(x.rom); const lk = T[s] ? `href="#/judo/tecnica/${s}"` : ""; return `<${lk ? "a" : "span"} class="chip" ${lk}><span class="jp" lang="ja">${esc(x.ja)}</span> ${esc(x.rom)} · ${esc(x.pt || x.en)}</${lk ? "a" : "span"}>`; }).join("")}</div>` : ""}</div>`).join("");
+  const items = c => c.itens.map(it => `<div class="item"><p>${it.et ? `<span class="et">${esc(it.et)}</span> ` : ""}${esc(it.t)}</p>${it.tm && it.tm.length ? `<div class="chips">${it.tm.map(x => { const s = slug(x.rom); const lk = T[s] ? `href="#/judo/tecnica/${s}"` : ""; return `<${lk ? "a" : "span"} class="chip" ${lk}><span class="jp" lang="ja">${esc(x.ja)}</span> ${esc(x.rom)} · ${esc(x.pt || x.en)}</${lk ? "a" : "span"}>`; }).join("")}</div>` : ""}</div>`).join("");
   const title = (tt, desc) => `<h1>${tt}</h1><p class="lead">${desc || ""}</p>`;
   const a = f.cores.para[1] || f.cores.para[0];
   let body = "", name = "";

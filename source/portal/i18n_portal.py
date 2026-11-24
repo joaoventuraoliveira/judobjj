@@ -101,7 +101,11 @@ def eh_pt(s):
     return len(w) >= 2 and not re.fullmatch(r"[A-Z][\w\-ōūŌŪ]*( [A-Z][\w\-ōūŌŪ]*)*", k)
 
 def walk_strings(o, out):
-    if isinstance(o, str): out.add(o)
+    if isinstance(o, str):
+        out.add(o)
+        if ': ' in o or ' · ' in o:
+            for p in re.split(r'(?: — | · |: |\n)', o):
+                if p.strip(): out.add(p.strip())
     elif isinstance(o, list):
         for x in o: walk_strings(x, out)
     elif isinstance(o, dict):
