@@ -36,8 +36,9 @@ Conteúdo baseado nos regulamentos da CBJ, de federações estaduais e nas regra
 
 - `backup/v1.0`: site em página única, antes do livro interativo (22/11/2026).
 - `backup/v2.0`: portal com explorador e app, antes da restauração do conteúdo por faixa (24/11/2026).
+- `backup/v3.0`: conteúdo por faixa restaurado e programa acumulado por faixa, conferido com axe-core (25/11/2026).
 
-Para voltar a um deles: `git checkout main && git reset --hard backup/v2.0 && git push --force origin main` (troque pelo ramo desejado). O motivo de cada mudança feita depois do `backup/v2.0` está em [`CONTEXTO-RESTAURACAO.md`](CONTEXTO-RESTAURACAO.md).
+Para voltar a um deles: `git checkout main && git reset --hard backup/v2.0 && git push --force origin main` (troque pelo ramo desejado). O motivo de cada mudança feita depois do `backup/v2.0` (inclusive o programa acumulado) está em [`CONTEXTO-RESTAURACAO.md`](CONTEXTO-RESTAURACAO.md).
 
 ## Portal: Judô e Jiu-Jitsu
 
