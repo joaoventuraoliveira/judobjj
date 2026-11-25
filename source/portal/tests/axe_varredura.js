@@ -1,6 +1,6 @@
 ﻿async page => {
   const BASE = 'http://127.0.0.1:8793';
-  const URLS = ['/', '/#/judo', '/#/judo/j04', '/#/jiu-jitsu/b03', '/#/sobre', '/explorar/#/judo', '/explorar/#/jiu-jitsu', '/explorar/#/judo/faixa/j04', '/explorar/#/judo/tecnica/uchi-mata', '/explorar/#/jiu-jitsu/faixa/b03', '/explorar/#/jiu-jitsu/item/o-soto-gari', '/explorar/#/judo/t/videoteca', '/livro.html', '/app/#judo/j01', '/app/#bjj/b03'];
+  const URLS = ['/', '/#/judo', '/#/judo/j04', '/#/jiu-jitsu/b03', '/#/sobre', '/explorar/#/judo', '/explorar/#/jiu-jitsu', '/explorar/#/judo/faixa/j04', '/explorar/#/judo/tecnica/uchi-mata', '/explorar/#/jiu-jitsu/faixa/b03', '/explorar/#/jiu-jitsu/item/o-soto-gari', '/explorar/#/judo/t/videoteca', '/livro.html', '/app/#judo/j01', '/app/#bjj/b03', '/explorar/#/judo/faixa/j05/acumulado', '/explorar/#/judo/faixa/j13/acumulado', '/explorar/#/jiu-jitsu/faixa/b03/acumulado', '/explorar/#/jiu-jitsu/faixa/k2/acumulado'];
   const agg = {}, inc = {};
   for (const th of ['dark', 'light']) for (const u of URLS) {
     await page.setViewportSize({ width: 1366, height: 820 });

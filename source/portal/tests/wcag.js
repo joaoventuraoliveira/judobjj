@@ -3,7 +3,7 @@
    controle de pausa para movimento automático (2.2.2). Rodar: playwright-cli --raw run-code --filename=wcag.js (site em 127.0.0.1:8793). */
 async page => {
   const BASE = 'http://127.0.0.1:8793';
-  const URLS = ['/', '/#/judo', '/#/judo/j04', '/#/jiu-jitsu/b03', '/#/sobre', '/explorar/#/judo', '/explorar/#/judo/faixa/j04', '/explorar/#/judo/tecnica/uchi-mata', '/explorar/#/jiu-jitsu/faixa/b03', '/explorar/#/jiu-jitsu/item/o-soto-gari', '/livro.html', '/app/#bjj/b03'];
+  const URLS = ['/', '/#/judo', '/#/judo/j04', '/#/jiu-jitsu/b03', '/#/sobre', '/explorar/#/judo', '/explorar/#/judo/faixa/j04', '/explorar/#/judo/tecnica/uchi-mata', '/explorar/#/jiu-jitsu/faixa/b03', '/explorar/#/jiu-jitsu/item/o-soto-gari', '/livro.html', '/app/#bjj/b03', '/explorar/#/judo/faixa/j05/acumulado', '/explorar/#/judo/faixa/j13/acumulado', '/explorar/#/jiu-jitsu/faixa/b03/acumulado', '/explorar/#/jiu-jitsu/faixa/k2/acumulado'];
   const bad = [], manual = new Set();
   for (const th of ['dark', 'light']) {
     for (const u of URLS) {

@@ -87,6 +87,15 @@ body.in-study .home-view{display:none}body.in-study .study-view{display:block;an
 .lsw button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .pbtn{appearance:none;background:var(--surface-2);border:1px solid var(--line);padding:8px 16px;border-radius:999px;font-size:.84rem;display:inline-flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none;transition:border-color .2s,transform .3s var(--ease)}
 .pbtn:hover{border-color:var(--accent);transform:translateX(-2px)}.pbtn.go:hover{transform:translateX(2px)}
+.acb{display:flex;align-items:center;gap:12px;margin:0 0 16px;padding:12px 16px;min-height:60px;border-radius:16px;text-decoration:none;color:var(--ink);background:color-mix(in srgb,var(--b) 14%,var(--surface));border:2px solid var(--b);box-shadow:inset 8px 0 0 var(--b);transition:transform .2s var(--ease)}
+.acb:hover{transform:translateY(-2px)}.acb:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.acb .act{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}.acb b{font-weight:800;font-size:1.02rem;line-height:1.3}.acb small{font-size:.86rem;opacity:.88}.acb .aca{font-weight:800;font-size:1.3rem}
+.acb .aci{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--b);color:#fff;font-weight:800;font-size:1.3rem;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.acb svg{width:52px;height:auto;flex:none}
+.aclp{margin:22px 0 8px}.aclp h2{font-size:1.15rem;margin:0 0 4px}.aclp p{margin:0 0 12px;color:var(--muted)}
+.aclp ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}.aclp .acb{margin:0}
+@media (max-width:520px){.aclp ul{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.acb{transition:none}}
 .strip{display:flex;align-items:flex-end;gap:12px;overflow-x:auto;padding:12px 6px 16px;scroll-snap-type:x proximity;scrollbar-width:none;cursor:grab;user-select:none}
 .strip::-webkit-scrollbar{display:none}.strip.drag{cursor:grabbing;scroll-snap-type:none}
 .strip.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));overflow:visible;cursor:default}
@@ -234,6 +243,7 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
     </div>
     <div class="strip" id="strip" role="group" aria-label="Seleção de graduação"></div>
     <div class="rev" id="rev"><nav class="crumb" id="crumb" aria-label="Trilha de navegação"></nav><div class="bstage" id="bstage"></div></div>
+    <section class="aclp" id="aclp" aria-labelledby="aclpH"><h2 id="aclpH">Programa acumulado por faixa</h2><p>Tudo o que é cobrado da primeira faixa até o exame escolhido, em uma página.</p><ul id="aclpL"></ul></section>
   </section>
 
   <!-- Sobre: explicações gerais do portal (antes ficavam abaixo da tela inicial) -->
@@ -306,7 +316,7 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
 <footer>Texto, ilustrações e site gerados com apoio de IA (Claude, Anthropic). <a href="livro.html#transparencia">Transparência sobre o uso de IA</a> · <a href="https://github.com/joaoventuraoliveira/judobjj">Código no GitHub</a></footer>
 
 <!-- textos usados pelo script (ficam aqui para o tradutor PT/EN os encontrar) -->
-<div hidden aria-hidden="true" id="ui"><span data-k="top1">tópico</span><span data-k="topn">tópicos</span><span data-k="item1">item</span><span data-k="itemn">itens</span><span data-k="back">Nível anterior</span><span data-k="open">Abrir esta seção no explorador</span><span data-k="openx">Abrir o exame no explorador</span><span data-k="faixa">Faixa</span><span data-k="grp-Faixas">Faixas</span><span data-k="grp-Infantil">Infantil</span><span data-k="grp-Graus superiores">Graus superiores</span><span data-k="pick">Escolha uma faixa para ver o que é cobrado.</span><span data-k="backSel">voltar à seleção inicial</span><span data-k="expJudo">Abrir no explorador →</span><span data-k="pauseL">Pausar a apresentação de imagens</span><span data-k="playL">Retomar a apresentação de imagens</span></div>
+<div hidden aria-hidden="true" id="ui"><span data-k="top1">tópico</span><span data-k="topn">tópicos</span><span data-k="item1">item</span><span data-k="itemn">itens</span><span data-k="back">Nível anterior</span><span data-k="open">Abrir esta seção no explorador</span><span data-k="openx">Abrir o exame no explorador</span><span data-k="acu">Programa acumulado</span><span data-k="acus">tudo o que é cobrado da primeira faixa até este exame</span><span data-k="faixa">Faixa</span><span data-k="grp-Faixas">Faixas</span><span data-k="grp-Infantil">Infantil</span><span data-k="grp-Graus superiores">Graus superiores</span><span data-k="pick">Escolha uma faixa para ver o que é cobrado.</span><span data-k="backSel">voltar à seleção inicial</span><span data-k="expJudo">Abrir no explorador →</span><span data-k="pauseL">Pausar a apresentação de imagens</span><span data-k="playL">Retomar a apresentação de imagens</span></div>
 <script type="application/json" id="tree">{{TREE}}</script>
 <script>
 (function(){
@@ -348,6 +358,8 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
   /* ---------- tela 2 ---------- */
   var layout='line',mod='judo',beltId=null,path=[],strip=$('#strip'),stage=$('#bstage'),crumb=$('#crumb'),rev=$('#rev'),dragged=false;
   function belts(){return TREE[mod]}
+  function acLink(f,big){var s=f.s&&!/^Exame de faixa$/i.test(f.s)?f.s+' · ':'';return '<a class="acb" style="--b:'+esc(f.c[1]||f.c[0])+'" href="'+esc(f.ac)+'">'+(big?beltSvg(f.c,'sm').replace('role="img"','aria-hidden="true" focusable="false"').replace(/ aria-label="[^"]*"/,''):'<span class="aci" aria-hidden="true">∑</span>')+'<span class="act"><b>'+esc(UI('acu'))+': '+esc(f.t)+'</b><span class="sr">. </span><small>'+esc(s+UI('acus'))+'</small></span><span class="aca" aria-hidden="true">→</span></a>'}
+  function renderAcList(){var l=$('#aclpL');if(!l)return;l.innerHTML=belts().map(function(f){return '<li>'+acLink(f,true)+'</li>'}).join('');$('#aclp').hidden=!!beltId}
   function renderStrip(){
     strip.innerHTML='';var last='';
     belts().forEach(function(f){
@@ -374,7 +386,7 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
   function renderStage(){
     var f=path[0],n=node(),h='';
     if(path.length===1){
-      h='<div class="bh"><div class="bt">'+beltSvg(f.c,'md')+'<div><h2><span class="sr">'+esc((window.JTBelts?JTBelts.label(f.c):UI('faixa'))+': ')+'</span>'+esc(f.t)+'</h2>'+(f.s?'<small>'+esc(f.s)+'</small>':'')+'</div></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="bcount">'+f.cards.length+' '+UI(f.cards.length===1?'top1':'topn')+'</span><a class="pbtn go" href="'+esc(f.href)+'">'+esc(UI('openx'))+' →</a></div></div><div class="ngrid">';
+      h='<div class="bh"><div class="bt">'+beltSvg(f.c,'md')+'<div><h2><span class="sr">'+esc((window.JTBelts?JTBelts.label(f.c):UI('faixa'))+': ')+'</span>'+esc(f.t)+'</h2>'+(f.s?'<small>'+esc(f.s)+'</small>':'')+'</div></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="bcount">'+f.cards.length+' '+UI(f.cards.length===1?'top1':'topn')+'</span><a class="pbtn go" href="'+esc(f.href)+'">'+esc(UI('openx'))+' →</a></div></div>'+acLink(f,false)+'<div class="ngrid">';
       f.cards.forEach(function(c,i){
         var tag=c.items&&c.items.length?'button':'a',at=tag==='a'?' href="'+esc(f.base+c.h)+'"':' type="button" data-h="'+esc(c.h)+'"';
         h+='<'+tag+' class="nc"'+at+' style="animation-delay:'+(i*45)+'ms"><div class="top2"><span class="ic" aria-hidden="true" lang="ja">'+(c.ic?esc(c.ic):'·')+'</span><span class="arr">'+ARR+'</span></div><h3>'+esc(c.t)+'</h3><p>'+esc(c.p)+'</p>'+(c.n?'<span class="nn">'+esc(c.n)+'</span>':'')+'</'+tag+'>';
@@ -391,7 +403,7 @@ html.lay-mobile[data-layout="mobile"] .drawer{width:min(340px,calc(100vw - 32px)
   }
   function show(){
     $('#stKc').textContent=kj[mod];$('#stKc').setAttribute('aria-label',kj[mod]+', '+UI('backSel'));$('#stKc').className='kc t-'+mod;$('#stTitle').textContent=modName[mod];$('#stExp').href='explorar/#/'+hashRoute[mod];
-    renderStrip();
+    renderStrip();renderAcList();
     if(!beltId){rev.classList.remove('on');crumb.innerHTML='';stage.innerHTML='';return}
     var f=belts().filter(function(x){return x.id===beltId})[0];if(!f){beltId=null;rev.classList.remove('on');return}
     path=[{t:f.t,c:f.c,cards:f.cards,base:f.base,href:f.href,s:f.s}];
