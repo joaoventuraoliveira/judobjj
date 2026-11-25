@@ -143,3 +143,33 @@ html,body{overflow-x:clip}
 
 /* a barra do cabeçalho da faixa usa a cor da própria faixa (marrom = marrom), não o dourado do site */
 .hero::before{background:var(--a)}
+/* ---- programa acumulado ---- */
+.acbtn{display:flex;align-items:center;gap:14px;margin:16px 0;padding:14px 18px;min-height:64px;border-radius:16px;text-decoration:none;color:var(--ink);background:color-mix(in srgb,var(--a) 14%,var(--panel));border:2px solid var(--a);box-shadow:inset 8px 0 0 var(--a);transition:transform .2s,box-shadow .2s}
+.acbtn:hover{transform:translateY(-2px);box-shadow:inset 8px 0 0 var(--a),0 8px 22px rgba(0,0,0,.18)}
+.acbtn:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.acbtn .actx{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}.acbtn b{font:800 1.08rem/1.3 var(--display)}.acbtn small{color:var(--ink);opacity:.86;font-size:.9rem}
+.acbtn .acic{flex:none;display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--a);color:#fff;font:800 1.4rem var(--display);text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.acbtn .acbelt svg{width:62px;height:auto;display:block}.acbtn .acarr{font-size:1.4rem;font-weight:800}
+.aclist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:0 14px}.aclist .acbtn{margin:6px 0}
+.acgl{margin:16px 0 4px;font:700 .95rem var(--display);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.acbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0}
+.acmodo{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:14px;background:var(--soft);border:1px solid var(--line)}
+.acmodo button,.acall,.acvolta{min-height:44px;padding:8px 16px;border-radius:11px;border:1px solid transparent;background:transparent;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.acmodo button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.acall,.acvolta{border-color:var(--line);background:var(--panel)}.acall:hover,.acvolta:hover,.acmodo button:hover{border-color:var(--accent)}
+.acs{border:1px solid var(--line);border-radius:16px;margin:10px 0;background:var(--panel);overflow:hidden}
+.acsh{margin:0;font-size:1rem}
+.acbt{width:100%;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 18px;min-height:56px;background:transparent;border:0;text-align:left;cursor:pointer;box-shadow:inset 6px 0 0 var(--a)}
+.acbt:hover{background:var(--soft)}.acst{font:800 1.05rem var(--display);flex:1 1 220px}.acn{font-weight:700;font-size:.88rem;padding:3px 10px;border-radius:999px;background:var(--soft);border:1px solid var(--line)}
+.acchev{transition:transform .2s;font-size:1.1rem}.acbt[aria-expanded="true"] .acchev{transform:rotate(180deg)}
+.acbody{padding:4px 18px 16px}
+.acg{border-top:1px solid var(--line);padding:10px 0}.acg:first-child{border-top:0}
+.acorig{display:flex;align-items:center;gap:10px;margin:4px 0 6px;font:700 .95rem var(--display)}.acorig svg{width:44px;height:auto;flex:none}
+.acnow{font-size:.78rem;padding:2px 10px;border-radius:999px;background:var(--ink);color:var(--bg)}
+.acatual{background:color-mix(in srgb,var(--a) 8%,transparent);border-radius:12px;padding:10px 12px;margin:6px -12px}
+.accat{margin:10px 0 4px;font-weight:700;color:var(--muted)}
+.acul{margin:4px 0;padding-left:20px}.acul li{margin:4px 0}
+.acpills{margin:4px 0;line-height:2.1}
+.acsubst h2{margin:0 0 8px;font:700 1.1rem var(--display)}
+@media (prefers-reduced-motion:reduce){.acbtn,.acchev{transition:none}}
+@media (max-width:520px){html:not(.lay-desktop) .aclist{grid-template-columns:1fr}html:not(.lay-desktop) .acbtn{padding:12px 14px;gap:10px}html:not(.lay-desktop) .acbtn .acbelt svg{width:48px}html:not(.lay-desktop) .acmodo{width:100%}html:not(.lay-desktop) .acmodo button{flex:1 1 100%}}html.lay-mobile .aclist{grid-template-columns:1fr}html.lay-mobile .acbtn{padding:12px 14px;gap:10px}html.lay-mobile .acbtn .acbelt svg{width:48px}html.lay-mobile .acmodo{width:100%}html.lay-mobile .acmodo button{flex:1 1 100%}

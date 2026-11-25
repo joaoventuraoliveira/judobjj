@@ -96,7 +96,7 @@ def tree_data(P):
         for c in f.get("cats", []):
             if c.get("grupo") == "tec": cards.append({"h": "c-" + c["id"], "t": c["nome"], "p": "Texto do regulamento da CBJ.", "n": f"{len(c['itens'])} item(ns)", "ic": "文"})
         cards += [{"h": "fund", "t": "Fundamentos", "p": "Saudações, quedas, postura e pegada.", "n": "", "ic": "礼"}, {"h": "nao", "t": "O que não se cobra em competições", "p": "Kata, vocabulário, história, teoria e ensino.", "n": "", "ic": "形"}, {"h": "proib", "t": "Técnicas proibidas", "p": "Regras IJF de hansoku-make e shido.", "n": "", "ic": "⛔"}, {"h": "refs", "t": "Referências bibliográficas", "p": "Fontes deste exame.", "n": "", "ic": "📚"}]
-        out["judo"].append({"id": f["id"], "t": f["titulo"], "s": f.get("sub") or "", "c": f["cores"]["para"], "g": grupo("judo", f), "base": base, "href": f"explorar/#/judo/faixa/{f['id']}", "alias": f.get("alias", []), "cards": cards})
+        out["judo"].append({"id": f["id"], "t": f["titulo"], "s": f.get("sub") or "", "c": f["cores"]["para"], "g": grupo("judo", f), "base": base, "href": f"explorar/#/judo/faixa/{f['id']}", "ac": f"explorar/#/judo/faixa/{f['id']}/acumulado", "alias": f.get("alias", []), "cards": cards})
     for f in B["faixas"]:
         base = f"explorar/#/bjj-placeholder/"; cards = []
         base = f"explorar/#/jiu-jitsu/faixa/{f['id']}/"
@@ -106,7 +106,7 @@ def tree_data(P):
             cards.append({"h": "s-" + _slug(s["cat"]), "t": s.get("pt") or s["cat"], "p": s["cat"], "n": f"{len(s['itens'])} técnicas", "ic": "技", "items": its})
         if f.get("ficha"): cards.append({"h": "ficha", "t": "Ficha de exame (JJIF)", "p": "Critérios de avaliação e simulador editável.", "n": "", "ic": "📝"})
         cards += [{"h": "fund", "t": "Fundamentos", "p": "Técnicas básicas, quedas (ukemi), rolamentos e tai-sabaki.", "n": "", "ic": "基本"}, {"h": "nao", "t": "O que não se cobra em competições", "p": "Defesa pessoal e critérios de avaliação do exame.", "n": "", "ic": "護"}, {"h": "proib", "t": "Técnicas proibidas para esta faixa", "p": "Tabela da IBJJF/CBJJ por idade e faixa.", "n": "", "ic": "⛔"}, {"h": "refs", "t": "Referências bibliográficas", "p": "Fontes deste exame.", "n": "", "ic": "📚"}]
-        out["bjj"].append({"id": f["id"], "t": f["titulo"], "s": f.get("sub") or "", "c": f["cores"]["para"], "g": grupo("bjj", f), "base": base, "href": f"explorar/#/jiu-jitsu/faixa/{f['id']}", "cards": cards})
+        out["bjj"].append({"id": f["id"], "t": f["titulo"], "s": f.get("sub") or "", "c": f["cores"]["para"], "g": grupo("bjj", f), "base": base, "href": f"explorar/#/jiu-jitsu/faixa/{f['id']}", "ac": f"explorar/#/jiu-jitsu/faixa/{f['id']}/acumulado", "cards": cards})
     return out
 def drawer_slides():
     P = json.loads((SITE / "explorar" / "dados.js").read_text(encoding="utf-8")[len("window.PORTAL="):].rstrip().rstrip(";"))

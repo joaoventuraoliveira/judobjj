@@ -42,12 +42,13 @@ const TOP_J = [["nage", "Projeções (Nage-waza)"], ["katame", "Solo (Katame-waz
 function side(route) {
   const cur = "#" + route; const a = (h, t) => `<a href="${h}" ${cur === h ? 'aria-current="page"' : ""}>${esc(t)}</a>`;
   const mod = route.split("/")[1];
+  const acSide = (m, f) => { const h = "#/" + m + "/faixa/" + f.id + "/acumulado"; return `<a href="${h}" ${cur === h ? 'aria-current="page"' : ""}><span class="sr">Programa acumulado</span> ${esc(f.titulo)}${kids(f.sub) ? ` <small>(${esc("Infantil")})</small>` : ""}</a>`; };
   const jb = J.faixas.map(f => a("#/judo/faixa/" + f.id, f.titulo)).join("");
   const bg = B.comp.map(g => a("#/jiu-jitsu/t/" + g.id, g.nome)).join("");
   const bb = B.faixas.map(f => a("#/jiu-jitsu/faixa/" + f.id, f.titulo)).join("");
   $("#side").innerHTML = `${a("../", "← Início do portal")}${a("#/judo", "Judô 柔道")}${a("#/jiu-jitsu", "Jiu-Jitsu 柔術")}
-  <h2>Judô</h2><details ${mod === "judo" ? "open" : ""}><summary>Programa de exames</summary>${jb}</details><details ${mod === "judo" ? "open" : ""}><summary>Tópicos</summary>${TOP_J.map(t => a("#/judo/t/" + t[0], t[1])).join("")}</details>
-  <h2>Jiu-Jitsu</h2><details ${mod === "jiu-jitsu" ? "open" : ""}><summary>Programa de exames</summary>${bb}</details><details ${mod === "jiu-jitsu" ? "open" : ""}><summary>Lista de componentes</summary>${bg}${a("#/jiu-jitsu/proibidas", "Golpes proibidos por faixa")}${a("#/jiu-jitsu/t/referencias", "Referências")}</details>
+  <h2>Judô</h2><details ${mod === "judo" ? "open" : ""}><summary>Programa de exames</summary>${jb}</details><details><summary>Programa acumulado</summary>${J.faixas.map(f => acSide("judo", f)).join("")}</details><details ${mod === "judo" ? "open" : ""}><summary>Tópicos</summary>${TOP_J.map(t => a("#/judo/t/" + t[0], t[1])).join("")}</details>
+  <h2>Jiu-Jitsu</h2><details ${mod === "jiu-jitsu" ? "open" : ""}><summary>Programa de exames</summary>${bb}</details><details><summary>Programa acumulado</summary>${B.faixas.map(f => acSide("jiu-jitsu", f)).join("")}</details><details ${mod === "jiu-jitsu" ? "open" : ""}><summary>Lista de componentes</summary>${bg}${a("#/jiu-jitsu/proibidas", "Golpes proibidos por faixa")}${a("#/jiu-jitsu/t/referencias", "Referências")}</details>
   <h2>Livro interativo</h2><details><summary>Sumário do livro</summary>${LIVRO.map(c => `<a href="../livro.html#${c[0]}">${esc(c[1])}</a>`).join("")}</details>
   <h2>Mais</h2>${a("../livro.html", "Livro interativo (completo)")}${a("../app/", "App: progresso, ficha e idioma EN")}${a("../judo-tecnicas-e-exames-de-faixa.pdf", "PDF do livro")}`;
 }
@@ -73,6 +74,7 @@ function wireRail() {
 route(/^\/judo$/, () => ({ crumbs: [["Início", "../"], ["Judô", "#/judo"]], html: `
 <div class="hero" style="--a:#2f64c8"><h1>Judô <span lang="ja">柔道</span></h1><p class="lead">Escolha o exame da sua faixa ou explore os tópicos principais. Cada página leva mais fundo, até a técnica, com nomes em japonês, inglês e português, ilustrações e vídeos oficiais.</p></div>
 <h2 class="sec">Programa de exames <small style="color:var(--muted)">(clique na faixa)</small></h2>${beltLadder("judo", J.faixas)}
+${acLista("judo", J.faixas)}
 ${dashJudo()}
 <h2 class="sec">Tópicos principais</h2>
 <div class="cards">
@@ -91,6 +93,82 @@ ${dashJudo()}
 // ---- Judô: faixa ----
 const jf = id => J.faixas.find(f => f.id === id || (f.alias || []).includes(id));
 function acumulado(f, campo) { const i = J.faixas.indexOf(f); const set = []; for (let k = 0; k <= i; k++) (J.faixas[k][campo] || []).forEach(s => { if (set.indexOf(s) < 0) set.push(s) }); return set; }
+
+/* ---------- programa acumulado (todas as faixas até a escolhida) ---------- */
+const acNome = f => f.titulo + (f.sub && !/^Exame de faixa$/i.test(f.sub) ? " (" + f.sub + ")" : "");
+// botão destacado com o nome completo da faixa
+function acBtn(mod, f, comFaixa) {
+  return `<a class="acbtn" style="--a:${f.cores.para[1] || f.cores.para[0]}" href="#/${mod}/faixa/${f.id}/acumulado">${comFaixa ? `<span class="acbelt" aria-hidden="true">${belt(f.cores.para, f.titulo)}</span>` : `<span class="acic" aria-hidden="true">∑</span>`}<span class="actx"><b>Programa acumulado: ${esc(f.titulo)}</b><span class="sr">. </span><small>${esc(f.sub && !/^Exame de faixa$/i.test(f.sub) ? f.sub + " · " : "")}tudo o que é cobrado da primeira faixa até este exame</small></span><span class="acarr" aria-hidden="true">→</span></a>`;
+}
+// lista de links da modalidade (um por faixa), agrupada como a escada de faixas
+function acLista(mod, faixas) {
+  const grp = f => kids(f.sub) ? "Infantil" : (mod === "judo" && /Dan|Kôdansha|Graus|Vermelha|mestre/i.test(f.sub + f.titulo)) || /Graus|mestre/i.test(f.titulo) ? "Graus superiores" : "Faixas";
+  const g = {}; faixas.forEach(f => (g[grp(f)] = g[grp(f)] || []).push(f));
+  return `<section class="acsecao" aria-labelledby="ac-h"><h2 class="sec" id="ac-h">Programa acumulado por faixa</h2><p class="lead">Cada botão abre, em uma página, todo o conteúdo cobrado da primeira faixa até o exame escolhido, separado por tópico e com a faixa de origem de cada item.</p>${Object.keys(g).map(k => `<h3 class="acgl" id="ac-${slug(k)}">${esc(k)}</h3><ul class="aclist" aria-labelledby="ac-${slug(k)}">${g[k].map(f => `<li>${acBtn(mod, f, true)}</li>`).join("")}</ul>`).join("")}</section>`;
+}
+// cadeia de faixas até f (adultos e infantil em cadeias separadas)
+const cadeia = (lista, f) => lista.slice(0, lista.indexOf(f) + 1).filter(x => kids(x.sub) === kids(f.sub));
+// cabeçalho de grupo: faixa de origem do conteúdo
+const origem = (f, atual) => `<h4 class="acorig">${belt(f.cores.para, f.titulo).replace('role="img"', 'aria-hidden="true" focusable="false"').replace(/ aria-label="[^"]*"/, "")}<span>${esc(acNome(f))}</span>${atual ? `<span class="acnow">Esta faixa</span>` : ""}</h4>`;
+// seção recolhível (botão dentro do título, padrão de divulgação acessível)
+let acSeq = 0;
+function acSecao(titulo, nAtual, nTotal, corpo, aberta, extra) {
+  const id = "acs" + (++acSeq);
+  return `<section class="acs"><h3 class="acsh"><button type="button" class="acbt" aria-expanded="${aberta ? "true" : "false"}" aria-controls="${id}"><span class="acst">${titulo}</span><span class="sr">, </span><span class="acn">${extra || `${nAtual} desta faixa · ${nTotal} no total`}</span><span class="acchev" aria-hidden="true">▾</span></button></h3><div class="acbody" id="${id}" ${aberta ? "" : "hidden"}>${corpo}</div></section>`;
+}
+const acTopo = (f, mod, notas) => `<div class="hero" style="--a:${f.cores.para[1] || f.cores.para[0]}"><div class="hero-belt">${belt(f.cores.para, f.titulo)}<div><h1>Programa acumulado: ${esc(f.titulo)}</h1><p class="lead">${esc(f.sub && !/^Exame de faixa$/i.test(f.sub) ? f.sub + " · " : "")}todo o conteúdo cobrado da primeira faixa até este exame.</p></div></div></div>
+<div class="acbar"><div class="acmodo" role="group" aria-label="O que mostrar"><button type="button" data-acmodo="todos" aria-pressed="true">Acumulado: todas as faixas até esta</button><button type="button" data-acmodo="atual" aria-pressed="false">Só o que é desta faixa</button></div><button type="button" class="acall" data-acall="1" aria-expanded="false">Abrir todos os tópicos</button><a class="acvolta" href="#/${mod}/faixa/${f.id}">← Exame específico desta faixa</a></div>
+<p class="sr" role="status" aria-live="polite" id="acstatus"></p>${notas || ""}`;
+function wireAc() {
+  const all = [...document.querySelectorAll(".acbt")], st = $("#acstatus"), ab = $("[data-acall]");
+  const sync = () => { const n = all.filter(b => b.getAttribute("aria-expanded") === "true").length; if (ab) { ab.textContent = n === all.length ? "Fechar todos os tópicos" : "Abrir todos os tópicos"; ab.setAttribute("aria-expanded", String(n === all.length)); } };
+  all.forEach(b => b.addEventListener("click", () => { const o = b.getAttribute("aria-expanded") !== "true"; b.setAttribute("aria-expanded", String(o)); $("#" + b.getAttribute("aria-controls")).hidden = !o; sync(); }));
+  if (ab) ab.addEventListener("click", () => { const o = ab.getAttribute("aria-expanded") !== "true"; all.forEach(b => { b.setAttribute("aria-expanded", String(o)); $("#" + b.getAttribute("aria-controls")).hidden = !o; }); sync(); });
+  document.querySelectorAll("[data-acmodo]").forEach(b => b.addEventListener("click", () => {
+    const so = b.dataset.acmodo === "atual"; document.querySelectorAll("[data-acmodo]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    document.querySelectorAll(".acprev").forEach(x => x.hidden = so);
+    document.querySelectorAll(".acvazio").forEach(x => x.hidden = !so);
+    if (st) st.textContent = so ? "Mostrando só o conteúdo desta faixa." : "Mostrando o conteúdo acumulado de todas as faixas até esta.";
+  }));
+  sync();
+}
+// grupos por faixa de origem: lista de [faixa, html]; os anteriores recebem a classe acprev
+const acGrupos = (gs, f) => gs.filter(g => g[1]).map(g => `<div class="acg${g[0] === f ? " acatual" : " acprev"}">${origem(g[0], g[0] === f)}${g[1]}</div>`).join("") || "<p class='lead'>Sem itens neste tópico até esta faixa.</p>";
+const acVazio = (n) => n ? "" : `<p class="lead acvazio" hidden>Nada novo neste tópico nesta faixa: o conteúdo vem das faixas anteriores.</p>`;
+
+function judoAcumulado(f) {
+  acSeq = 0; const ch = cadeia(J.faixas, f), visto = {};
+  const novos = (g, campo) => (g[campo] || []).filter(s => { const k = campo + ":" + s; if (visto[k]) return false; visto[k] = 1; return true; });
+  const pills = l => `<p class="acpills">${l.map(tlink).join(" ")}</p>`;
+  const itensTxt = l => `<ul class="acul">${l.map(it => `<li>${it.et ? `<span class="et">${esc(it.et)}</span> ` : ""}${esc(it.t)}</li>`).join("")}</ul>`;
+  const secTec = (campo, titulo) => { const gs = ch.map(g => [g, novos(g, campo)]); const tot = gs.reduce((a, g) => a + g[1].length, 0), at = (gs.find(g => g[0] === f) || [0, []])[1].length; return tot ? acSecao(titulo, at, tot, acVazio(at) + acGrupos(gs.map(g => [g[0], g[1].length ? pills(g[1]) : ""]), f)) : ""; };
+  // combinações e contragolpes
+  const combo = ch.map(g => { const ex = (g.renrakuExig || []).map(e => `<li><span class="et">${esc(e.et)}</span> ${e.cadeia.map(s => T[s] ? `<a href="#/judo/tecnica/${s}">${esc(T[s].nome)}</a>` : esc(s)).join(" → ")}</li>`); const tx = g.renraku && g.renraku !== "—" ? `<p>${esc(g.renraku)}</p>` : ""; return [g, ex.length || tx ? tx + (ex.length ? `<ul class="acul">${ex.join("")}</ul>` : "") : "", ex.length || (tx ? 1 : 0)]; });
+  const kae = ch.map(g => { const ks = novos(g, "kaeshiSlugs"); const tx = g.kaeshi && g.kaeshi !== "—" ? `<p>${esc(g.kaeshi)}</p>` : ""; return [g, tx + (ks.length ? pills(ks) : ""), ks.length || (tx ? 1 : 0)]; });
+  const conta = gs => [gs.reduce((a, g) => a + g[2], 0), (gs.find(g => g[0] === f) || [0, 0, 0])[2]];
+  // regulamento: itens por categoria (técnicas, fundamentos, conhecimentos); sem repetir textos iguais
+  const txtVisto = {};
+  const regItens = (g, filtro) => g.cats.filter(filtro).flatMap(c => c.itens.map(it => Object.assign({ cat: c.nome }, it))).filter(it => { const k = it.t.replace(/\s+/g, " ").trim().toLowerCase(); if (txtVisto[k]) return false; txtVisto[k] = 1; return true; });
+  const porCat = l => { const m = {}; l.forEach(it => (m[it.cat] = m[it.cat] || []).push(it)); return Object.keys(m).map(c => `<p class="accat">${esc(c)}</p>${itensTxt(m[c])}`).join(""); };
+  const SUBST = /Elegibilidade|Provas teóricas|Provas práticas/i;
+  const secReg = (titulo, filtro, extra) => { const gs = ch.map(g => { const l = regItens(g, filtro), ex = extra ? extra(g) : ""; return [g, (ex || "") + (l.length ? porCat(l) : ""), l.length + (ex ? 1 : 0)]; }); const [tot, at] = conta(gs); return tot ? acSecao(titulo, at, tot, acVazio(at) + acGrupos(gs, f)) : ""; };
+  const [ct, ca] = conta(combo), [kt, ka] = conta(kae);
+  // o que substitui (vale só o valor deste exame)
+  const elig = f.cats.filter(c => SUBST.test(c.nome));
+  const subst = `<div class="box acsubst"><h2>Vale só para este exame (não se soma)</h2><p>Idade mínima, carência, quantidades e formato das provas são do exame atual: os valores das faixas anteriores não se somam a estes.</p>${elig.map(c => `<p class="accat">${esc(c.nome)}</p>${itensTxt(c.itens)}`).join("")}${f.quant ? `<div class="tw"><table><caption class="sr">Quantidades e programa deste exame</caption>${Object.keys(f.quant).map(k => `<tr><th scope="row">${esc(k)}</th><td>${esc(f.quant[k])}</td></tr>`).join("")}</table></div>` : ""}</div>`;
+  const html = `${acTopo(f, "judo", `<p class="vnote">Regra da CBJ: o programa é cumulativo, ou seja, o conteúdo das graduações anteriores também pode ser cobrado. Saudações e quedas aparecem uma vez só, na faixa em que entram. Técnicas específicas seguem a Comissão Estadual de Graduação.</p>`)}
+${subst}
+<h2 class="sec">Conteúdo acumulado por tópico</h2>
+${secTec("nage", "Projeções (Nage-waza)")}
+${secTec("katame", "Solo (Katame-waza)")}
+${ct ? acSecao("Combinações (Renraku-waza)", ca, ct, acVazio(ca) + acGrupos(combo, f)) : ""}
+${kt ? acSecao("Contragolpes (Kaeshi-waza)", ka, kt, acVazio(ka) + acGrupos(kae, f)) : ""}
+${secReg("Técnicas no texto do regulamento (CBJ)", c => c.grupo === "tec")}
+${secReg("Fundamentos (saudação, quedas, postura e pegada)", c => c.grupo === "fund", g => g.kihon ? `<p>${esc(g.kihon)}</p>` : "")}
+${secReg("Kata, vocabulário, história, teoria e ensino", c => c.grupo === "nao" && !SUBST.test(c.nome), g => [g.kata && g.kata !== "—" ? `<p><b>Kata:</b> ${esc(g.kata)}</p>` : "", g.teoria ? `<p><b>Teoria:</b> ${esc(g.teoria)}</p>` : ""].join(""))}
+<p class="vnote">Fontes: regulamento de graduação da CBJ (2023) e o livro do portal. Confira sempre o documento oficial da sua federação.</p>`;
+  return html;
+}
 route(/^\/judo\/faixa\/(\w+)$/, m => {
   const f = jf(m[1]); if (!f) return null; const a = f.cores.para[1] || f.cores.para[0];
   const tecCats = f.cats.filter(c => c.grupo === "tec"), fundCats = f.cats.filter(c => c.grupo === "fund"), naoCats = f.cats.filter(c => c.grupo === "nao");
@@ -98,6 +176,7 @@ route(/^\/judo\/faixa\/(\w+)$/, m => {
   return { crumbs: [["Início", "../"], ["Judô", "#/judo"], [f.titulo, ""]], html: `
 <div class="hero" style="--a:${a}"><div class="hero-belt">${belt(f.cores.para, f.titulo)}<div><h1>${esc(f.titulo)}</h1><p class="lead">${esc(f.sub)} · exame de faixa</p><ul class="facts">${f.fatos.map(x => `<li><b>${esc(x[0])}</b>${esc(x[1])}</li>`).join("")}</ul></div></div></div>
 ${f.nota ? `<p class="lead" style="margin-top:12px">${esc(f.nota)}</p>` : ""}
+${acBtn("judo", f)}
 <h2 class="sec">O que é cobrado neste exame</h2><div class="cards">
  ${f.nage && f.nage.length ? card("nage", "Projeções (Nage-waza)", "Técnicas deste exame e as acumuladas das faixas anteriores.", f.nage.length + " nova(s) · " + acumulado(f, "nage").length + " no total", "投技") : ""}
  ${f.katame && f.katame.length ? card("katame", "Solo (Katame-waza)", "Imobilizações, estrangulamentos e chaves.", f.katame.length + " nova(s) · " + acumulado(f, "katame").length + " no total", "固技") : ""}
@@ -118,6 +197,7 @@ route(/^\/judo\/faixa\/(\w+)\/([\w-]+)$/, m => {
   const title = (tt, desc) => `<h1>${tt}</h1><p class="lead">${desc || ""}</p>`;
   const a = f.cores.para[1] || f.cores.para[0];
   let body = "", name = "";
+  if (t === "acumulado") return { crumbs: base.concat([["Programa acumulado", ""]]), html: `<div style="--a:${a}">${judoAcumulado(f)}</div>`, init: wireAc };
   if (t === "nage" || t === "katame") {
     name = t === "nage" ? "Projeções (Nage-waza)" : "Solo (Katame-waza)"; const novas = f[t] || [], acum = acumulado(f, t).filter(s => novas.indexOf(s) < 0);
     const kmap = f[t + "Kyu"] || {}, gr = {}; novas.forEach(s => { const k = kmap[s] || ""; (gr[k] = gr[k] || []).push(s); });
@@ -272,6 +352,7 @@ const ICON_B = { fund: "基本", quedas: "投", posicoes: "固", guardas: "守",
 route(/^\/jiu-jitsu$/, () => ({ crumbs: [["Início", "../"], ["Jiu-Jitsu", "#/jiu-jitsu"]], html: `
 <div class="hero" style="--a:#7a3fa3"><h1>Jiu-Jitsu <span lang="ja">柔術</span></h1><p class="lead">Escolha o exame da sua faixa ou explore a lista de componentes. Cada página leva mais fundo, até a técnica, com nomes em japonês, inglês e português, fotos e vídeos oficiais.</p></div>
 <h2 class="sec">Programa de exames <small style="color:var(--muted)">(clique na faixa)</small></h2>${beltLadder("jiu-jitsu", B.faixas)}
+${acLista("jiu-jitsu", B.faixas)}
 <h2 class="sec">Tópicos principais</h2><div class="cards">${B.comp.map(g => `<a class="card" href="#/jiu-jitsu/t/${g.id}"><div class="ic" aria-hidden="true" lang="ja">${ICON_B[g.id] || ""}</div><h3>${esc(g.nome)}</h3><p>${esc(g.desc)}</p><span class="n">${(g.subs && g.subs.length ? g.subs.reduce((a, s) => a + s.itens.length + s.blocos.length, 0) : g.itens.length) || ""} ${g.subs && g.subs.length ? "tópicos" : "itens"}</span></a>`).join("")}
 <a class="card" href="#/jiu-jitsu/proibidas"><div class="ic" aria-hidden="true">⛔</div><h3>Golpes proibidos por idade e faixa</h3><p>Tabela da IBJJF/CBJJ, p. 29.</p></a><a class="card" href="#/jiu-jitsu/t/referencias"><div class="ic" aria-hidden="true">📚</div><h3>Referências</h3><p>Fontes do app.</p></a><a class="card" href="../app/#bjj/b01"><div class="ic" aria-hidden="true">📝</div><h3>Ficha de exame e progresso</h3><p>Simulador editável (app).</p></a></div>`, init: wireRail }));
 
@@ -298,6 +379,28 @@ function matrizHtml(f) {
 }
 route(/^\/jiu-jitsu\/proibidas$/, () => ({ crumbs: [["Início", "../"], ["Jiu-Jitsu", "#/jiu-jitsu"], ["Golpes proibidos", ""]], html: `<h1>Golpes proibidos por idade e faixa</h1><p class="lead">Tabela do livro de regras IBJJF/CBJJ (2024).</p>${matrizHtml(null)}` }));
 
+// ---- Jiu-Jitsu: programa acumulado ----
+function bjjAcumulado(f) {
+  acSeq = 0; const ch = cadeia(B.faixas, f);
+  const atuais = {}; f.secoes.forEach(s => s.itens.forEach(i => atuais[slug(i.t)] = 1));
+  const cats = []; ch.forEach(g => g.secoes.forEach(s => { if (cats.indexOf(s.cat) < 0) cats.push(s.cat); }));
+  const pill = i => `<a class="pill" href="#/jiu-jitsu/item/${slug(i.t)}">${esc(i.nm && i.nm.pt || i.t)}${i.nm && i.nm.pt && i.nm.pt !== i.t ? ` <small>${esc(i.t)}</small>` : ""}</a>`;
+  const nome = c => { for (const g of ch) { const s = g.secoes.find(x => x.cat === c); if (s) return s.pt || s.cat; } return c; };
+  let totA = 0, totP = 0;
+  const secs = cats.map(c => {
+    const s = f.secoes.find(x => x.cat === c), cur = s ? s.itens : [], visto = {};
+    const prev = ch.filter(g => g !== f).map(g => { const sx = g.secoes.find(x => x.cat === c); const l = (sx ? sx.itens : []).filter(i => { const k = slug(i.t); if (atuais[k] || visto[k]) return false; visto[k] = 1; return true; }); return [g, l]; });
+    const np = prev.reduce((a, g) => a + g[1].length, 0); totA += cur.length; totP += np;
+    if (!cur.length && !np) return "";
+    const corpo = acVazio(cur.length) + (cur.length ? `<div class="acg acatual">${origem(f, true)}<p class="acpills">${cur.map(pill).join(" ")}</p></div>` : "") + (np ? `<div class="acprev"><p class="accat">De faixas anteriores, não repetidos na lista desta faixa</p>${prev.filter(g => g[1].length).map(g => `<div class="acg">${origem(g[0], false)}<p class="acpills">${g[1].map(pill).join(" ")}</p></div>`).join("")}</div>` : "");
+    return acSecao(esc(nome(c)), cur.length, cur.length + np, corpo, false, `${cur.length} desta faixa · ${np} de faixas anteriores`);
+  }).join("");
+  const notas = `<div class="warn">A JJIF já repete, na lista de cada faixa, boa parte das técnicas das faixas anteriores. Por isso o acumulado mostra a lista desta faixa e, à parte, os itens de faixas anteriores que não aparecem nela. As fontes não dizem se esses itens deixam de ser cobrados: confirme com o seu professor ou com a sua federação.</div>`;
+  return `${acTopo(f, "jiu-jitsu", notas)}<div class="box acsubst"><h2>Vale só para este exame (não se soma)</h2><ul class="acul">${f.fatos.map(x => `<li><b>${esc(x[0])}:</b> ${esc(x[1])}</li>`).join("")}</ul><p>Total: ${totA} itens na lista desta faixa e ${totP} de faixas anteriores que não se repetem nela.</p></div>
+<h2 class="sec">Conteúdo acumulado por tópico</h2>${secs || "<p class='lead'>A JJIF não define programa técnico para esta faixa nem para as anteriores desta cadeia.</p>"}
+<p class="vnote">Fonte: JJIF Graduation System v11 (programa técnico por faixa). ${kids(f.sub) ? "Cadeia das faixas infantis." : "Cadeia das faixas de adultos."}</p>`;
+}
+
 // ---- Jiu-Jitsu: faixa ----
 route(/^\/jiu-jitsu\/faixa\/(\w+)$/, m => {
   const f = bf(m[1]); if (!f) return null; const a = f.cores.para[1] || f.cores.para[0];
@@ -306,6 +409,7 @@ route(/^\/jiu-jitsu\/faixa\/(\w+)$/, m => {
   return { crumbs: [["Início", "../"], ["Jiu-Jitsu", "#/jiu-jitsu"], [f.titulo, ""]], html: `
 <div class="hero" style="--a:${a}"><div class="hero-belt">${belt(f.cores.para, f.titulo)}<div><h1>${esc(f.titulo)}</h1><p class="lead">${esc(f.sub || "Exame de faixa")}</p><ul class="facts">${f.fatos.map(x => `<li><b>${esc(x[0])}</b>${esc(x[1])}</li>`).join("")}</ul></div></div></div>
 ${f.nota ? `<div class="warn">${esc(f.nota)}</div>` : ""}
+${acBtn("jiu-jitsu", f)}
 <h2 class="sec">O que é cobrado neste exame (programa técnico da JJIF)</h2><div class="cards">${sec.map(s => card("s-" + slug(s.cat), esc(s.pt || s.cat), esc(s.cat), s.itens.length + " técnicas", "")).join("") || "<p class='lead'>A JJIF não define exame técnico para esta faixa; consulte as regras da sua federação.</p>"}${f.ficha ? card("ficha", "Ficha de exame (JJIF)", "Critérios de avaliação e simulador editável.", "", "📝") : ""}</div>
 <h2 class="sec">Além das técnicas</h2><div class="cards">${card("fund", "Fundamentos", "Técnicas básicas, quedas (ukemi), rolamentos e tai-sabaki.", "", "基本")}${card("nao", "O que não se cobra em competições", "Defesa pessoal e critérios de avaliação do exame.", "", "護")}${card("proib", "Técnicas proibidas para esta faixa", "Tabela da IBJJF/CBJJ por idade e faixa.", "", "⛔")}${card("refs", "Referências bibliográficas", "Fontes deste exame.", "", "📚")}</div>
 <p class="vnote">${esc(f.intro || "")}</p>` };
@@ -313,6 +417,7 @@ ${f.nota ? `<div class="warn">${esc(f.nota)}</div>` : ""}
 route(/^\/jiu-jitsu\/faixa\/(\w+)\/([\w-]+)$/, m => {
   const f = bf(m[1]); if (!f) return null; const t = m[2]; const base = [["Início", "../"], ["Jiu-Jitsu", "#/jiu-jitsu"], [f.titulo, "#/jiu-jitsu/faixa/" + f.id]]; const a = f.cores.para[1] || f.cores.para[0];
   let body = "", name = "";
+  if (t === "acumulado") return { crumbs: base.concat([["Programa acumulado", ""]]), html: `<div style="--a:${a}">${bjjAcumulado(f)}</div>`, init: wireAc };
   if (t.indexOf("s-") === 0) { const s = f.secoes.find(x => "s-" + slug(x.cat) === t); if (!s) return null; name = s.pt || s.cat; body = `<h1>${esc(name)}</h1><p class="lead">${esc(s.cat)} · programa técnico da JJIF para ${esc(f.titulo)}</p>${itemsList(s.itens, s.cat)}${s.imgs.length ? `<h2 class="sec">Coluna do programa JJIF (documento oficial)</h2><div class="imgs">${s.imgs.map(i => `<figure><img loading="lazy" src="${A(i)}" alt="Coluna ${esc(s.cat)} do programa JJIF" data-zoom><figcaption>JJIF Graduation System v11 (miniatura)</figcaption></figure>`).join("")}</div>` : ""}`; }
   else if (t === "ficha") { name = "Ficha de exame (JJIF)"; const k = f.ficha; body = `<h1>${name}</h1><div class="box"><h3>Critérios de avaliação</h3><p>${esc(k.criterios)}</p></div><div class="box"><h3>Opções do examinador</h3><p>${esc(k.opcoes)}</p></div><div class="box"><h3>Seções da ficha</h3><p>${esc(k.secoes)}</p></div><div class="box"><h3>Carga mínima sugerida</h3><p>${esc(k.carga)}</p></div><div class="imgs"><figure><img src="${A(k.img)}" alt="Ficha de exame da JJIF" data-zoom><figcaption>JJIF Graduation System v11, seção Belt Exam</figcaption></figure></div><p><a class="pill" href="../app/#bjj/${f.id}">Abrir o simulador editável (app)</a></p>`; }
   else if (t === "fund") { name = "Fundamentos"; const s = f.secoes.filter(x => /basic/i.test(x.cat)); const g = bgrp("fund"); body = `<h1>${name}</h1>${s.map(x => `<h2 class="sec">${esc(x.pt || x.cat)}</h2>${itemsList(x.itens, x.cat)}`).join("")}<h2 class="sec">Tai-sabaki, rolamentos e ukemi</h2><p class="lead">${esc(g.desc)}</p><div class="cards">${g.subs.map(s => `<a class="card" href="#/jiu-jitsu/t/fund/${s.id}"><h3>${esc(s.nome)}</h3><p>${esc(s.desc)}</p></a>`).join("")}</div>`; }
