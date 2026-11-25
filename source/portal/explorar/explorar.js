@@ -120,12 +120,17 @@ route(/^\/judo\/faixa\/(\w+)\/([\w-]+)$/, m => {
   let body = "", name = "";
   if (t === "nage" || t === "katame") {
     name = t === "nage" ? "Projeções (Nage-waza)" : "Solo (Katame-waza)"; const novas = f[t] || [], acum = acumulado(f, t).filter(s => novas.indexOf(s) < 0);
-    body = `${title(name, "Toque em uma técnica para ver o nome em japonês, a descrição, as ilustrações, o vídeo e as técnicas relacionadas.")}<h2 class="sec">Novas neste exame</h2><div class="tcards">${novas.map(tcard).join("")}</div>${acum.length ? `<h2 class="sec">Acumuladas das faixas anteriores</h2><div class="tcards">${acum.map(tcard).join("")}</div>` : ""}<p class="vnote">Lista do livro (quantitativos da CBJ preenchidos em ordem do Gokyo e do Kodokan). A Comissão Estadual define quais técnicas valem.</p>`;
+    const kmap = f[t + "Kyu"] || {}, gr = {}; novas.forEach(s => { const k = kmap[s] || ""; (gr[k] = gr[k] || []).push(s); });
+    body = `${title(name, "Toque em uma técnica para ver o nome em japonês, a descrição, as ilustrações, o vídeo e as técnicas relacionadas.")}${Object.keys(gr).map(k => `<h2 class="sec">Novas neste exame${k ? ` · <span class="et">${esc(k)}</span>` : ""}</h2><div class="tcards">${gr[k].map(tcard).join("")}</div>`).join("")}${acum.length ? `<h2 class="sec">Acumuladas das faixas anteriores</h2><div class="tcards">${acum.map(tcard).join("")}</div>` : ""}<p class="vnote">Lista do livro (quantitativos da CBJ preenchidos em ordem do Gokyo e do Kodokan). A Comissão Estadual define quais técnicas valem.</p>`;
   } else if (t === "combos") {
     name = "Combinações e contragolpes"; const rs = f.renrakuSlugs || [], ks = f.kaeshiSlugs || [];
-    const comb = D.renraku.map((c, i) => [c, i]).filter(x => x[0].cadeia.some(s => acumulado(f, "nage").concat(acumulado(f, "katame")).indexOf(s) >= 0));
+    const vistas = acumulado(f, "nage").concat(acumulado(f, "katame"), acumulado(f, "renrakuSlugs"));
+    const igual = (a, b) => a.length === b.length && a.every((s, i) => s === b[i]);
+    const exig = (f.renrakuExig || []).map(e => [e, D.renraku.findIndex(c => igual(c.cadeia, e.cadeia))]);
+    const comb = D.renraku.map((c, i) => [c, i]).filter(x => x[0].cadeia.every(s => vistas.indexOf(s) >= 0) && !exig.some(e => e[1] === x[1]));
     body = `${title(name)}<div class="box"><h3>Renraku-waza (combinações)</h3><p>${esc(f.renraku || "—")}</p>${rs.map(tlink).join(" ")}</div><div class="box"><h3>Kaeshi-waza (contragolpes)</h3><p>${esc(f.kaeshi || "—")}</p>${ks.map(tlink).join(" ")}</div>
-    <h2 class="sec">Exemplos ilustrados com técnicas já vistas</h2><div class="cards">${comb.length ? comb.map(x => `<a class="card" href="#/judo/combo/${x[1]}"><h3>${x[0].cadeia.map(s => esc(T[s].nome)).join(" → ")}</h3><p>${esc(x[0].tipo)}</p></a>`).join("") : "<p class='lead'>Nenhuma combinação ilustrada usa só as técnicas desta faixa.</p>"}</div>`;
+    ${exig.length ? `<h2 class="sec">Exigidas neste exame</h2><div class="cards">${exig.map(e => e[1] >= 0 ? `<a class="card" href="#/judo/combo/${e[1]}"><h3>${e[0].cadeia.map(s => esc(T[s].nome)).join(" → ")}</h3><p><span class="et">${esc(e[0].et)}</span> ${esc(D.renraku[e[1]].tipo)}</p></a>` : `<div class="card"><h3>${e[0].cadeia.map(s => esc(T[s].nome)).join(" → ")}</h3><p><span class="et">${esc(e[0].et)}</span></p></div>`).join("")}</div>` : ""}
+    <h2 class="sec">Outros exemplos ilustrados com técnicas já vistas</h2><div class="cards">${comb.length ? comb.map(x => `<a class="card" href="#/judo/combo/${x[1]}"><h3>${x[0].cadeia.map(s => esc(T[s].nome)).join(" → ")}</h3><p>${esc(x[0].tipo)}</p></a>`).join("") : "<p class='lead'>Nenhuma outra combinação ilustrada usa só técnicas já vistas até esta faixa.</p>"}</div>`;
   } else if (t.indexOf("c-") === 0) {
     const c = f.cats.find(x => "c-" + x.id === t); if (!c) return null; name = c.nome;
     body = `${title(c.nome, c.ja ? `<span lang="ja">${esc(c.ja)}</span> · ${esc(c.pt || c.en)}` : "")}${items(c)}<p class="vnote">Texto extraído do regulamento da CBJ (2023). Confira sempre o documento oficial.</p>`;
@@ -136,7 +141,7 @@ route(/^\/judo\/faixa\/(\w+)\/([\w-]+)$/, m => {
   } else if (t === "nao") {
     name = "O que não se cobra em competições";
     body = `${title(name, "Conteúdo de exame que não aparece em uma luta de competição: kata, vocabulário, história, teoria, arbitragem e ensino. Classificação do app, feita a partir das categorias do regulamento.")}${f.kata && f.kata !== "—" ? `<div class="box"><h3>Kata</h3><p>${esc(f.kata)}</p></div>` : ""}${f.teoria ? `<div class="box"><h3>Teoria e regras que o aluno deve conhecer</h3><p>${esc(f.teoria)}</p></div>` : ""}${f.cats.filter(c => c.grupo === "nao").map(c => `<h2 class="sec">${esc(c.nome)}</h2>${items(c)}`).join("")}
-    ${f.quant ? `<div class="box"><h3>Quantidades por área (CBJ)</h3><div class="tw"><table>${Object.keys(f.quant).map(k => `<tr><th>${esc(k)}</th><td>${esc(f.quant[k])}</td></tr>`).join("")}</table></div></div>` : ""}`;
+    ${f.quant ? `<div class="box"><h3>${/Dan/.test(f.sub + f.titulo) ? "Programa do exame (CBJ, FJERJ e IJF)" : "Quantidades por área (CBJ)"}</h3><div class="tw"><table>${Object.keys(f.quant).map(k => `<tr><th>${esc(k)}</th><td>${esc(f.quant[k])}</td></tr>`).join("")}</table></div></div>` : ""}`;
   } else if (t === "proib") {
     name = "Técnicas proibidas";
     body = `${title(name)}<div class="warn"><b>INFORMAÇÃO AUSENTE por faixa.</b> As fontes do app (CBJ e IJF) não listam proibições diferentes para cada faixa: as regras de competição da IJF abaixo valem para todas. Restrições por idade nas competições variam por federação; confira a sua.</div>${proibHtml()}`;

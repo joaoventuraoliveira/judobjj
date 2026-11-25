@@ -32,9 +32,12 @@ Em **Settings → Pages → Build and deployment → Source**, escolha **GitHub 
 
 Conteúdo baseado nos regulamentos da CBJ, de federações estaduais e nas regras da IJF. Confira sempre a versão vigente com a sua federação.
 
-## Ponto de restauração
+## Pontos de restauração
 
-A versão anterior (site em página única, antes do livro interativo) está no ramo `backup/v1.0`. Para voltar a ela: `git checkout main && git reset --hard backup/v1.0 && git push --force origin main`.
+- `backup/v1.0`: site em página única, antes do livro interativo (22/11/2026).
+- `backup/v2.0`: portal com explorador e app, antes da restauração do conteúdo por faixa (24/11/2026).
+
+Para voltar a um deles: `git checkout main && git reset --hard backup/v2.0 && git push --force origin main` (troque pelo ramo desejado). O motivo de cada mudança feita depois do `backup/v2.0` está em [`CONTEXTO-RESTAURACAO.md`](CONTEXTO-RESTAURACAO.md).
 
 ## Portal: Judô e Jiu-Jitsu
 
@@ -53,4 +56,4 @@ Depois de escolher Judô ou Jiu-Jitsu na página inicial, o explorador abre com 
 2. **Tópico** (projeções, solo, combinações, textos do regulamento, seções do programa da JJIF…) → lista de técnicas.
 3. **Técnica** → nome em japonês (kanji), rōmaji, inglês (Kodokan) e português (sugestão do app), descrição, ilustrações produzidas por código, **vídeo oficial que toca na própria página** (modo de privacidade do YouTube, só carrega ao clicar) e links para os *kaeshi-waza*, as combinações (*renraku-waza*) e os *katame-waza* associados.
 
-Os dados vêm de `source/portal/build_dados.py`, que lê o livro (`site/livro.html`), `source/videos.py`, `source/glossary.py` e o `data.js` do app, e escreve `site/explorar/dados.js`. Limites honestos: só 40 técnicas têm ficha de estudo; o português dos nomes é sugestão; as fontes não definem proibições diferentes por faixa no Judô (valem as regras IJF); no Jiu-Jitsu os itens da JJIF têm só o nome, sem texto descritivo.
+Os dados vêm de `source/portal/build_dados.py`, que lê o livro (`site/livro.html`), `source/videos.py`, `source/glossary.py` e o `data.js` do app, e escreve `site/explorar/dados.js`. Cada cor de faixa mostra só o exame daquela cor, com cada técnica marcada pelo seu Kyû; as correções dos itens do regulamento ficam em `source/portal/corrigir_dados.py`. Para gerar de novo só com o repositório: `python source/portal/build_dados.py site/app/data.js`. Limites honestos: só 40 técnicas têm ficha de estudo; o português dos nomes é sugestão; as fontes não definem proibições diferentes por faixa no Judô (valem as regras IJF); no Jiu-Jitsu os itens da JJIF têm só o nome, sem texto descritivo.

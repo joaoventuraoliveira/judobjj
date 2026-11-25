@@ -22,3 +22,8 @@ Para completar: feche outros programas e rode `source/portal/retomar_traducao.ps
 - **Pendente 3:** rodar em sessão nova os plugins UI Design Review e Axe Accessibility (testes guiados de teclado).
 - **Pendente 4:** conferência humana: NVDA ao passar o mouse sobre a foto da página inicial; contraste do título e das legendas sobre as fotos.
 - **Pendente 5:** vídeos/imagens oficiais por técnica de Jiu-Jitsu (links IBJJF/CBJJ fornecidos pelo usuário).
+
+## Estado em 2026-11-25 (restauração do conteúdo por faixa)
+- Ponto de restauração `backup/v2.0` criado antes das mudanças; motivos de cada mudança em `CONTEXTO-RESTAURACAO.md`.
+- **Pendente 6:** traduzir para o inglês os textos novos dos dans (programa CBJ/FJERJ/IJF) e dos itens corrigidos; hoje aparecem em português no modo EN (rodar `retomar_traducao.ps1`).
+- **Já existia antes (não é desta etapa):** no app, botões de miniatura com altura < 30 px em `#judo/j01` e o aviso de alvo < 24 px em `#bjj/b03`; no explorador, `span.dot` coberto por célula sem texto em `#/jiu-jitsu/faixa/b03/proib`.

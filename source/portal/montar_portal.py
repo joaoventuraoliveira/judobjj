@@ -6,6 +6,7 @@ import sys, re, json, shutil, html, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import layout_css as LC
 import merge_cores as MC
+import corrigir_dados as CD
 ROOT = pathlib.Path(__file__).resolve().parents[2]; SITE = ROOT / "site"
 def app(www):
     www = pathlib.Path(www); out = SITE / "app"
@@ -53,6 +54,7 @@ def app(www):
     pre, sep, rest = raw.partition(";\nwindow.I18N=")
     D = json.loads(pre.split("window.DATA = ", 1)[1])
     D["judo"]["trans"] = MC.mesclar_app(D["judo"]["trans"])  # uma etapa por cor
+    CD.corrigir(D)  # itens do regulamento: categorias, palavras quebradas, 8º Kyû, 9º e 10º Dan (ver CONTEXTO-RESTAURACAO.md)
     (out / "data.js").write_text("window.DATA = " + json.dumps(D, ensure_ascii=False, separators=(",", ":")) + sep + rest, encoding="utf-8")
     for f in (www / "img" / "th").glob("*.jpg"): shutil.copy2(f, out / "img" / "th" / f.name)
     mb = sum(f.stat().st_size for f in out.rglob("*") if f.is_file()) / 1048576
