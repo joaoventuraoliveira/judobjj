@@ -27,3 +27,10 @@ Para completar: feche outros programas e rode `source/portal/retomar_traducao.ps
 - Ponto de restauração `backup/v2.0` criado antes das mudanças; motivos de cada mudança em `CONTEXTO-RESTAURACAO.md`.
 - **Pendente 6:** traduzir para o inglês os textos novos dos dans (programa CBJ/FJERJ/IJF) e dos itens corrigidos; hoje aparecem em português no modo EN (rodar `retomar_traducao.ps1`).
 - **Já existia antes (não é desta etapa):** no app, botões de miniatura com altura < 30 px em `#judo/j01` e o aviso de alvo < 24 px em `#bjj/b03`; no explorador, `span.dot` coberto por célula sem texto em `#/jiu-jitsu/faixa/b03/proib`.
+
+## Estado em 2026-11-25 (programa acumulado e `backup/v3.0`)
+
+- Feito: página "Programa acumulado" por faixa no Judô e no Jiu-Jitsu, com botões na página da faixa, nas páginas das modalidades, no menu lateral e na página inicial. axe-core 4.10.3: 0 violações nas páginas novas (temas claro e escuro).
+- Pendente: tradução para o inglês dos textos de cada item que vêm do regulamento (já era pendência); os rótulos novos da interface têm inglês.
+- Pendente (já existia): alvos pequenos no app em `/app/#bjj/b03` e o ponto da tabela de proibidos do Jiu-Jitsu sem texto ao passar o ponteiro.
+

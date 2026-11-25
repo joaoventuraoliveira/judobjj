@@ -8,6 +8,7 @@ Este arquivo explica **por que** cada mudança desta etapa foi feita, para quem 
 | --- | --- | --- |
 | `backup/v1.0` | Site em página única, antes do livro interativo (22/11/2026) | `git reset --hard backup/v1.0` |
 | `backup/v2.0` | Portal com explorador, app e "uma etapa por cor", **antes** desta restauração (commit `a41a073`, 24/11/2026) | `git reset --hard backup/v2.0` |
+| `backup/v3.0` | Conteúdo por faixa restaurado **e** programa acumulado por faixa, conferido com axe-core (25/11/2026) | `git reset --hard backup/v3.0` |
 
 Para publicar a volta: `git push --force origin main` depois do `reset`.
 
@@ -120,3 +121,26 @@ As correções ficam em `source/portal/corrigir_dados.py`, que é idempotente e 
 | `source/portal/landing_template.html` e `site/index.html` | Botões 20% maiores, no alto do cabeçalho no celular, título oculto na tela |
 | `source/portal/i18n_portal_manual.json` e `site/assets/i18n-*.js` | Traduções dos textos novos |
 | `site/explorar/dados.js`, `site/app/data.js` | Dados gerados de novo |
+
+## Etapa seguinte: programa acumulado por faixa (25/11/2026)
+
+**Pedido do autor:** mostrar, nas duas modalidades, o conteúdo das faixas anteriores somado ao da faixa escolhida, sem exagerar, com botões visíveis e com o nome completo, conferido com axe para leitores de tela. Depois, criar o terceiro ponto de restauração (`backup/v3.0`).
+
+**Por que uma página à parte, e não tudo na página da faixa:** somar tudo na página do exame ficaria longo demais no celular (Marrom do Judô: cerca de 40 projeções e 17 técnicas de solo; Jiu-Jitsu: mais de 140 itens) e esconderia o que é específico de cada exame, que é a regra do portal. Por isso a página da faixa continua mostrando o exame, e um botão leva ao acumulado.
+
+**Como cada tópico se comporta:**
+
+- **Somam:** técnicas, combinações, contragolpes e os textos do regulamento (técnica, fundamentos, kata, vocabulário, história, teoria).
+- **Não se somam (vale só o exame atual):** idade mínima, carência, quantidades e formato das provas. Ficam no quadro "Vale só para este exame".
+- **Aparecem uma vez:** saudação e quedas entram na faixa em que aparecem; textos idênticos não se repetem.
+- **Jiu-Jitsu:** a lista da JJIF de cada faixa já repete a maior parte da anterior. O acumulado mostra a lista da faixa e, à parte, os itens de faixas anteriores que não se repetem nela, com o aviso de que as fontes não dizem se continuam sendo cobrados. As cadeias de adultos e infantil são separadas.
+
+**Onde estão os botões:** página de cada faixa (explorador), seção "Programa acumulado por faixa" nas páginas do Judô e do Jiu-Jitsu, menu lateral do explorador, e na página inicial (botão sob a faixa escolhida e lista de links quando nenhuma faixa está escolhida).
+
+**Acessibilidade (leitor de tela):** tópicos recolhíveis com botão dentro do título (`aria-expanded`, `aria-controls`); alternância "acumulado / só desta faixa" como grupo de botões com `aria-pressed`; mudança anunciada por região de status; títulos em ordem (h1 → h2 → h3 → h4); desenhos de faixa decorativos ocultos quando o nome já está escrito; pausas faladas entre título e contagem.
+
+**Verificação com axe-core 4.10.3** (regras WCAG 2.0, 2.1 e 2.2 A/AA e boas práticas), no site publicado, temas claro e escuro, com todos os tópicos abertos: **0 violações** em 9 páginas do explorador (5 páginas acumuladas, os dois hubs e duas páginas de faixa) e em 4 estados da página inicial. Ficaram só itens "a conferir" que o axe não mede (símbolos como ▾ e → e o fundo com imagem do topo), sem problema de contraste. Os testes do repositório (`acessibilidade.js`, `wcag.js`) também passam nas páginas novas; as duas falhas que aparecem já existiam e estão em `PENDENCIAS.md`.
+
+**Observação técnica:** o site tem política de segurança (CSP) que bloqueia scripts de fora, o que está correto. Para rodar o axe no site publicado, a página foi carregada sem essa política em uma aba de teste; o script `source/portal/tests/axe_varredura.js` continua precisando de `site/assets/axe.min.js` na cópia local (não versionado).
+
+**Arquivos:** `source/portal/explorar/explorar.js` e `.css` (páginas e botões), `source/portal/landing_template.html` e `montar_portal.py` (página inicial), `i18n_portal.py`, `i18n_portal_manual.json` e `explorar_strings.json` (textos em inglês), testes em `source/portal/tests/`.
