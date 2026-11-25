@@ -20,6 +20,12 @@ if PIPE and PIPE.exists():
         print("sem glossario.py local:", e); KD = {}; norm = lambda s: re.sub(r"[^a-z0-9]", "", s.lower())
 else:
     KD = {}; norm = lambda s: re.sub(r"[^a-z0-9]", "", s.lower())
+if not KD:  # sem o PDF da Kodokan: reaproveita os nomes já publicados (japonês e inglês) do dados.js anterior
+    _prev = ROOT / "site" / "explorar" / "dados.js"
+    if _prev.exists():
+        _t = _prev.read_text(encoding="utf-8"); _d, _ = json.JSONDecoder().raw_decode(_t[_t.index("{"):])
+        KD = {norm(v["nome"]): {"ja": v.get("ja", ""), "en": v.get("en", "")} for v in _d["tecnicas"].values()}
+        print("nomes em inglês reaproveitados do dados.js anterior:", sum(1 for v in KD.values() if v["en"]))
 
 txt = lambda x: re.sub(r"\s+", " ", x.get_text(" ", strip=True)) if x else ""
 import unicodedata
@@ -31,6 +37,11 @@ first, _, rest = raw.partition(";\nwindow.I18N=")
 APP = json.loads(first[len("window.DATA = "):].rstrip().rstrip(";"))
 I18N = json.loads(rest.rstrip().rstrip(";")) if rest else {"pt": {}}
 PTMAP = I18N.get("pt", {})
+sys.path.insert(0, str(ROOT / "source" / "portal"))
+import merge_cores as MC, corrigir_dados as CD
+if not any(t.get("alias") for t in APP["judo"]["trans"]):
+    APP["judo"]["trans"] = MC.mesclar_app(APP["judo"]["trans"])  # dados crus do projeto local: uma etapa por cor
+CD.corrigir(APP)
 def pt(s):  # texto em inglês -> português (dicionário do app)
     return PTMAP.get(s, s) if isinstance(s, str) else s
 
@@ -40,7 +51,19 @@ def sec(i): return soup.find("section", id=i)
 def tabela(sid, k=0):
     t = sec(sid).find_all("table")[k]
     return [r.find_all(["td", "th"]) for r in t.find_all("tr")][1:]
-def techs(cell): return [slug(a["data-name"]) for a in cell.find_all("a", class_="tech")]
+ABREV = {"sasae": "sasae-tsurikomi-ashi", "hon-kesa-gatame": "kesa-gatame", "ude-hishigi-juji-gatame": "juji-gatame"}
+_NRX = None
+def techs(cell):
+    """Técnicas citadas numa célula, na ordem, lidas pelo texto (não pelos links: o livro só liga a 1ª ocorrência)."""
+    global _NRX
+    if _NRX is None:
+        nomes = sorted(set(list(T) + list(ABREV)), key=len, reverse=True)
+        _NRX = re.compile(r"(?<![A-Za-z-])(" + "|".join(re.escape(n) for n in nomes) + r")(?![A-Za-z-])", re.I)
+    out = []
+    for m in _NRX.finditer(txt(cell) if not isinstance(cell, str) else cell):
+        k = m.group(1).lower(); k = ABREV.get(k, k)
+        if k in T and k not in out: out.append(k)
+    return out
 
 # nomes em português das 100 técnicas (convenção do judô brasileiro; ver aviso no explorador)
 PT_NAMES = {
@@ -134,27 +157,110 @@ FUND = {"Reverência e quedas (Rei/Ukemi)", "Fundamentos de aplicação"}
 def cats(tr):
     g = {}
     for it in tr["itens"]:
-        g.setdefault(it["c"], []).append({"t": it["t"], "tm": [{"ja": m["ja"], "rom": m["rom"], "en": m["en"], "pt": m.get("pt") or pt(m["en"])} for m in it.get("tm", [])]})
+        g.setdefault(it["c"], []).append({"t": it["t"], "tm": [{"ja": m["ja"], "rom": m["rom"], "en": m["en"], "pt": m.get("pt") or pt(m["en"])} for m in it.get("tm", [])], **({"et": it["et"]} if it.get("et") else {})})
     out = []
     for c, its in g.items():
         n = tr.get("catnm", {}).get(c, {})
         out.append({"id": slug(c), "nome": c, "ja": n.get("ja", ""), "en": n.get("en", ""), "pt": n.get("pt", ""), "itens": its, "grupo": "fund" if c in FUND else ("nao" if c in NAO_COMP else "tec")})
     return out
 def colors(tr): return {"de": tr["bde"], "para": tr["bpara"]}
+rows_dan = tabela("sec-programa-de-exame-dos-dans", 0)
+rows_ijf = tabela("sec-ijf-validacao-e-programa-de-dan-a-partir-de-2026", 0)
+def chave(cel):  # "Cinza/azul (9º)" -> ("kyu", 9); "Preta (1º dan )" -> ("dan", 1); "9º e 10º" -> ("dan", 9)
+    t = txt(cel); m = re.search(r"(\d+)º", t)
+    if not m: return None
+    return ("dan" if re.search(r"dan|Dan|Shodan|Nidan|Sandan|Yondan|Godan|Rokudan|Shichidan|Hachidan|9º e 10º", t) else "kyu", int(m.group(1)))
+B_NAGE = {chave(r[0]): r for r in rows_nage}; B_FUND = {chave(r[0]): r for r in rows_fund}; B_PROG = {chave(r[0]): r for r in rows_prog}
+B_DAN = {("dan", int(re.search(r"(\d+)", txt(r[0])).group(1))): r for r in rows_dan}
+B_DAN[("dan", 10)] = B_DAN.get(("dan", 9))
+B_IJF = {("dan", int(re.search(r"(\d+)", txt(r[0])).group(1))): r for r in rows_ijf}
+# Gokyo (1920) por grupo, na ordem da tabela de fichas do livro
+KYO = {}
+for r in tabela("sec-fichas-de-estudo-do-gokyo-40-tecnicas"):
+    ts = techs(r[1]); m = re.search(r"(\d)º", txt(r[0]))
+    if ts and m: KYO.setdefault(int(m.group(1)), []).append(ts[0])
+GOKYO = [x for k in sorted(KYO) for x in KYO[k]]
+KATAME_TODAS = [s for s, o in T.items() if o["tipo"] == "katame"]
+def nage_da_linha(cel):
+    t = txt(cel); ts = techs(cel)
+    m = re.match(r"(?:Todas do )?(\d)º kyô( completo)?$", t)
+    if m: return KYO.get(int(m.group(1)), []), f"{m.group(1)}º kyô completo"
+    if re.match(r"Gokyo completo", t): return GOKYO, "Gokyo completo (revisão das 40)"
+    return ts, ""
+def katame_da_linha(cel):
+    t = txt(cel)
+    if re.match(r"Katame-waza dos três grupos", t): return KATAME_TODAS, "Katame-waza dos três grupos"
+    return techs(cel), ""
+def expande(t): return re.sub(r"\bSasae →", "Sasae-tsurikomi-ashi →", t)
+def chaves_da_etapa(tr):
+    s2 = tr.get("sub", "") + " " + tr["titulo"]
+    ks = re.findall(r"(\d+)º", tr.get("sub", ""))
+    if re.search(r"Kyû", tr.get("sub", "")): return [("kyu", int(k)) for k in ks]
+    m = re.search(r"(\d+)º Dan", s2)
+    return [("dan", int(m.group(1)))] if m else []
+def rotulo(k): return f"{k[1]}º Kyû" if k[0] == "kyu" else f"{k[1]}º Dan"
+def junta(vals):  # [(rótulo, texto)] -> texto único; só marca o Kyû quando há dois exames e os textos diferem
+    dois = len(vals) > 1
+    vals = [(l, v) for l, v in vals if v and v.strip() not in ("—", "-")]
+    if not vals: return "—"
+    if len(vals) == 1: return f"{vals[0][0]}: {vals[0][1]}" if dois else vals[0][1]
+    if len({v for _, v in vals}) == 1: return vals[0][1]
+    return " · ".join(f"{l}: {v}" for l, v in vals)
 JUDO_BELTS = []
-for i, tr in enumerate(APP["judo"]["trans"]):
+for tr in APP["judo"]["trans"]:
     b = {"id": tr["id"], "titulo": tr["titulo"], "sub": tr["sub"], "cores": colors(tr), "fatos": tr["fatos"], "nota": tr.get("nota", ""), "cats": cats(tr), "pags": tr.get("pags", [])}
-    if i < len(rows_nage):
-        rn = rows_nage[i]; rf = rows_fund[i]; rp = rows_prog[i] if i < len(rows_prog) else None
-        b["nage"] = [x for x in techs(rn[1]) if x in T]; b["katame"] = [x for x in techs(rn[2]) if x in T]
-        b["renraku"] = txt(rn[3]); b["kaeshi"] = txt(rn[4]); b["renrakuSlugs"] = [x for x in techs(rn[3]) if x in T]; b["kaeshiSlugs"] = [x for x in techs(rn[4]) if x in T]
-        b["kihon"] = txt(rf[1]); b["kata"] = txt(rf[2]); b["teoria"] = txt(rf[3])
-        if rp: b["quant"] = {"Ukemi e fundamentos": txt(rp[1]), "Nage-waza": txt(rp[2]), "Katame-waza": txt(rp[3]), "Kata": txt(rp[4]), "Teoria e cultura": txt(rp[5])}
-        for x in b["nage"] + b["katame"]:
-            if tr["id"] not in T[x]["faixas"]: T[x]["faixas"].append(tr["id"])
+    if tr.get("alias"): b["alias"] = tr["alias"]
+    ks = chaves_da_etapa(tr)
+    linhas = [(k, B_NAGE.get(k), B_FUND.get(k), B_PROG.get(k)) for k in ks if B_NAGE.get(k)]
+    if linhas:
+        b["nage"], b["katame"], b["nageKyu"], b["katameKyu"] = [], [], {}, {}
+        b["renrakuSlugs"], b["kaeshiSlugs"] = [], []
+        for k, rn, rf, rp in linhas:
+            lab = rotulo(k); ng, ngn = nage_da_linha(rn[1]); kt, ktn = katame_da_linha(rn[2])
+            for x in ng:
+                if x not in b["nage"]: b["nage"].append(x); b["nageKyu"][x] = lab + (f" · {ngn}" if ngn else "")
+            for x in kt:
+                if x not in b["katame"]: b["katame"].append(x); b["katameKyu"][x] = lab + (f" · {ktn}" if ktn else "")
+            b["renrakuSlugs"] += [x for x in techs(rn[3]) if x not in b["renrakuSlugs"]]
+            cad = techs(rn[3])
+            if len(cad) >= 2: b.setdefault("renrakuExig", []).append({"cadeia": cad, "et": lab})
+            b["kaeshiSlugs"] += [x for x in techs(rn[4]) if x not in b["kaeshiSlugs"]]
+        L = [(rotulo(k), None) for k, *_ in linhas]
+        b["renraku"] = junta([(rotulo(k), expande(txt(rn[3]))) for k, rn, rf, rp in linhas])
+        b["kaeshi"] = junta([(rotulo(k), txt(rn[4])) for k, rn, rf, rp in linhas])
+        b["kihon"] = junta([(rotulo(k), txt(rf[1])) for k, rn, rf, rp in linhas if rf])
+        b["kata"] = junta([(rotulo(k), txt(rf[2])) for k, rn, rf, rp in linhas if rf])
+        b["teoria"] = junta([(rotulo(k), txt(rf[3])) for k, rn, rf, rp in linhas if rf])
+        if any(rp for *_, rp in linhas):
+            b["quant"] = {h: junta([(rotulo(k), txt(rp[j])) for k, rn, rf, rp in linhas if rp]) for j, h in ((1, "Ukemi e fundamentos"), (2, "Nage-waza"), (3, "Katame-waza"), (4, "Kata"), (5, "Teoria e cultura"))}
+    # dans: programa do livro (CBJ), quantidades da FJERJ e programa mínimo da IJF
+    dk = [k for k in ks if k[0] == "dan"]
+    if dk:
+        k = dk[0]; rd = B_DAN.get(k); ri = B_IJF.get(k); q = b.get("quant") or {}
+        if rd:
+            kc, ks_, pt_, td = txt(rd[1]), txt(rd[2]), txt(rd[3]), txt(rd[4])
+            if k[1] == 9: td = td.split(";")[0].strip()  # linha "9º e 10º": a unanimidade vale só para o 10º
+            if kc in ("Currículo", "Indicação"):
+                q["Forma de promoção (CBJ)"] = "Por currículo, sem prova" if kc == "Currículo" else "Por indicação, sem prova"
+            else:
+                q["Kata completo (CBJ)"] = kc
+                if ks_ != "—": q["Kata por sorteio (CBJ)"] = ks_
+                if not b.get("kata") or b.get("kata") == "—": b["kata"] = kc + ("" if ks_ == "—" else f"; por sorteio: {ks_}")
+            if pt_ != "—": q["Prova técnica (CBJ)"] = pt_
+            q["Teoria e didática (CBJ)"] = td
+            if not b.get("teoria") or b.get("teoria") == "—": b["teoria"] = td
+        fj = {1: "6 técnicas de cada grupo de nage-waza, 5 kaeshi-waza e 5 renraku-henka-waza", 2: "10 técnicas por grupo de nage-waza e 7 kaeshi-waza", 4: "Todas as técnicas", 5: "Todas as técnicas"}.get(k[1])
+        if fj: q["Exame admissional (FJERJ, exemplo estadual)"] = fj
+        if ri:
+            extra = "; ".join(x for x in ((f"idade mínima {txt(ri[1])}" if txt(ri[1]) != "—" else ""), (f"tempo no grau anterior: {txt(ri[2])}" if txt(ri[2]) != "—" else "")) if x)
+            q["Programa mínimo da IJF (a partir de 2026)"] = txt(ri[3]) + (f" ({extra})" if extra else "")
+        if q: b["quant"] = q
+        if k[1] == 2 and "renraku" not in b:
+            b["renraku"] = "Renraku-henka-waza (prova técnica da CBJ)"; b["kaeshi"] = "Kaeshi-waza (prova técnica da CBJ); FJERJ: 7"
+            b["renrakuSlugs"], b["kaeshiSlugs"] = [], []
+    for x in (b.get("nage") or []) + (b.get("katame") or []):
+        if tr["id"] not in T[x]["faixas"]: T[x]["faixas"].append(tr["id"])
     JUDO_BELTS.append(b)
-import merge_cores as MC
-JUDO_BELTS = MC.mesclar_portal(JUDO_BELTS, T)  # uma etapa por cor; o que é de cada Kyû fica marcado
 IDADE = [[txt(c) for c in r] for r in rows_idade]
 # proibidas (IJF)
 pro = sec("sec-tecnicas-e-acoes-proibidas-regras-ijf-vigentes")
